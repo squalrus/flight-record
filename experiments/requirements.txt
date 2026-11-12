@@ -1,11 +1,14 @@
 # Shared dependencies for the Python experiments and tools.
-# Install: python -m pip install -r experiments/requirements.txt
+# Install from the repo root: python -m pip install -r experiments/requirements.txt
 # Experiments that need more (e.g. librosa for offline ground truth) list extras in their own README.
 
 # Audio capture and analysis
 sounddevice>=0.5
 numpy>=2.1
 scipy>=1.14
+
+# The shared flightrec package (editable, so edits take effect without reinstalling)
+-e .
 
 # Dev: lint, format, test
 ruff>=0.8

@@ -6,8 +6,6 @@ Legend: 🔌 needs the physical hardware (turntable, interface) · 🌐 needs an
 
 ## Phase 0: Foundations (no hardware needed)
 
-- [ ] **0.1 🖥️ Repo scaffolding.** Shared `experiments/requirements.txt`, `ruff` config, `.env.example`, a simple CI workflow that runs lint and unit tests.
-  *Done when:* a fresh clone can `pip install -r experiments/requirements.txt` and run `ruff check` and `pytest` on Windows, macOS, or Linux.
 - [ ] **0.2 🖥️ Replay tooling (`tools/`).** (a) `list_devices.py` lists audio devices; (b) `record_clip.py` records N seconds from a chosen device to WAV; (c) `replay.py` plays a WAV through the same code path as live capture (same block size, same ring buffer).
   *Done when:* experiment 01 code can run from a WAV file with no interface connected.
 - [ ] **0.3 🖥️ Message contract library.** A small Python module that defines, validates, and serializes the messages in [architecture.md](docs/architecture.md), plus JSON-lines logging/replay of message streams.

@@ -21,4 +21,18 @@ Experiments 07 (local co-op prototype) and 08 (end-to-end slice) live in the Uni
 4. Finish by writing `RESULTS.md` from [RESULTS.template.md](RESULTS.template.md). Record measured numbers, the recordings used, and a decision.
 5. Secrets in env vars or an untracked `.env`; never commit keys.
 
-Shared dependencies: `requirements.txt` in this folder (to be created in backlog item 0.1).
+## Setup
+
+Shared dependencies are in [requirements.txt](requirements.txt) (Python 3.11+). From the repo root:
+
+```sh
+python -m venv .venv
+# Windows: .venv\Scripts\activate    macOS/Linux: source .venv/bin/activate
+python -m pip install -r experiments/requirements.txt
+
+ruff check .            # lint
+ruff format --check .   # format check (drop --check to apply)
+pytest                  # tests under tests/, experiments/, tools/
+```
+
+On Linux, `sounddevice` needs the PortAudio system library (`sudo apt install libportaudio2`). CI runs the same three commands on Windows, macOS, and Linux for Python 3.11 and 3.13 ([.github/workflows/ci.yml](../.github/workflows/ci.yml)). An experiment that needs more packages lists them in its own README.

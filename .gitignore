@@ -1,0 +1,56 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.egg-info/
+.ipynb_checkpoints/
+
+# Secrets and local config
+.env
+.env.*
+!.env.example
+*.key
+
+# Local data (caches, recordings, scratch)
+.cache/
+/experiments/**/data/
+/experiments/**/out/
+/samples/_local/
+*.log
+
+# Unity
+/unity/[Ll]ibrary/
+/unity/[Tt]emp/
+/unity/[Oo]bj/
+/unity/[Bb]uild/
+/unity/[Bb]uilds/
+/unity/[Ll]ogs/
+/unity/[Uu]ser[Ss]ettings/
+/unity/[Mm]emoryCaptures/
+/unity/.vs/
+/unity/.idea/
+/unity/*.csproj
+/unity/*.sln
+/unity/*.suo
+/unity/*.user
+/unity/*.pidb
+/unity/*.booproj
+/unity/*.unityproj
+/unity/*.apk
+/unity/*.aab
+/unity/*.unitypackage
+/unity/crashlytics-build.properties
+
+# Editors and OS
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini

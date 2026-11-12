@@ -10,7 +10,7 @@ User-visible changes, newest first. Follows [Keep a Changelog](https://keepachan
 
 ### Changed
 - **Shared code is an installable package.** `pyproject.toml` now defines `flightrec` (version read from `VERSION`), and `experiments/requirements.txt` installs it in editable mode, so the setup command is unchanged. (`pyproject.toml`, `experiments/requirements.txt`)
-- **Docs.** `tools/README.md` has usage and an experiment snippet; `AGENTS.md` says shared code goes in `flightrec` and audio input goes through `flightrec.audio`. (`tools/README.md`, `AGENTS.md`)
+- **Docs.** `tools/README.md` has usage and an experiment snippet; `AGENTS.md` says shared code goes in `flightrec`, audio input goes through `flightrec.audio`, and audio timing uses `time.perf_counter()` (`time.monotonic()` is too coarse on Windows before Python 3.13). (`tools/README.md`, `AGENTS.md`)
 
 ## [0.1.0] — 2026-11-12
 ### Added

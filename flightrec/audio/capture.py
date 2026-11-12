@@ -23,7 +23,7 @@ class Capture:
         self.ring = RingBuffer(max(1, int(seconds * source.samplerate)), source.channels)
         self.blocks = 0
         self.last_t: float | None = None
-        """``time.monotonic()`` when the most recent block arrived."""
+        """``time.perf_counter()`` when the most recent block arrived."""
         self.max_lag = 0.0
         self._t_first: float | None = None
         self._sr = float(source.samplerate)

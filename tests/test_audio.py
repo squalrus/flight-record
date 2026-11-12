@@ -157,12 +157,14 @@ def test_realtime_replay_is_paced_like_an_interface() -> None:
     samplerate, blocksize = 8_000, 400  # 50 ms blocks
     source = ArraySource(np.zeros((4 * blocksize, 1)), samplerate, blocksize, realtime=True)
     times: list[float] = []
-    started = time.monotonic()
+    started = time.perf_counter()
     source.start(lambda block, start, t: times.append(t - started))
     assert source.wait(5.0)
-    # Block k is due at (k + 1) * 50 ms; it must never arrive early.
+    # Block k is due at (k + 1) * 50 ms after the source starts (which is after `started`);
+    # it must never arrive early, even on platforms with coarse OS timers.
+    assert len(times) == 4
     for k, t in enumerate(times):
-        assert t >= (k + 1) * 0.05 - 0.005
+        assert t >= (k + 1) * 0.05
 
 
 def test_callback_error_surfaces_from_wait() -> None:

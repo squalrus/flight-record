@@ -5,7 +5,10 @@ Every source calls ``callback(block, start_frame, t)`` from its own thread:
 - ``block``: float32 array of shape ``(blocksize, channels)``. It is only valid during the
   call (sources reuse the buffer), so copy what you keep, e.g. into a ``RingBuffer``.
 - ``start_frame``: index of the block's first frame since ``start()``.
-- ``t``: ``time.monotonic()`` when the block was delivered.
+- ``t``: ``time.perf_counter()`` when the block was delivered. It is monotonic like
+  ``time.monotonic()`` but high-resolution everywhere; ``time.monotonic()`` ticks only
+  every ~15.6 ms on Windows before Python 3.13, which is too coarse for audio timing.
+  Compare ``t`` only with other ``perf_counter()`` readings.
 
 Replay paces blocks like an audio interface: block ``k`` arrives once its last frame
 "has been captured", ``(k + 1) * blocksize / samplerate`` seconds after start.
@@ -107,7 +110,7 @@ class LiveSource(AudioSource):
         if status.input_overflow:
             self.overflows += 1
         assert self._callback is not None
-        self._callback(indata, self._frame, time.monotonic())
+        self._callback(indata, self._frame, time.perf_counter())
         self._frame += frames
 
     def stop(self) -> None:
@@ -183,7 +186,7 @@ class ArraySource(AudioSource):
     def _run(self, callback: BlockCallback) -> None:
         total = len(self.frames)
         block_seconds = self.blocksize / self.samplerate
-        t0 = time.monotonic()
+        t0 = time.perf_counter()
         k = 0
         try:
             while not self._stop.is_set():
@@ -191,16 +194,24 @@ class ArraySource(AudioSource):
                 if not self.loop and start >= total:
                     break
                 self._fill(start % total)
-                if self.realtime:
-                    delay = t0 + (k + 1) * block_seconds - time.monotonic()
-                    if delay > 0 and self._stop.wait(delay):
-                        break
-                callback(self._block, start, time.monotonic())
+                if self.realtime and self._sleep_until(t0 + (k + 1) * block_seconds):
+                    break
+                callback(self._block, start, time.perf_counter())
                 k += 1
         except BaseException as exc:  # surfaced to the caller through wait()
             self.error = exc
         finally:
             self._done.set()
+
+    def _sleep_until(self, due: float) -> bool:
+        """Sleep until ``perf_counter() >= due``; True if stopped first.
+
+        Loops because OS waits can return slightly early (coarse timers on Windows).
+        """
+        while (delay := due - time.perf_counter()) > 0:
+            if self._stop.wait(delay):
+                return True
+        return False
 
     def _fill(self, pos: int) -> None:
         """Copy ``blocksize`` frames from ``pos`` into the reusable block buffer."""

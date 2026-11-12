@@ -44,7 +44,7 @@ def main(argv: list[str] | None = None) -> int:
         f"{source.channels} ch, blocks of {source.blocksize}"
     )
 
-    started = time.monotonic()
+    started = time.perf_counter()
     try:
         with capture:
             while not capture.wait(args.every):
@@ -54,7 +54,7 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"  {pos:7.1f} s   rms {rms:6.1f} dBFS   peak {peak:6.1f} dBFS")
     except KeyboardInterrupt:
         pass
-    elapsed = time.monotonic() - started
+    elapsed = time.perf_counter() - started
 
     seconds = capture.frames / source.samplerate
     print(

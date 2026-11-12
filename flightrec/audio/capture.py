@@ -14,11 +14,15 @@ class Capture:
     Analysis code reads from ``ring`` (``read_latest`` for FFT windows, ``read_from`` for
     gap-free sequential processing) on its own thread, never inside the audio callback.
 
-    Timing diagnostics, all from block arrival times:
+    Timing diagnostics, all from block arrival times. Each block's *offset* is its arrival
+    time minus the audio time it ends at (frames / samplerate); a perfectly steady source
+    has a constant offset.
 
-    - ``lag``: how late the latest block arrived versus an ideal clock started at the first
-      block. Over long runs this also shows drift between the device's sample clock and the
-      computer's clock. ``max_lag`` is its maximum.
+    - ``lag``: the latest block's offset relative to the first block's, in seconds. Signed:
+      negative if the first block happened to arrive late. A steady trend over a long run is
+      drift between the device's sample clock and the computer's clock.
+    - ``max_lag``: spread between the latest- and earliest-arriving blocks (max offset minus
+      min offset), so always >= 0 and independent of how the first block landed.
     - ``pop_max_gap()``: longest interval between consecutive blocks since the last call.
       A gap far above the block period means delivery stalled.
     """
@@ -32,7 +36,9 @@ class Capture:
         self.lag = 0.0
         self.max_lag = 0.0
         self._max_gap = 0.0
-        self._t_first: float | None = None
+        self._first_offset: float | None = None
+        self._min_offset = 0.0
+        self._max_offset = 0.0
         self._sr = float(source.samplerate)
 
     @property
@@ -87,11 +93,15 @@ class Capture:
         # Runs on the audio thread: copy into preallocated storage, no allocation.
         self.ring.write(block)
         end_frame = start_frame + len(block)
-        if self._t_first is None:
-            self._t_first = t - end_frame / self._sr
-        self.lag = t - (self._t_first + end_frame / self._sr)
-        if self.lag > self.max_lag:
-            self.max_lag = self.lag
+        offset = t - end_frame / self._sr
+        if self._first_offset is None:
+            self._first_offset = self._min_offset = self._max_offset = offset
+        elif offset < self._min_offset:
+            self._min_offset = offset
+        elif offset > self._max_offset:
+            self._max_offset = offset
+        self.lag = offset - self._first_offset
+        self.max_lag = self._max_offset - self._min_offset
         if self.last_t is not None and t - self.last_t > self._max_gap:
             self._max_gap = t - self.last_t
         self.last_t = t

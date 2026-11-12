@@ -95,4 +95,20 @@ def test_capture_tracks_block_gaps_and_lag() -> None:
     gap = capture.pop_max_gap()
     assert 0.045 < gap < 0.5
     assert capture.pop_max_gap() == 0.0
-    assert capture.max_lag >= capture.lag >= 0.0
+    assert capture.max_lag >= 0.0
+
+
+def test_capture_timing_with_a_late_first_block() -> None:
+    """Deterministic arrival times: the first block is 40 ms late, the rest on schedule,
+    then one block 30 ms late. CI schedulers can do exactly this."""
+    source = ArraySource(np.zeros((400, 1)), 8_000, 400)  # never started; 50 ms blocks
+    capture = Capture(source, 1.0)
+    block = np.zeros((400, 1), dtype=np.float32)
+    arrivals = [0.090, 0.100, 0.150, 0.200, 0.280, 0.300]  # due at 0.05, 0.10, 0.15, ...
+    for k, t in enumerate(arrivals):
+        capture._on_block(block, k * 400, t)
+
+    assert capture.lag == pytest.approx(-0.040)  # last block on time; first was 40 ms late
+    assert capture.max_lag == pytest.approx(0.040)  # spread: 40 ms late vs on time
+    assert capture.pop_max_gap() == pytest.approx(0.080)  # 0.200 -> 0.280
+    assert capture.blocks == 6

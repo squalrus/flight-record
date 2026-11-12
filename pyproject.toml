@@ -1,0 +1,22 @@
+# Tool configuration only; this repo is not an installable package.
+# Dependencies live in experiments/requirements.txt.
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+extend-exclude = ["unity"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "UP",  # pyupgrade
+    "SIM", # flake8-simplify
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "experiments", "tools"]
+addopts = "-ra"

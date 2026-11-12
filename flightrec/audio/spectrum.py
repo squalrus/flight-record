@@ -13,7 +13,10 @@ FLOOR_DB = -120.0
 
 def to_db(x: np.ndarray | float, floor: float = FLOOR_DB) -> np.ndarray | float:
     """Amplitude (1.0 = full scale) to dBFS, clamped at ``floor``."""
-    db = 20.0 * np.log10(np.maximum(x, 10.0 ** (floor / 20.0)))
+    # Clamp in dB, in float64: clamping a float32 amplitude first lands a hair off the
+    # floor after log10 (e.g. -120.00001), and the rounding differs by platform.
+    amplitude = np.maximum(np.asarray(x, dtype=np.float64), 1e-300)
+    db = np.maximum(20.0 * np.log10(amplitude), floor)
     return float(db) if np.ndim(db) == 0 else db
 
 

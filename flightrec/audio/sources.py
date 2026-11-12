@@ -55,6 +55,17 @@ class AudioSource(ABC):
         """True once a finite source has delivered its last block (live never finishes)."""
         return False
 
+    @property
+    def input_latency(self) -> float:
+        """Seconds between sound reaching the input and its block being delivered, as
+        reported by the driver. Zero for replay and null sources."""
+        return 0.0
+
+    @property
+    def overflows(self) -> int:
+        """Callbacks that reported dropped input audio. Always zero for non-live sources."""
+        return 0
+
     def wait(self, timeout: float | None = None) -> bool:
         """Block until the source finishes or ``timeout`` passes; True if finished."""
         if timeout is not None:
@@ -84,8 +95,8 @@ class LiveSource(AudioSource):
         self.channels = channels
         self.blocksize = blocksize
         self.latency = latency
-        self.overflows = 0
-        """Count of callbacks that reported an input overflow (dropped audio)."""
+        self._overflows = 0
+        self._input_latency = 0.0
         self._stream: Any = None
         self._callback: BlockCallback | None = None
         self._frame = 0
@@ -105,10 +116,19 @@ class LiveSource(AudioSource):
             callback=self._on_audio,
         )
         self._stream.start()
+        self._input_latency = float(self._stream.latency)
+
+    @property
+    def input_latency(self) -> float:
+        return self._input_latency
+
+    @property
+    def overflows(self) -> int:
+        return self._overflows
 
     def _on_audio(self, indata: np.ndarray, frames: int, time_info: Any, status: Any) -> None:
         if status.input_overflow:
-            self.overflows += 1
+            self._overflows += 1
         assert self._callback is not None
         self._callback(indata, self._frame, time.perf_counter())
         self._frame += frames

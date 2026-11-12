@@ -2,6 +2,16 @@
 
 User-visible changes, newest first. Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format and [semver](https://semver.org/) versioning.
 
+## [0.3.0] — 2026-11-12
+### Added
+- **Experiment 01 visualizer.** A live waveform, log-frequency spectrum, and L/R level meters (clip light, 50/60 Hz hum markers) from live input or a WAV, with a `--headless` mode for long stability runs. It logs one CSV row per second: dropped input, block gaps, clock drift, capture-to-display latency percentiles, fps, peak level, and clipping. The success criteria still need the real hardware chain, so backlog item 1.1 stays open. A first laptop-mic run measured 28.5 ms median, 39.1 ms p95 latency, with no overflows. (`experiments/01-capture-visualizer/visualize.py`, `experiments/01-capture-visualizer/requirements.txt`)
+- **Spectrum analysis.** Windowed FFT in dBFS (a full-scale sine reads 0 dBFS), log-spaced bands, and per-channel RMS and peak levels, reusable by later experiments. (`flightrec/audio/spectrum.py`)
+- **Capture timing diagnostics.** `Capture` now reports the latest block's lag (clock drift over long runs) and the longest gap between blocks, and sources report the driver's input latency. (`flightrec/audio/capture.py`, `flightrec/audio/sources.py`)
+- **Tests.** Spectrum and level accuracy on synthetic tones, timing diagnostics, and an end-to-end headless run of experiment 01 from a WAV, with no interface or Pygame needed. (`tests/test_spectrum.py`, `experiments/01-capture-visualizer/test_capture_visualizer.py`)
+
+### Changed
+- **Experiment 01 docs.** The README covers how to run, what each logged column means, how latency is defined, and what a microphone can and cannot stand in for. D-010 records Pygame as the provisional choice for experiment visualizers. (`experiments/01-capture-visualizer/README.md`, `docs/decisions.md`)
+
 ## [0.2.0] — 2026-11-12
 ### Added
 - **Replay tooling.** A shared `flightrec.audio` package gives live input, WAV replay, and silence one capture path: same block size, same ring buffer, real-time pacing. Experiments switch between live and recorded audio with `open_source(wav)`. Importing it does not load `sounddevice`, so replay runs without PortAudio or an interface. Experiment 01 will be the first experiment built on it. (`flightrec/audio/`)

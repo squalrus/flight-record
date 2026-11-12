@@ -14,8 +14,17 @@ class Capture:
     Analysis code reads from ``ring`` (``read_latest`` for FFT windows, ``read_from`` for
     gap-free sequential processing) on its own thread, never inside the audio callback.
 
-    ``max_lag`` tracks how late blocks arrive versus an ideal clock started at the first
-    block, which is a first-order view of delivery jitter.
+    Timing diagnostics, all from block arrival times. Each block's *offset* is its arrival
+    time minus the audio time it ends at (frames / samplerate); a perfectly steady source
+    has a constant offset.
+
+    - ``lag``: the latest block's offset relative to the first block's, in seconds. Signed:
+      negative if the first block happened to arrive late. A steady trend over a long run is
+      drift between the device's sample clock and the computer's clock.
+    - ``max_lag``: spread between the latest- and earliest-arriving blocks (max offset minus
+      min offset), so always >= 0 and independent of how the first block landed.
+    - ``pop_max_gap()``: longest interval between consecutive blocks since the last call.
+      A gap far above the block period means delivery stalled.
     """
 
     def __init__(self, source: AudioSource, seconds: float = 10.0) -> None:
@@ -24,9 +33,27 @@ class Capture:
         self.blocks = 0
         self.last_t: float | None = None
         """``time.perf_counter()`` when the most recent block arrived."""
+        self.lag = 0.0
         self.max_lag = 0.0
-        self._t_first: float | None = None
+        self._max_gap = 0.0
+        self._first_offset: float | None = None
+        self._min_offset = 0.0
+        self._max_offset = 0.0
         self._sr = float(source.samplerate)
+
+    @property
+    def block_period(self) -> float:
+        """Nominal seconds between blocks."""
+        return self.source.blocksize / self._sr
+
+    def pop_max_gap(self) -> float:
+        """Longest gap between block arrivals since the previous call, then reset.
+
+        Unsynchronized with the audio thread, so a gap that lands exactly during the reset
+        can be lost; fine for once-a-second logging.
+        """
+        gap, self._max_gap = self._max_gap, 0.0
+        return gap
 
     @property
     def samplerate(self) -> int:
@@ -66,10 +93,16 @@ class Capture:
         # Runs on the audio thread: copy into preallocated storage, no allocation.
         self.ring.write(block)
         end_frame = start_frame + len(block)
-        if self._t_first is None:
-            self._t_first = t - end_frame / self._sr
-        lag = t - (self._t_first + end_frame / self._sr)
-        if lag > self.max_lag:
-            self.max_lag = lag
+        offset = t - end_frame / self._sr
+        if self._first_offset is None:
+            self._first_offset = self._min_offset = self._max_offset = offset
+        elif offset < self._min_offset:
+            self._min_offset = offset
+        elif offset > self._max_offset:
+            self._max_offset = offset
+        self.lag = offset - self._first_offset
+        self.max_lag = self._max_offset - self._min_offset
+        if self.last_t is not None and t - self.last_t > self._max_gap:
+            self._max_gap = t - self.last_t
         self.last_t = t
         self.blocks += 1

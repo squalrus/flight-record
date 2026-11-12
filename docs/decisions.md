@@ -33,6 +33,9 @@ Pending a trademark and availability check. See [naming.md](naming.md).
 ### D-009 · Multiplayer is local only — Decided
 Same machine, one shared screen, several controllers. No networking, no netcode library, no host/client roles, no audio streaming. All players hear the source through the room's speakers via the hardware split (D-001). This removes spawn-schedule replication, game-time synchronization, network join/leave, and host migration from scope, and replaces experiment 07 with a local co-op prototype.
 
+### D-010 · Pygame for experiment visualizers — Provisional
+Experiment 01 draws its waveform, spectrum, and meters with Pygame rather than matplotlib: it redraws at 60 fps with simple 2-D primitives, while matplotlib animation is built for plots, not live displays. Pygame is an experiment-only dependency (`experiments/01-capture-visualizer/requirements.txt`). Every visualizer has a `--headless` mode, so analysis, logging, and CI never need it. Revisit if a later experiment needs plotting features Pygame lacks.
+
 ## Open
 
 | ID | Question | Decided by |

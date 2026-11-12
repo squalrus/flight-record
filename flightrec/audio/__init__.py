@@ -16,13 +16,27 @@ from flightrec.audio.sources import (
     env_device,
     open_source,
 )
+from flightrec.audio.spectrum import (
+    FLOOR_DB,
+    LogBands,
+    Spectrum,
+    channel_levels,
+    level_dbfs,
+    to_db,
+)
 from flightrec.audio.wav import read_wav, write_wav
 
 __all__ = [
+    "FLOOR_DB",
     "ArraySource",
     "AudioSource",
     "BlockCallback",
     "Capture",
+    "LogBands",
+    "Spectrum",
+    "channel_levels",
+    "level_dbfs",
+    "to_db",
     "LiveSource",
     "NullSource",
     "OverrunError",

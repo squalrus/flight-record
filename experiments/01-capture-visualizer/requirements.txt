@@ -1,0 +1,5 @@
+# Experiment 01 extras, on top of ../requirements.txt.
+# Install from the repo root: python -m pip install -r experiments/01-capture-visualizer/requirements.txt
+# Only the window needs pygame; --headless runs without it.
+-r ../requirements.txt
+pygame>=2.6

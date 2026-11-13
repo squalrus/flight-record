@@ -132,92 +132,24 @@ class Stats:
 
 
 class Renderer:
-    """Pygame window: waveform lanes, log-frequency spectrum, L/R meters, status text."""
+    """Experiment 01 layout over the shared panels in ``flightrec.viz`` (imports pygame)."""
 
     W, H = 1100, 660
-    DB_LO, DB_HI = -100.0, 0.0
-    BG = (12, 14, 18)
-    GRID = (40, 44, 52)
-    TEXT = (200, 205, 214)
-    DIM = (120, 126, 138)
-    CHANNEL = [(80, 200, 255), (255, 110, 200)]
-    BAR = (90, 170, 255)
-    HOLD = (230, 230, 240)
-    HUM = (255, 170, 60)
 
     def __init__(self, title: str, bands: LogBands, channels: int) -> None:
-        import pygame
+        from flightrec import viz
 
-        self.pg = pygame
-        pygame.init()
-        self.screen = pygame.display.set_mode((self.W, self.H))
-        pygame.display.set_caption(title)
-        self.font = pygame.font.SysFont("consolas,menlo,dejavusansmono,monospace", 14)
-        self.bands = bands
-        self.channels = channels
-        self.wave = pygame.Rect(16, 16, self.W - 16 - 16 - 140, 150)
-        self.spec = pygame.Rect(56, 196, self.W - 56 - 16 - 140, 340)
-        self.meters = pygame.Rect(self.W - 16 - 124, 16, 124, 520)
-        self.bar_w = self.spec.width / len(bands.centers)
-        self.hold = np.full(len(bands.centers), FLOOR_DB)
-        self.clip_until = np.zeros(channels)
-        self.last_draw = time.perf_counter()
-        self.background = self._background()
+        self.viz = viz
+        self.win = viz.Window(title, (self.W, self.H))
+        self.wave = viz.WaveformPanel(self.win, (16, 16, self.W - 172, 150))
+        self.spec = viz.SpectrumPanel(self.win, (56, 196, self.W - 212, 340), bands)
+        self.meters = viz.MeterPanel(self.win, (self.W - 140, 16, 124, 520), channels, CLIP_DBFS)
 
     def closed(self) -> bool:
-        for event in self.pg.event.get():
-            if event.type == self.pg.QUIT:
-                return True
-            if event.type == self.pg.KEYDOWN and event.key in (self.pg.K_ESCAPE, self.pg.K_q):
-                return True
-        return False
+        return self.win.closed()
 
     def close(self) -> None:
-        self.pg.quit()
-
-    # Pygame rejects NumPy scalars in rects, so geometry helpers return plain floats.
-    def _x_for_freq(self, f: float) -> float:
-        lo, hi = np.log(self.bands.edges[0]), np.log(self.bands.edges[-1])
-        return float(self.spec.left + (np.log(f) - lo) / (hi - lo) * self.spec.width)
-
-    def _frac(self, db: float) -> float:
-        """Position of ``db`` on the display scale, 0 (bottom) to 1 (top)."""
-        return min(1.0, max(0.0, (float(db) - self.DB_LO) / (self.DB_HI - self.DB_LO)))
-
-    def _y_for_db(self, db: float) -> float:
-        return self.spec.bottom - self._frac(db) * self.spec.height
-
-    def _label(self, surface: Any, text: str, pos: tuple[float, float], color: Any) -> None:
-        surface.blit(self.font.render(text, True, color), pos)
-
-    def _background(self) -> Any:
-        pg = self.pg
-        surface = pg.Surface((self.W, self.H))
-        surface.fill(self.BG)
-        lane_h = self.wave.height / self.channels
-        for ch in range(self.channels):
-            mid = self.wave.top + lane_h * (ch + 0.5)
-            pg.draw.line(surface, self.GRID, (self.wave.left, mid), (self.wave.right, mid))
-            self._label(
-                surface, "LR"[ch] if self.channels == 2 else str(ch), (2, mid - 8), self.DIM
-            )
-        pg.draw.rect(surface, self.GRID, self.wave, 1)
-        for db in range(int(self.DB_LO), int(self.DB_HI) + 1, 20):
-            y = self._y_for_db(db)
-            pg.draw.line(surface, self.GRID, (self.spec.left, y), (self.spec.right, y))
-            self._label(surface, f"{db:>4}", (self.spec.left - 44, y - 8), self.DIM)
-        for f in (20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000):
-            if self.bands.edges[0] <= f <= self.bands.edges[-1]:
-                x = self._x_for_freq(f)
-                pg.draw.line(surface, self.GRID, (x, self.spec.top), (x, self.spec.bottom))
-                label = f"{f // 1000}k" if f >= 1000 else str(f)
-                self._label(surface, label, (x - 8, self.spec.bottom + 4), self.DIM)
-        for f in (50, 60):  # mains hum frequencies
-            x = self._x_for_freq(f)
-            pg.draw.line(surface, self.HUM, (x, self.spec.top), (x, self.spec.top + 10), 2)
-        self._label(surface, "dBFS", (self.spec.left - 44, self.spec.top - 22), self.DIM)
-        self._label(surface, "hum 50/60", (self._x_for_freq(50) - 4, self.spec.top - 22), self.HUM)
-        return surface
+        self.win.close()
 
     def draw(
         self,
@@ -227,59 +159,12 @@ class Renderer:
         ch_peak: np.ndarray,
         status: list[str],
     ) -> None:
-        pg = self.pg
-        now = time.perf_counter()
-        dt, self.last_draw = now - self.last_draw, now
-        screen = self.screen
-        screen.blit(self.background, (0, 0))
-
-        # Waveform: one lane per channel.
-        lane_h = self.wave.height / self.channels
-        idx = np.linspace(0, len(frames) - 1, self.wave.width).astype(int)
-        xs = np.arange(self.wave.width) + self.wave.left
-        for ch in range(self.channels):
-            mid = self.wave.top + lane_h * (ch + 0.5)
-            ys = mid - np.clip(frames[idx, ch], -1.0, 1.0) * (lane_h / 2 - 2)
-            color = self.CHANNEL[ch % len(self.CHANNEL)]
-            pg.draw.lines(screen, color, False, np.column_stack([xs, ys]).tolist())
-
-        # Spectrum bars with a falling peak hold (20 dB/s).
-        self.hold = np.maximum(band_db, self.hold - 20.0 * dt)
-        for i, (db, hold) in enumerate(zip(band_db, self.hold, strict=True)):
-            x = self.spec.left + i * self.bar_w
-            top = self._y_for_db(db)
-            if top < self.spec.bottom:
-                rect = (x, top, max(1.0, self.bar_w - 1), self.spec.bottom - top)
-                pg.draw.rect(screen, self.BAR, rect)
-            y = self._y_for_db(hold)
-            pg.draw.line(screen, self.HOLD, (x, y), (x + max(1.0, self.bar_w - 1), y))
-
-        # Meters: peak fill, RMS tick, clip light held for 1 s.
-        width = self.meters.width / self.channels
-        meter_top = self.meters.top + 30
-        meter_h = self.meters.bottom - meter_top
-        for ch in range(self.channels):
-            x = self.meters.left + ch * width + 6
-            w = width - 12
-            pg.draw.rect(screen, self.GRID, (x, meter_top, w, meter_h), 1)
-            frac = self._frac(ch_peak[ch])
-            color = (80, 200, 120) if ch_peak[ch] < -12 else (230, 200, 60)
-            if ch_peak[ch] >= -3:
-                color = (240, 80, 70)
-            pg.draw.rect(
-                screen, color, (x + 1, meter_top + meter_h * (1 - frac), w - 2, meter_h * frac)
-            )
-            y = meter_top + meter_h * (1 - self._frac(ch_rms[ch]))
-            pg.draw.line(screen, self.HOLD, (x, y), (x + w, y), 2)
-            if ch_peak[ch] >= CLIP_DBFS:
-                self.clip_until[ch] = now + 1.0
-            clip_color = (240, 60, 50) if self.clip_until[ch] > now else self.GRID
-            pg.draw.rect(screen, clip_color, (x, self.meters.top, w, 20))
-            self._label(screen, f"{ch_peak[ch]:6.1f}", (x - 2, self.meters.bottom + 4), self.TEXT)
-
-        for i, line in enumerate(status):
-            self._label(screen, line, (16, self.H - 64 + i * 20), self.TEXT)
-        pg.display.flip()
+        self.win.begin()
+        self.wave.draw(frames)
+        self.spec.draw(band_db)
+        self.meters.draw(ch_rms, ch_peak)
+        self.viz.status_lines(self.win, status, self.H - 64)
+        self.win.end()
 
 
 def run(args: argparse.Namespace) -> int:
@@ -392,7 +277,9 @@ def run(args: argparse.Namespace) -> int:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Experiment 01: capture and visualize.")
-    parser.add_argument("--wav", type=Path, help="replay this WAV instead of live input")
+    parser.add_argument(
+        "--wav", type=Path, help="replay this audio file (WAV, MP3, FLAC, OGG) instead of live"
+    )
     parser.add_argument("--device", type=parse_device, help="input index or name")
     parser.add_argument("--samplerate", type=int, default=48_000, help="live only")
     parser.add_argument("--channels", type=int, default=2)

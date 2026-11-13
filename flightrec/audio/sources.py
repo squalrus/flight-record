@@ -26,7 +26,7 @@ from typing import Any
 
 import numpy as np
 
-from flightrec.audio.wav import read_wav
+from flightrec.audio.wav import read_audio
 
 BlockCallback = Callable[[np.ndarray, int, float], None]
 
@@ -65,6 +65,12 @@ class AudioSource(ABC):
     def overflows(self) -> int:
         """Callbacks that reported dropped input audio. Always zero for non-live sources."""
         return 0
+
+    @property
+    def output_latency(self) -> float:
+        """Seconds between a block being delivered and it being heard. Non-zero only for
+        ``PlaybackSource``; displays delay by this much to stay in sync with the sound."""
+        return 0.0
 
     def wait(self, timeout: float | None = None) -> bool:
         """Block until the source finishes or ``timeout`` passes; True if finished."""
@@ -248,7 +254,11 @@ class ArraySource(AudioSource):
 
 
 class WavSource(ArraySource):
-    """Replay a WAV file through the capture path (no audio is played out loud)."""
+    """Replay an audio file through the capture path (no audio is played out loud).
+
+    Despite the name, any format ``read_audio`` supports works: WAV, MP3, FLAC, OGG. The
+    whole file is decoded into memory first (a 7-minute stereo MP3 is about 140 MB).
+    """
 
     def __init__(
         self,
@@ -258,9 +268,84 @@ class WavSource(ArraySource):
         realtime: bool = True,
         loop: bool = False,
     ) -> None:
-        samplerate, frames = read_wav(path)
+        samplerate, frames = read_audio(path)
         self.path = Path(path)
         super().__init__(frames, samplerate, blocksize, channels, realtime, loop)
+
+
+class PlaybackSource(WavSource):
+    """Replay a file *and* play it through the speakers, for exploring recordings by ear.
+
+    A development-only exception to "the audible path never touches the computer"
+    (decision D-011): it only ever plays files, never live input. The output stream's
+    callback drives delivery, so every block reaches the speakers and the capture path at
+    the same moment on the sound card's clock, and the two cannot drift apart. The sound
+    is heard ``output_latency`` later, so displays should lag by that much.
+    """
+
+    def __init__(
+        self,
+        path: str | Path,
+        blocksize: int = DEFAULT_BLOCKSIZE,
+        channels: int | None = None,
+        loop: bool = False,
+        device: int | str | None = None,
+    ) -> None:
+        super().__init__(path, blocksize, channels, realtime=True, loop=loop)
+        self.device = device
+        self._stream: Any = None
+        self._out_callback: BlockCallback | None = None
+        self._pos = 0
+        self._output_latency = 0.0
+        self._stop_exc: type[BaseException] = StopIteration
+
+    @property
+    def output_latency(self) -> float:
+        return self._output_latency
+
+    def start(self, callback: BlockCallback) -> None:
+        import sounddevice as sd  # deferred: needs PortAudio
+
+        if self._stream is not None:
+            raise RuntimeError("source already started")
+        self._out_callback = callback
+        self._stop_exc = sd.CallbackStop
+        self._stream = sd.OutputStream(
+            device=self.device,
+            samplerate=self.samplerate,
+            blocksize=self.blocksize,
+            channels=self.channels,
+            dtype="float32",
+            latency="low",  # the default ("high") is ~200 ms on Windows
+            callback=self._on_output,
+            finished_callback=self._done.set,
+        )
+        self._stream.start()
+        self._output_latency = float(self._stream.latency)
+
+    def _on_output(self, outdata: np.ndarray, frames: int, time_info: Any, status: Any) -> None:
+        total = len(self.frames)
+        if not self.loop and self._pos >= total:
+            outdata.fill(0.0)
+            raise self._stop_exc
+        try:
+            self._fill(self._pos % total)
+            outdata[:] = self._block
+            assert self._out_callback is not None
+            self._out_callback(self._block, self._pos, time.perf_counter())
+        except BaseException as exc:
+            self.error = exc
+            outdata.fill(0.0)
+            self._done.set()
+            raise self._stop_exc from exc
+        self._pos += self.blocksize
+
+    def stop(self) -> None:
+        if self._stream is not None:
+            self._stream.stop()
+            self._stream.close()
+            self._stream = None
+        self._done.set()
 
 
 class NullSource(ArraySource):
@@ -294,12 +379,19 @@ def open_source(
     blocksize: int = DEFAULT_BLOCKSIZE,
     realtime: bool = True,
     loop: bool = False,
+    listen: bool = False,
 ) -> AudioSource:
     """Replay ``wav`` if given, otherwise capture live. The one switch experiments need.
 
     For replay, ``channels`` adapts the file (mono is duplicated, stereo is averaged down)
-    and ``samplerate`` is ignored: the file's own rate is used.
+    and ``samplerate`` is ignored: the file's own rate is used. ``listen`` also plays the
+    file through the speakers (``PlaybackSource``); it is refused for live input, whose
+    audible path must stay in hardware.
     """
+    if listen:
+        if wav is None:
+            raise ValueError("listen only works when replaying a file, never with live input")
+        return PlaybackSource(wav, blocksize, channels, loop)
     if wav is not None:
         return WavSource(wav, blocksize, channels, realtime, loop)
     return LiveSource(

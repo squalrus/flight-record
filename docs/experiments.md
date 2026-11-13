@@ -29,9 +29,11 @@ Order matters: 01 and 02 prove the audio pipeline, 03 and 04 prove identificatio
 **Goal:** Turn live audio into the feature stream the game needs, and see how well it holds up across genres and sources.
 
 **Method**
-- Spectral-flux onset detection on a short window; per-frame bass/mid/treble energy; rolling RMS.
-- Live tempo estimate from autocorrelation of the onset envelope over the last several seconds, with a confidence value.
-- Compare live onsets against offline `librosa` analysis of the same recording as ground truth.
+- Spectral-flux onset detection on a short window, per band (low / mid / high) and full band, as candidate triggers; per-frame bass/mid/treble energy; rolling RMS.
+- Live tempo estimate from autocorrelation of the onset envelope over the last several seconds, with a confidence value and beat phase.
+- Chroma (12 pitch classes) and an estimated key with confidence; spectral centroid as "brightness". These are exploratory: they may drive palette, mood, or stage changes.
+- An explorer window (spectrogram, trigger lanes, energy and brightness traces, tempo, chroma/key) to see what the music offers before mapping it to gameplay.
+- Compare live onsets against offline `librosa` analysis of the same recording as ground truth; check key against published keys.
 - Emit features in the message-contract format (print to console or log file).
 
 **Success criteria**

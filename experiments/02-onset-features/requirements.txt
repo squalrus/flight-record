@@ -1,0 +1,5 @@
+# Experiment 02 extras, on top of ../requirements.txt.
+# Install from the repo root: python -m pip install -r experiments/02-onset-features/requirements.txt
+# Only the window needs pygame; --headless and --offline run without it.
+-r ../requirements.txt
+pygame>=2.6

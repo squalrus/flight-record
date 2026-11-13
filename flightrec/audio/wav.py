@@ -1,4 +1,5 @@
-"""WAV file helpers built on ``scipy.io.wavfile`` (no extra dependency)."""
+"""Audio file helpers: WAV via ``scipy.io.wavfile``; MP3, FLAC, OGG and others via
+``soundfile`` (libsndfile, bundled in its wheels, so no system install is needed)."""
 
 from __future__ import annotations
 
@@ -7,6 +8,20 @@ from typing import Literal
 
 import numpy as np
 from scipy.io import wavfile
+
+
+def read_audio(path: str | Path) -> tuple[int, np.ndarray]:
+    """Read any supported audio file as ``(samplerate, frames)``: float32 in [-1, 1], 2-D.
+
+    WAV goes through ``read_wav``; everything else (MP3, FLAC, OGG, AIFF, ...) through
+    ``soundfile``, imported only when needed.
+    """
+    if Path(path).suffix.lower() == ".wav":
+        return read_wav(path)
+    import soundfile
+
+    data, samplerate = soundfile.read(str(path), dtype="float32", always_2d=True)
+    return int(samplerate), data
 
 
 def read_wav(path: str | Path) -> tuple[int, np.ndarray]:

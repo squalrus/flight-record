@@ -28,7 +28,7 @@ The repo is in the **pre-prototype** phase. Right now the work is small, standal
 ## Hard constraints
 
 - **The game must work without identification.** Fingerprinting and Discogs are enhancements. Every code path that consumes them needs a "no match / unknown / missing" fallback. Never block gameplay on a network call.
-- **The audible signal path never touches the computer.** Audio is split in hardware. Do not build features that route audio output through the game.
+- **The audible signal path never touches the computer** for live input (line-in, mic). Audio is split in hardware; do not route live audio out through the game. The only exception is audio **files**, which the computer plays itself (decisions D-011 for development, D-012 for the product); never extend that to live input.
 - **The message contract is versioned.** Messages carry `v` and `t`. Add fields freely (consumers must ignore unknown fields); changing or removing a field means bumping `v` and updating [docs/architecture.md](docs/architecture.md) in the same change.
 - **Multiplayer is local only.** One machine, one game instance, one shared screen, several controllers. Do not add networking, netcode libraries, or audio streaming (decision D-009). Every player hears the source through the room's speakers via the hardware split.
 - **Hardware must not be required to develop.** Everything downstream of capture must run from a recorded file (replay source) or a null source. Build the replay path early (see backlog item 0.2).

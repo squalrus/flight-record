@@ -13,9 +13,11 @@ from flightrec.audio import (
     Capture,
     NullSource,
     OverrunError,
+    PlaybackSource,
     RingBuffer,
     WavSource,
     open_source,
+    read_audio,
     read_wav,
     write_wav,
 )
@@ -107,6 +109,23 @@ def test_wav_int16_round_trip(tmp_path: Path) -> None:
     assert frames.shape == (4800, 2)
     assert frames.dtype == np.float32
     np.testing.assert_allclose(frames, stereo, atol=1 / 32767)
+
+
+@pytest.mark.parametrize("suffix", [".flac", ".ogg", ".mp3"])
+def test_read_audio_compressed_formats(tmp_path: Path, suffix: str) -> None:
+    import soundfile
+
+    t = np.arange(48_000) / 48_000
+    tone = 0.5 * np.sin(2 * np.pi * 440 * t)
+    stereo = np.stack([tone, tone], axis=1)
+    path = tmp_path / f"tone{suffix}"
+    soundfile.write(str(path), stereo, 48_000)
+    samplerate, frames = read_audio(path)
+    assert samplerate == 48_000
+    assert frames.ndim == 2 and frames.shape[1] == 2 and frames.dtype == np.float32
+    assert abs(len(frames) - 48_000) < 4096  # lossy codecs may pad a little
+    rms = float(np.sqrt(np.mean(frames**2)))
+    assert rms == pytest.approx(0.5 / np.sqrt(2), rel=0.1)
 
 
 def test_wav_mono_reads_as_2d(tmp_path: Path) -> None:
@@ -201,6 +220,32 @@ def test_capture_from_wav_matches_file_tail(tmp_path: Path) -> None:
     assert end == 5120  # 10 full blocks, last one padded
     np.testing.assert_array_equal(frames[:-120], data[3120:])
     assert capture.blocks == 10
+
+
+def test_playback_delivers_the_same_blocks_it_plays(tmp_path: Path) -> None:
+    """Drive PlaybackSource's output callback directly (CI has no sound card): each block
+    written to the speakers is exactly the block handed to the capture path."""
+    data = ramp(1000).astype(np.float32) / 1000
+    write_wav(tmp_path / "ramp.wav", 48_000, data, "float32")
+    source = PlaybackSource(tmp_path / "ramp.wav", blocksize=256)
+    played: list[np.ndarray] = []
+    captured: list[np.ndarray] = []
+    source._out_callback = lambda block, start, t: captured.append(block.copy())
+    while True:
+        out = np.empty((256, 2), dtype=np.float32)
+        try:
+            source._on_output(out, 256, None, None)
+        except StopIteration:
+            break
+        played.append(out)
+    assert len(played) == 4  # 1000 frames -> 4 blocks, last one zero-padded
+    np.testing.assert_array_equal(np.concatenate(played), np.concatenate(captured))
+    np.testing.assert_array_equal(np.concatenate(played)[:1000], data)
+
+
+def test_listen_refuses_live_input() -> None:
+    with pytest.raises(ValueError, match="never with live input"):
+        open_source(None, listen=True)
 
 
 def test_audio_package_does_not_import_sounddevice() -> None:

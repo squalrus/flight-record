@@ -6,6 +6,7 @@
 sounddevice>=0.5
 numpy>=2.1
 scipy>=1.14
+soundfile>=0.12  # reads MP3 / FLAC / OGG; wheels bundle libsndfile
 
 # The shared flightrec package (editable, so edits take effect without reinstalling)
 -e .

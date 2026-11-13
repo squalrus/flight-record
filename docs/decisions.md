@@ -7,7 +7,7 @@ Statuses: **Decided**, **Provisional** (working assumption, to be validated by a
 ## Decided / provisional
 
 ### D-001 · Split the audio in hardware — Decided
-Audio is split at line level: one leg to speakers, one to a USB audio interface feeding the computer. The player hears the source with zero added latency, and any source works (turntable via phono preamp, CD, MP3 player). The game never sits in the audible path. See [hardware.md](hardware.md).
+Audio is split at line level: one leg to speakers, one to a USB audio interface feeding the computer. The player hears the source with zero added latency, and any source works (turntable via phono preamp, CD, MP3 player). The game never sits in the audible path. See [hardware.md](hardware.md). Audio *files* played by the computer itself are the one exception (D-012).
 
 ### D-002 · Real-time analysis, not pre-analysis — Decided
 The game must work for any record in real time. No hand-authored or pre-computed beat maps. Live features plus a deliberate render delay (150-300 ms, user-calibrated) give the generator lead time. See [architecture.md](architecture.md).
@@ -35,6 +35,12 @@ Same machine, one shared screen, several controllers. No networking, no netcode 
 
 ### D-010 · Pygame for experiment visualizers — Provisional
 Experiment 01 draws its waveform, spectrum, and meters with Pygame rather than matplotlib: it redraws at 60 fps with simple 2-D primitives, while matplotlib animation is built for plots, not live displays. Pygame is an experiment-only dependency (`experiments/01-capture-visualizer/requirements.txt`). Every visualizer has a `--headless` mode, so analysis, logging, and CI never need it. Revisit if a later experiment needs plotting features Pygame lacks.
+
+### D-011 · Dev-only playback when replaying files — Decided
+The explorer's `--listen` plays a replayed **file** through the computer's speakers so recordings can be explored by ear. This is a deliberate, narrow exception to D-001: the product's audible path stays in hardware, and `--listen` is refused for live input. The output stream's callback drives replay, so speakers and analysis share the sound card's clock, and the display waits out the reported output latency to stay in sync. Code: `PlaybackSource` in `flightrec/audio/sources.py`.
+
+### D-012 · Audio files are a supported input — Provisional
+Alongside line-in (vinyl, CD, any line-level source via the interface) and a microphone, the game accepts audio files (MP3, FLAC, OGG, WAV) that the player owns. For files, the computer *is* the source, so the game plays them itself (extending D-011 from development to the product), and line-in keeps the hardware path from D-001. Files run through the same analysis pipeline as live input, with three advantages: analysis can run a few hundred ms ahead of playback, so no deliberate render delay or calibration is needed (D-002's real-time pipeline is kept, just fed early); tags give artist and title without fingerprinting; and the file length gives exact time remaining, so side tracking is trivial. What one level means for a file or an album is still D-108. Today, files work for replay, evaluation, and `--listen` in the experiments; in-game file playback is part of the audio source abstraction (backlog 4.3).
 
 ## Open
 

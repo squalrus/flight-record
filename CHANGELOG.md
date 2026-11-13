@@ -2,6 +2,16 @@
 
 User-visible changes, newest first. Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format and [semver](https://semver.org/) versioning.
 
+## [0.5.0] — 2026-11-12
+### Added
+- **Message contract library.** All six messages from the architecture doc (`features`, `track_identified`, `release_selected`, `identification_failed`, `side_state`, `side_end`) as typed, validated classes: field types, ranges, required fields, and finite numbers are checked. Unknown fields are accepted and kept, a newer schema version is rejected, and unknown types can be skipped. Logs are JSON lines that replay at their original timing (or faster or slower). Standard library only, so Unity can mirror it. (`flightrec/messages.py`)
+- **`play_log.py`.** Plays a message log back at original timing from the command line, with type filtering, thinning for high-rate features, and a summary mode. (`tools/play_log.py`)
+- **Tests.** 34 contract tests: every doc example round-trips, bad input of each kind is rejected with a clear message, unknown fields survive a rewrite, log errors name the line, and replay timing is exact with a fake clock and never early with the real one. (`tests/test_messages.py`)
+
+### Changed
+- **Explorer logs use the contract.** `Features.to_message()` builds a validated `features` message instead of a hand-built dict, and every logged line now parses back through the contract. (`flightrec/audio/features.py`, `experiments/02-onset-features/explore.py`)
+- **Contract docs.** The architecture doc gains a field-rules table (required and optional fields, ranges, nulls) and documents experiment 02's optional `features` fields. `release_selected`'s example now carries the `t` every message needs. AGENTS.md says to build messages with `flightrec.messages`, never hand-written dicts. (`docs/architecture.md`, `AGENTS.md`, `tools/README.md`, `experiments/02-onset-features/README.md`)
+
 ## [0.4.0] — 2026-11-12
 ### Added
 - **Experiment 02 explorer.** A live window to see what the music offers: scrolling spectrogram, trigger lanes (low / mid / high band onsets, full band, predicted beats), energy and brightness traces, tempo with x2 and /2 readings and a beat pulse, 12-note chroma with the estimated key, and level meters. It runs live, from a file, `--offline` (fast, identical results), or `--headless`, and logs every hop as JSON lines in the message-contract format. `[` and `]` adjust the trigger gate live. Backlog item 1.3 stays open: measured results need the clip corpus and the hardware. (`experiments/02-onset-features/explore.py`, `experiments/02-onset-features/requirements.txt`)

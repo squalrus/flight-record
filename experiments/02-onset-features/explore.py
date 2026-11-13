@@ -18,13 +18,12 @@ since analysis depends only on the audio). Esc or Q closes the window.
 from __future__ import annotations
 
 import argparse
-import json
 import sys
 import time
 from collections import Counter, deque
 from datetime import datetime
 from pathlib import Path
-from typing import IO, Any
+from typing import Any
 
 import numpy as np
 
@@ -41,6 +40,7 @@ from flightrec.audio import (
     read_audio,
     to_db,
 )
+from flightrec.messages import LogWriter
 
 HERE = Path(__file__).resolve().parent
 LANES = (*BAND_NAMES, "all", "beat")
@@ -166,18 +166,17 @@ class Explorer:
         win.end()
 
 
-def open_log(args: argparse.Namespace) -> IO[str] | None:
+def open_log(args: argparse.Namespace) -> LogWriter | None:
     if args.no_log:
         return None
     path = args.log or HERE / "out" / f"features-{datetime.now():%Y%m%d-%H%M%S}.jsonl"
-    path.parent.mkdir(parents=True, exist_ok=True)
     print(f"logging to {path}")
-    return path.open("w", encoding="utf-8")
+    return LogWriter(path)
 
 
-def write(log: IO[str] | None, f: Features) -> None:
+def write(log: LogWriter | None, f: Features) -> None:
     if log is not None:
-        log.write(json.dumps(f.message(), separators=(",", ":")) + "\n")
+        log.write(f.to_message())
 
 
 def adjust_gate(fx: FeatureExtractor, keys: list[int], pygame: Any) -> None:

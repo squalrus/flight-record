@@ -7,6 +7,7 @@ Command-line helpers built on the shared `flightrec.audio` package. Install the 
 | `list_devices.py` | List audio input devices with channels, default sample rate, and host API (`--all` adds outputs) |
 | `record_clip.py` | Record N seconds from a device to WAV through the live capture path |
 | `replay.py` | Feed an audio file (WAV, MP3, FLAC, OGG) through the same capture path as live input, at real-time pace, and print levels |
+| `play_log.py` | Play a message log (JSON lines, message contract) back at its original timing; `--speed`, `--type`, `--every`, `--summary` |
 
 ```sh
 python tools/list_devices.py

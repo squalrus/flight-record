@@ -8,6 +8,7 @@ from pathlib import Path
 import numpy as np
 
 from flightrec.audio import write_wav
+from flightrec.messages import FeaturesMessage, read_log
 
 SCRIPT = Path(__file__).resolve().parent / "explore.py"
 SR = 48_000
@@ -38,13 +39,13 @@ def test_offline_finds_tempo_and_logs_contract_messages(tmp_path: Path) -> None:
     out = run("--wav", str(tmp_path / "clicks.wav"), "--offline", "--log", str(log))
 
     assert "tempo 1" in out  # 119.x / 120.x BPM
-    messages = [json.loads(line) for line in log.read_text().splitlines()]
+    raw = [json.loads(line) for line in log.read_text().splitlines()]
+    assert raw[0]["v"] == 1 and raw[0]["type"] == "features"
+    messages = list(read_log(log))  # every line validates against the contract
     assert len(messages) == 12 * SR // 512
-    first = messages[0]
-    assert first["v"] == 1 and first["type"] == "features"
-    assert {"t", "onset", "onset_strength", "bass", "mid", "treble", "rms"} <= first.keys()
-    assert abs(messages[-1]["tempo"] - 120.0) < 2.5
-    assert sum(m["onset"] for m in messages) >= 20  # 24 clicks
+    assert all(isinstance(m, FeaturesMessage) for m in messages)
+    assert abs(messages[-1].tempo - 120.0) < 2.5
+    assert sum(m.onset for m in messages) >= 20  # 24 clicks
 
 
 def test_headless_replay_runs_the_live_path(tmp_path: Path) -> None:

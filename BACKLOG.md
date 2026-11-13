@@ -6,8 +6,6 @@ Legend: 🔌 needs the physical hardware (turntable, interface) · 🌐 needs an
 
 ## Phase 0: Foundations (no hardware needed)
 
-- [ ] **0.3 🖥️ Message contract library.** A small Python module that defines, validates, and serializes the messages in [architecture.md](docs/architecture.md), plus JSON-lines logging/replay of message streams.
-  *Done when:* unit tests cover every message type, unknown fields are ignored, and a message log can be played back at original timing.
 - [ ] **0.4 🖥️ Unity project audit.** Fork the existing top-down shooter into `unity/` and fill in Step 0 of [unity-fork-plan.md](docs/unity-fork-plan.md). Needs access to the original project.
   *Done when:* the audit section lists Unity version, pipeline, input system, camera, enemy/bullet/wave authoring, and any networking.
 

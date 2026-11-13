@@ -33,7 +33,7 @@ python experiments/02-onset-features/evaluate.py                                
 - **`--listen`** also plays the file through the speakers, in sync: the speakers' output stream drives replay, and the display waits out the reported output latency (about 90 ms here). It works for files only, never live input (D-011).
 - **Window controls:** Esc or Q closes it. `[` and `]` lower and raise the trigger level gate by 3 dB; below -90 dBFS it turns off.
 - **Analysis depends only on the audio,** so `--offline` gives exactly the same features as a live replay of the same WAV, just faster. Use it to compare clips or settings.
-- **Logging:** every hop is written as one JSON line to `out/features-*.jsonl` (untracked). Use `--log PATH` to choose the file, or `--no-log` to skip it.
+- **Logging:** every hop is written as one contract `features` message (via `flightrec.messages`) per line to `out/features-*.jsonl` (untracked). Use `--log PATH` to choose the file, or `--no-log` to skip it. Play a log back at original timing with `python tools/play_log.py out/features-....jsonl` (add `--speed 4` to go faster).
 - **Summary:** each run ends with trigger counts and rates per lane, plus the final tempo, key and brightness, and the CPU cost per hop.
 
 ## What the window shows

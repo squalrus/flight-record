@@ -44,7 +44,7 @@ Modules talk over a small, versioned message format (JSON over UDP, or OSC). Kee
 ```json
 { "v": 1, "type": "track_identified", "t": 132.0,
   "artist": "...", "title": "...", "album": "...", "confidence": 0.9 }
-{ "v": 1, "type": "release_selected", "discogs_id": 0,
+{ "v": 1, "type": "release_selected", "t": 133.0, "discogs_id": 0,
   "side": "A", "tracks": [ { "pos": "A1", "title": "...", "seconds": 215 } ] }
 { "v": 1, "type": "identification_failed", "t": 150.0, "reason": "no_match" }
 ```
@@ -58,6 +58,21 @@ Modules talk over a small, versioned message format (JSON over UDP, or OSC). Kee
 ```
 
 Every message carries `v` (schema version) and `t` (seconds on the sender's monotonic clock). Unknown fields must be ignored.
+
+**Field rules (v1)**
+
+| Message | Required | Optional (default) | Notes |
+| --- | --- | --- | --- |
+| `features` | `onset` (bool), `onset_strength`, `bass`, `mid`, `treble`, `rms` (0..1) | `tempo` (BPM > 0, or null), `tempo_confidence` (0..1, 0); `onset_low` / `onset_mid` / `onset_high`, `beat` (bool); `centroid_hz` (>= 0); `key` (e.g. "F# minor"), `key_confidence` (0..1); `chroma` (12 values 0..1, C..B) | Energies map -60..0 dBFS onto 0..1. Onset flags lag one hop (10.7 ms at 512 / 48 kHz). The optional fields were added by experiment 02. |
+| `track_identified` | `artist`, `title` | `album` (null), `confidence` (0..1, 0) | |
+| `release_selected` | `discogs_id` (int >= 0), `side` | `tracks` (empty) | Each track is `pos`, `title`, and `seconds` (>= 0, or null when Discogs has no duration). |
+| `identification_failed` | `reason` | | E.g. `no_match`, `timeout`, `network`, `no_api_key`. |
+| `side_state` | `side`, `track_index` (int >= 0, 0-based into the side's tracks), `side_elapsed` (s >= 0) | `side_expected` (s, or null when unknown), `side_confidence` (0..1, 0) | |
+| `side_end` | `cause` | | E.g. `run_out_groove`, `needle_lift`, `timer`, `file_end`. |
+
+Numbers must be finite (no NaN or infinity). A consumer that receives a newer `v` than it knows must reject the message; an unknown `type` may be skipped. Logs are JSON lines, one message per line in send order.
+
+**Reference implementation:** [flightrec/messages.py](../flightrec/messages.py) (standard library only) validates, serializes, writes, and reads logs, and replays them at original timing; `tools/play_log.py` plays a log from the command line. This doc stays authoritative: change both together.
 
 ## Latency model
 

@@ -19,6 +19,7 @@ import numpy as np
 
 from flightrec.audio.capture import Capture
 from flightrec.audio.ring import OverrunError
+from flightrec.messages import FeaturesMessage
 
 BAND_NAMES = ("low", "mid", "high")
 DEFAULT_BANDS: dict[str, tuple[float, float]] = {
@@ -92,30 +93,28 @@ class Features:
     def onset(self) -> bool:
         return self.onsets["all"]
 
-    def message(self) -> dict[str, object]:
-        """The architecture doc's ``features`` message, plus extra fields (allowed:
-        consumers ignore unknown fields)."""
-        return {
-            "v": 1,
-            "type": "features",
-            "t": round(self.t, 4),
-            "onset": self.onsets["all"],
-            "onset_strength": round(self.strengths["all"], 3),
-            "bass": round(self.bass, 3),
-            "mid": round(self.mid, 3),
-            "treble": round(self.treble, 3),
-            "rms": round(self.rms, 3),
-            "tempo": None if self.tempo is None else round(self.tempo, 1),
-            "tempo_confidence": round(self.tempo_confidence, 3),
-            "onset_low": self.onsets["low"],
-            "onset_mid": self.onsets["mid"],
-            "onset_high": self.onsets["high"],
-            "beat": self.beat,
-            "centroid_hz": round(self.centroid_hz, 1),
-            "key": self.key,
-            "key_confidence": round(self.key_confidence, 3),
-            "chroma": [round(float(c), 3) for c in self.chroma],
-        }
+    def to_message(self) -> FeaturesMessage:
+        """The contract's ``features`` message, with experiment 02's optional fields.
+        Values are rounded to keep logs compact."""
+        return FeaturesMessage(
+            t=round(self.t, 4),
+            onset=self.onsets["all"],
+            onset_strength=round(self.strengths["all"], 3),
+            bass=round(self.bass, 3),
+            mid=round(self.mid, 3),
+            treble=round(self.treble, 3),
+            rms=round(self.rms, 3),
+            tempo=None if self.tempo is None else round(self.tempo, 1),
+            tempo_confidence=round(self.tempo_confidence, 3),
+            onset_low=self.onsets["low"],
+            onset_mid=self.onsets["mid"],
+            onset_high=self.onsets["high"],
+            beat=self.beat,
+            centroid_hz=round(self.centroid_hz, 1),
+            key=self.key,
+            key_confidence=round(self.key_confidence, 3),
+            chroma=[round(float(c), 3) for c in self.chroma],
+        )
 
 
 class OnsetDetector:

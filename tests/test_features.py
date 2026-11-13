@@ -5,7 +5,6 @@ import pytest
 
 from flightrec.audio.features import (
     ChromaKey,
-    FeatureExtractor,
     OnsetDetector,
     energy01,
     extract,
@@ -239,10 +238,16 @@ def test_energy01_mapping() -> None:
     assert energy01(3.0) == 1.0
 
 
-def test_message_matches_contract_fields() -> None:
-    fx = FeatureExtractor(SR)
-    msg = fx.process(np.zeros((fx.window, 2), dtype=np.float32), fx.window).message()
-    for key in ("v", "type", "t", "onset", "onset_strength", "bass", "mid", "treble", "rms"):
-        assert key in msg
-    assert msg["type"] == "features"
-    assert msg["v"] == 1
+def test_messages_pass_contract_validation() -> None:
+    """Every hop's message, on silence and on music-like input, validates and round-trips."""
+    from flightrec.messages import from_dict, loads
+
+    kicks = np.arange(0.2, 6.0, 0.5)
+    audio = place(place(silence(6.0), kick(), kicks), hat(), kicks + 0.25)
+    audio += np.concatenate([progression([[60, 64, 67]], 1.5, 4)[: len(audio)]])
+    for f in extract(audio, SR):
+        msg = f.to_message()
+        assert loads(msg.to_json()) == msg
+    data = msg.to_dict()
+    assert data["v"] == 1 and data["type"] == "features"
+    assert from_dict(data).chroma == msg.chroma

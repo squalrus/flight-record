@@ -31,6 +31,7 @@ python experiments/02-onset-features/evaluate.py                                
 
 - **Files:** `--wav` takes WAV, MP3, FLAC, or OGG. Quote paths with spaces.
 - **`--listen`** also plays the file through the speakers, in sync: the speakers' output stream drives replay, and the display waits out the reported output latency (about 90 ms here). It works for files only, never live input (D-011).
+- **`--identify acrcloud|audd`** adds an identification panel (experiment 03): what is playing, with confidence, response time, and recent attempts. The service is asked on a background thread, so the window never waits; requests are capped by `--max-identify`. See [../03-fingerprint/README.md](../03-fingerprint/README.md#run). The window grows to 1280 x 960 to make room.
 - **Window controls:** Esc or Q closes it. `[` and `]` lower and raise the trigger level gate by 3 dB; below -90 dBFS it turns off.
 - **Analysis depends only on the audio,** so `--offline` gives exactly the same features as a live replay of the same WAV, just faster. Use it to compare clips or settings.
 - **Logging:** every hop is written as one contract `features` message (via `flightrec.messages`) per line to `out/features-*.jsonl` (untracked). Use `--log PATH` to choose the file, or `--no-log` to skip it. Play a log back at original timing with `python tools/play_log.py out/features-....jsonl` (add `--speed 4` to go faster).

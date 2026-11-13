@@ -10,7 +10,10 @@ Usage (from the repo root, with the venv active):
     python experiments/02-onset-features/explore.py --wav clip.wav --loop # replay
     python experiments/02-onset-features/explore.py --wav clip.wav --offline
     python experiments/02-onset-features/explore.py --device 9 --headless --minutes 5
+    python experiments/02-onset-features/explore.py --wav song.mp3 --listen --identify acrcloud
 
+--identify adds an identification panel (experiment 03): the last few seconds of audio go
+to the service on a background thread, and each answer is logged as a contract message.
 --offline analyzes a WAV as fast as possible with no window (same results as replay,
 since analysis depends only on the audio). Esc or Q closes the window.
 """
@@ -40,6 +43,8 @@ from flightrec.audio import (
     read_audio,
     to_db,
 )
+from flightrec.env import load_env
+from flightrec.identification import SERVICES, Attempt, Identifier
 from flightrec.messages import LogWriter
 
 HERE = Path(__file__).resolve().parent
@@ -100,11 +105,17 @@ class Explorer:
 
     W, H = 1280, 800
 
-    def __init__(self, title: str, channels: int, freqs: np.ndarray) -> None:
+    def __init__(
+        self, title: str, channels: int, freqs: np.ndarray, identify: bool = False
+    ) -> None:
         from flightrec import viz
 
         self.viz = viz
+        self.H = 960 if identify else 800  # room for the identification panel
         self.win = viz.Window(title, (self.W, self.H))
+        self.identification = (
+            viz.IdentificationPanel(self.win, (16, 746, self.W - 32, 150)) if identify else None
+        )
         left_w, right_x = 860, 892
         right_w = self.W - right_x - 16
         self.bands = LogBands(freqs, 160, 30.0, 16_000.0)
@@ -146,7 +157,14 @@ class Explorer:
             self.bright.add(f.t, {"centroid": f.centroid_hz})
 
     def draw(
-        self, f: Features, frames: np.ndarray, beat: bool, stats: list[str], status: list[str]
+        self,
+        f: Features,
+        frames: np.ndarray,
+        beat: bool,
+        stats: list[str],
+        status: list[str],
+        identifier: Identifier | None = None,
+        audio_t: float = 0.0,
     ) -> None:
         win = self.win
         win.begin()
@@ -162,6 +180,8 @@ class Explorer:
         self.meters.draw(rms, peak)
         for i, line in enumerate(stats):
             win.text(line, (self.stats_x, 420 + i * 20))
+        if self.identification is not None and identifier is not None:
+            self.identification.draw(identifier, audio_t)
         self.viz.status_lines(win, status, self.H - 56)
         win.end()
 
@@ -221,18 +241,37 @@ def run_live(args: argparse.Namespace) -> int:
     )
     sr = source.samplerate
     fx = FeatureExtractor(sr, hop=args.hop, gate_db=args.gate)
-    capture = Capture(source, seconds=max(3.0, 2 * fx.window / sr))
+    clip_s = args.identify_clip if args.identify else 0.0
+    capture = Capture(source, seconds=max(3.0, 2 * fx.window / sr, clip_s + 1.0))
     reader = HopReader(capture, fx.window, fx.hop)
     hop_s = fx.hop / sr
     summary = Summary()
     log = open_log(args)
+    identifier = None
+    if args.identify:
+        identifier = Identifier(
+            args.service,
+            lambda seconds: (sr, capture.latest(int(seconds * sr))[0]),
+            clip_s=args.identify_clip,
+            retry_s=args.identify_retry,
+            recheck_s=args.identify_recheck,
+            max_requests=args.max_identify,
+        )
     desc = f"replay {args.wav.name}" if args.wav else f"live device {source.device!r}"  # type: ignore[attr-defined]
     view = (
         None
         if args.headless
-        else Explorer(f"Flight Record · 02 · {desc}", source.channels, fx.freqs)
+        else Explorer(
+            f"Flight Record · 02 · {desc}", source.channels, fx.freqs, identifier is not None
+        )
     )
     print(f"{desc}: {sr} Hz, hop {fx.hop} ({hop_s * 1000:.1f} ms), window {fx.window}")
+    if identifier is not None:
+        print(
+            f"identifying with {args.identify}: {args.identify_clip:g} s clips, retry "
+            f"{args.identify_retry:g} s, recheck {args.identify_recheck:g} s, "
+            f"at most {args.max_identify} requests"
+        )
 
     period = 1.0 / args.fps
     limit = args.minutes * 60 if args.minutes else None
@@ -266,6 +305,12 @@ def run_live(args: argparse.Namespace) -> int:
                         view.add(f, magnitude, hop_s)
                     beat_seen |= f.beat
                     latest = f
+                audio_t = capture.frames / sr
+                if identifier is not None:
+                    for attempt in identifier.update(audio_t):
+                        if log is not None:
+                            log.write(attempt.to_message())
+                        print(describe_attempt(attempt))
                 if view is not None and latest is not None:
                     per_hop = summary.process_s / max(summary.hops, 1)
                     stats = [
@@ -286,7 +331,7 @@ def run_live(args: argparse.Namespace) -> int:
                         f"audio {latest.t:7.1f} s"
                     ]
                     frames, _ = capture.latest(fx.n_fft)
-                    view.draw(latest, frames, beat_seen, stats, status)
+                    view.draw(latest, frames, beat_seen, stats, status, identifier, audio_t)
                     beat_seen = False
                 next_frame += period
                 if next_frame < time.perf_counter() - period:
@@ -299,10 +344,32 @@ def run_live(args: argparse.Namespace) -> int:
     finally:
         if view is not None:
             view.win.close()
+        if identifier is not None and identifier.busy:
+            identifier.wait(timeout=5.0)  # keep an answer that is already on its way
+            for attempt in identifier.update(capture.frames / sr):
+                if log is not None:
+                    log.write(attempt.to_message())
+                print(describe_attempt(attempt))
         if log is not None:
             log.close()
     summary.report(capture.frames / sr, hop_s, reader.skipped_hops)
+    if identifier is not None:
+        outcomes = Counter(
+            "match" if a.result.matched else ("error" if a.result.error else "no match")
+            for a in identifier.history
+        )
+        print(f"identification: {identifier.requests} requests, {dict(outcomes)}")
     return 0
+
+
+def describe_attempt(attempt: Attempt) -> str:
+    r = attempt.result
+    what = (
+        f"{r.artist} - {r.title} ({r.album or 'no album'})"
+        if r.matched
+        else (f"error: {r.error}" if r.error else "no match")
+    )
+    return f"  [{attempt.t:6.1f} s] {r.service}: {what}   {r.latency_s:.2f} s"
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -334,7 +401,22 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--offline", action="store_true", help="analyze --wav as fast as possible")
     parser.add_argument("--log", type=Path, help="JSON-lines path (default out/features-*.jsonl)")
     parser.add_argument("--no-log", action="store_true", help="do not write a log")
+    ident = parser.add_argument_group("identification (experiment 03; keys in .env.local / .env)")
+    ident.add_argument("--identify", choices=sorted(SERVICES), help="identify what is playing")
+    ident.add_argument("--identify-clip", type=float, default=10.0, help="seconds per request")
+    ident.add_argument("--identify-retry", type=float, default=8.0, help="seconds between tries")
+    ident.add_argument(
+        "--identify-recheck", type=float, default=30.0, help="seconds between checks after a match"
+    )
+    ident.add_argument("--max-identify", type=int, default=20, help="requests per session")
     args = parser.parse_args(argv)
+    if args.identify:
+        if args.offline:
+            parser.error("--identify works with live input or real-time replay, not --offline")
+        load_env()
+        args.service = SERVICES[args.identify].from_env()
+        if args.service is None:
+            parser.error(f"no {args.identify} keys found in .env.local or .env")
     if (args.loop or args.offline) and args.wav is None:
         parser.error("--loop and --offline need --wav")
     if args.listen and (args.wav is None or args.offline):

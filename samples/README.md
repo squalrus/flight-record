@@ -4,6 +4,8 @@ Short test clips used by the experiments. **Short clips only (10-30 seconds). Ne
 
 Full songs for evaluating key and tempo go in `samples/_songs/` (also git-ignored), with their published key and BPM in `samples/_songs/truth.csv` (columns `file,key,bpm,source`). Run `python experiments/02-onset-features/evaluate.py`; it writes a template CSV the first time.
 
+Feature logs from `tools/record_features.py` go to `samples/_local/logs/` by default (git-ignored with the rest of `_local/`).
+
 ## Manifest
 
 Add one row per clip.

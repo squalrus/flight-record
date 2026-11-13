@@ -2,6 +2,14 @@
 
 User-visible changes, newest first. Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format and [semver](https://semver.org/) versioning.
 
+## [0.6.0] — 2026-11-12
+### Added
+- **Feature stream recorder.** `record_features.py` records the real-time feature stream to a message-contract log from live input, a file in real time, or a file offline, so the Unity level generator can be built and tested from recordings. Each log gets a `.meta.json` (source, sample rate, analysis settings, version, skipped hops, dropped input, input latency), and `--save-audio` keeps the captured audio as 32-bit float so a live session can be re-analyzed exactly after tuning. Logs default to the git-ignored `samples/_local/logs/`. Recording the same audio live, in real time, or offline gives the same log message for message; a 10 s live mic recording matched a re-analysis of its saved audio across all 931 messages. (`tools/record_features.py`)
+- **Tests.** Real-time and offline recordings of a file are identical, saved audio re-records to the same log, the metadata is complete, and a recorded log replays at its exact original timing. (`tests/test_record_features.py`)
+
+### Changed
+- **Docs.** The tools README covers recording and playing logs and notes that these logs feed the Unity generator (backlog 4.4); the samples README notes where logs are stored. (`tools/README.md`, `samples/README.md`)
+
 ## [0.5.0] — 2026-11-12
 ### Added
 - **Message contract library.** All six messages from the architecture doc (`features`, `track_identified`, `release_selected`, `identification_failed`, `side_state`, `side_end`) as typed, validated classes: field types, ranges, required fields, and finite numbers are checked. Unknown fields are accepted and kept, a newer schema version is rejected, and unknown types can be skipped. Logs are JSON lines that replay at their original timing (or faster or slower). Standard library only, so Unity can mirror it. (`flightrec/messages.py`)

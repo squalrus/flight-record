@@ -1,5 +1,33 @@
 # Unity project
 
-Placeholder. The forked Unity top-down space shooter goes here (copy it in, or add it as a submodule if the original should stay separate). Backlog item 0.4 is to audit it and record the findings in [../docs/unity-fork-plan.md](../docs/unity-fork-plan.md) before refactoring.
+The game: a copy of **InfinitySpace** (a top-down space shooter, from the private `squalrus/infinity-space` repo at **v0.35.3, commit `899a07e`**), brought in on 2026-11-12 to be reworked into Flight Record: vertical scrolling, local co-op, and audio-driven levels (see [../docs/unity/unity-fork-plan.md](../docs/unity/unity-fork-plan.md)). It is a copy rather than a submodule because the gameplay changes are large; the original game continues separately.
 
-Before adding Unity files, install Git LFS (`git lfs install`) and check that `.gitignore` and `.gitattributes` match the project's needs.
+## Open it
+
+- **Unity 6000.3.17f1** (Unity 6). Add this `unity/` folder in Unity Hub (Add → Add project from disk) and open it with that editor version. The first open rebuilds `Library/` and takes a few minutes.
+- **Git LFS required.** Images (PNG) and fonts (TTF / OTF) are stored with Git LFS. Run `git lfs install` once per machine, then `git lfs pull` if a clone shows tiny placeholder files instead of images.
+- Serialization is Force Text, so scenes, prefabs, and assets are text and diff and merge in git. Commit `.meta` files with their assets.
+
+## Identity
+
+Renamed from InfinitySpace in `ProjectSettings/ProjectSettings.asset`, so the two games do not collide: product name **Flight Record** (window title, and the save folder `AppData/LocalLow/Squalrus Games/Flight Record/`), application id **com.SqualrusGames.FlightRecord**, a new product GUID, and version **0.9.0**, kept equal to the repo's `VERSION`. The C# namespace (`InfinitySpace`), the input actions asset (`InfinitySpace.inputactions`), and on-screen titles still use the old name; they change during the gameplay rework.
+
+## What came over
+
+| Folder | Contents |
+| --- | --- |
+| `Assets/` | Scripts, prefabs, scenes, input actions, UI (UI Toolkit and TextMesh Pro), shaders, configs, art |
+| `Assets/Art/Backgrounds/` | Nebula backgrounds (about 445 MB of PNGs), made by the project owner |
+| `Assets/Art/Fonts/` | Orbitron and Share Tech Mono (each with its `License!.txt`, redistribution allowed), and the project's icon font |
+| `Packages/`, `ProjectSettings/` | Package manifest and lock file; project settings |
+| [`../docs/unity/infinityspace/`](../docs/unity/infinityspace/) | Reference from InfinitySpace, kept with the repo's other docs: `AUDIT.md` (its modernization audit), `DESIGN_DOCUMENT.md`, `infinityspace-conventions.md` (its coding-agent notes), and `design/` (reference images and screenshots) |
+
+**Not brought over:** generated folders (`Library/`, `Logs/`, `UserSettings/`), InfinitySpace's backlog, changelog, and release history, and its Android build workflow (Flight Record targets desktop first).
+
+## Rules
+
+- Never commit `Library/`, `Temp/`, `Logs/`, `UserSettings/`, `obj/`, builds, or IDE project files; `../.gitignore` covers them.
+- New large binaries (textures, audio, models) go through LFS. Check `../.gitattributes` covers the file type before committing.
+- Read the audit in [../docs/unity/unity-fork-plan.md](../docs/unity/unity-fork-plan.md) Step 0 before refactoring; [../docs/unity/infinityspace/AUDIT.md](../docs/unity/infinityspace/AUDIT.md) covers code health and the file inventory.
+- Gameplay changes are one backlog item each (Phase 4 in [../BACKLOG.md](../BACKLOG.md)), so each can be played and tested on its own.
+- Keep audio integration behind an interface with live, replay, null, and file sources (backlog 4.3).

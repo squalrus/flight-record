@@ -1,0 +1,507 @@
+fileFormatVersion: 2
+guid: 4c2f87d06d45a494fad74e94417a2f79
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -1167931313218429358
+    second: galaxy_decal_v11_0
+  - first:
+      213: 7229717460632892020
+    second: galaxy_decal_v11_1
+  - first:
+      213: -1105152665720656870
+    second: galaxy_decal_v11_2
+  - first:
+      213: 5189789076650978635
+    second: galaxy_decal_v11_3
+  - first:
+      213: -8152650706457027741
+    second: galaxy_decal_v11_4
+  - first:
+      213: 8348924588434409325
+    second: galaxy_decal_v11_5
+  - first:
+      213: -2295014289640625381
+    second: galaxy_decal_v11_6
+  - first:
+      213: -1982182784199112861
+    second: galaxy_decal_v11_7
+  - first:
+      213: 4881895681991653848
+    second: galaxy_decal_v11_8
+  - first:
+      213: 4628396825313675320
+    second: galaxy_decal_v11_9
+  - first:
+      213: -5208722674816383703
+    second: galaxy_decal_v11_10
+  - first:
+      213: -4969903024835853172
+    second: galaxy_decal_v11_11
+  - first:
+      213: -1866901689833763944
+    second: galaxy_decal_v11_12
+  - first:
+      213: 8699636965760639992
+    second: galaxy_decal_v11_13
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 0
+    wrapV: 0
+    wrapW: 0
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 0
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: galaxy_decal_v11_0
+      rect:
+        serializedVersion: 2
+        x: 1014
+        y: 842
+        width: 2196
+        height: 2784
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 25e5f8998acaacfe0800000000000000
+      internalID: -1167931313218429358
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: galaxy_decal_v11_1
+      rect:
+        serializedVersion: 2
+        x: 3219
+        y: 2654
+        width: 13
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 472767bc9bd155460800000000000000
+      internalID: 7229717460632892020
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: galaxy_decal_v11_2
+      rect:
+        serializedVersion: 2
+        x: 3420
+        y: 2575
+        width: 9
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a1ce4218185b9a0f0800000000000000
+      internalID: -1105152665720656870
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: galaxy_decal_v11_3
+      rect:
+        serializedVersion: 2
+        x: 841
+        y: 2434
+        width: 10
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b4debf42ba5d50840800000000000000
+      internalID: 5189789076650978635
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: galaxy_decal_v11_4
+      rect:
+        serializedVersion: 2
+        x: 3626
+        y: 2371
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 36b9ac78067fbde80800000000000000
+      internalID: -8152650706457027741
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: galaxy_decal_v11_5
+      rect:
+        serializedVersion: 2
+        x: 3360
+        y: 2268
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d67482ebda65dd370800000000000000
+      internalID: 8348924588434409325
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: galaxy_decal_v11_6
+      rect:
+        serializedVersion: 2
+        x: 3212
+        y: 2251
+        width: 11
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b1b668fb9a87620e0800000000000000
+      internalID: -2295014289640625381
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: galaxy_decal_v11_7
+      rect:
+        serializedVersion: 2
+        x: 3455
+        y: 2023
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 367cae3824fdd74e0800000000000000
+      internalID: -1982182784199112861
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: galaxy_decal_v11_8
+      rect:
+        serializedVersion: 2
+        x: 3206
+        y: 1946
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8d930a3e14affb340800000000000000
+      internalID: 4881895681991653848
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: galaxy_decal_v11_9
+      rect:
+        serializedVersion: 2
+        x: 3722
+        y: 1935
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8380e5ce36e5b3040800000000000000
+      internalID: 4628396825313675320
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: galaxy_decal_v11_10
+      rect:
+        serializedVersion: 2
+        x: 485
+        y: 1674
+        width: 11
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9250c020356e6b7b0800000000000000
+      internalID: -5208722674816383703
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: galaxy_decal_v11_11
+      rect:
+        serializedVersion: 2
+        x: 777
+        y: 1536
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c840584d78b570bb0800000000000000
+      internalID: -4969903024835853172
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: galaxy_decal_v11_12
+      rect:
+        serializedVersion: 2
+        x: 3364
+        y: 1429
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 89bc1eaedce6716e0800000000000000
+      internalID: -1866901689833763944
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: galaxy_decal_v11_13
+      rect:
+        serializedVersion: 2
+        x: 3348
+        y: 1383
+        width: 11
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8f3250b4ab15bb870800000000000000
+      internalID: 8699636965760639992
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      galaxy_decal_v11_0: -1167931313218429358
+      galaxy_decal_v11_1: 7229717460632892020
+      galaxy_decal_v11_10: -5208722674816383703
+      galaxy_decal_v11_11: -4969903024835853172
+      galaxy_decal_v11_12: -1866901689833763944
+      galaxy_decal_v11_13: 8699636965760639992
+      galaxy_decal_v11_2: -1105152665720656870
+      galaxy_decal_v11_3: 5189789076650978635
+      galaxy_decal_v11_4: -8152650706457027741
+      galaxy_decal_v11_5: 8348924588434409325
+      galaxy_decal_v11_6: -2295014289640625381
+      galaxy_decal_v11_7: -1982182784199112861
+      galaxy_decal_v11_8: 4881895681991653848
+      galaxy_decal_v11_9: 4628396825313675320
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

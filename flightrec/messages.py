@@ -1,6 +1,6 @@
-"""The message contract from docs/architecture.md: types, validation, JSON, and logs.
+"""The message contract from docs/flightrec/architecture.md: types, validation, JSON, and logs.
 
-docs/architecture.md is authoritative; this module implements it. Every message carries
+docs/flightrec/architecture.md is authoritative; this module implements it. Every message carries
 ``v`` (schema version) and ``t`` (seconds on the sender's monotonic clock).
 
 Rules:

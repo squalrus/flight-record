@@ -1,0 +1,99 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/ShipManagement/ShipManagement.uss?fileID=7433441132597879392&amp;guid=c0f071ae5474c28305cd3bd12e27675d&amp;type=3#ShipManagement"/>
+    <Style src="project://database/Assets/UI/Common/MenuButton.uss"/>
+    <ui:VisualElement name="ship-upgrades" class="ship-management">
+        <ui:VisualElement name="panel" class="panel">
+            <ui:VisualElement class="panel__header">
+                <ui:VisualElement name="title-group" class="panel__title-group">
+                    <ui:Label text="SHIP UPGRADES" class="panel__title"/>
+                    <ui:Label text="PARTS:" class="panel__title-parts-label"/>
+                    <ui:Label name="parts-val" text="0" class="panel__title-parts"/>
+                </ui:VisualElement>
+                <ui:Label text="3 / 3" class="page-indicator"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="panel__rule"/>
+
+            <ui:VisualElement name="resource-categories" class="categories">
+                <ui:VisualElement class="category-column">
+                    <ui:Label text="RESOURCES" class="category-label"/>
+                    <ui:VisualElement name="topoff-row" class="stat-row">
+                        <ui:Label text="TOP OFF ALL" class="stat-row__label"/>
+                        <ui:Button name="topoff-btn" text="TOP OFF (0)" class="buy-btn"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement name="health-row" class="stat-row">
+                        <ui:Label text="HEALTH" class="stat-row__label"/>
+                        <ui:Label name="health-val" text="0/0" class="stat-row__val"/>
+                        <ui:Button name="convert-health-btn" text="+20% (5)" class="buy-btn"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement name="fuel-row" class="stat-row">
+                        <ui:Label text="FUEL" class="stat-row__label"/>
+                        <ui:Label name="fuel-val" text="0/0" class="stat-row__val"/>
+                        <ui:Button name="convert-fuel-btn" text="+20% (5)" class="buy-btn"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement name="ammo-row" class="stat-row">
+                        <ui:Label text="AMMO" class="stat-row__label"/>
+                        <ui:Label name="ammo-val" text="0/0" class="stat-row__val"/>
+                        <ui:Button name="convert-ammo-btn" text="+20% (5)" class="buy-btn"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <ui:VisualElement class="category-column category-column--divided">
+                    <ui:Label text="RESOURCE UPGRADES" class="category-label"/>
+                    <ui:Label text="PERMANENT &#8212; CARRIES ACROSS ALL SECTORS" class="category-note"/>
+                    <ui:VisualElement name="health-cap-row" class="stat-row">
+                        <ui:Label text="MAX HEALTH" class="stat-row__label"/>
+                        <ui:Label name="health-cap-val" text="Lv 0" class="stat-row__val"/>
+                        <ui:Button name="upgrade-health-btn" text="UPGRADE (25)" class="buy-btn"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement name="fuel-cap-row" class="stat-row">
+                        <ui:Label text="MAX FUEL" class="stat-row__label"/>
+                        <ui:Label name="fuel-cap-val" text="Lv 0" class="stat-row__val"/>
+                        <ui:Button name="upgrade-fuel-btn" text="UPGRADE (25)" class="buy-btn"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement name="ammo-cap-row" class="stat-row">
+                        <ui:Label text="MAX AMMO" class="stat-row__label"/>
+                        <ui:Label name="ammo-cap-val" text="Lv 0" class="stat-row__val"/>
+                        <ui:Button name="upgrade-ammo-btn" text="UPGRADE (25)" class="buy-btn"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement class="panel__rule"/>
+
+            <ui:Label text="SHIP RESEARCH" class="category-label"/>
+            <ui:Label text="PERMANENT &#8212; CARRIES ACROSS ALL SECTORS" class="category-note"/>
+            <ui:VisualElement name="research-categories" class="categories">
+                <ui:VisualElement class="category-column">
+                    <ui:VisualElement name="firerate-row" class="stat-row">
+                        <ui:Label text="FIRE RATE" class="stat-row__label"/>
+                        <ui:Label name="firerate-val" text="Lv 0" class="stat-row__val"/>
+                        <ui:Button name="upgrade-firerate-btn" text="UPGRADE (25)" class="buy-btn"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement name="firepower-row" class="stat-row">
+                        <ui:Label text="FIREPOWER" class="stat-row__label"/>
+                        <ui:Label name="firepower-val" text="Lv 0" class="stat-row__val"/>
+                        <ui:Button name="upgrade-firepower-btn" text="UPGRADE (25)" class="buy-btn"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <ui:VisualElement class="category-column category-column--divided">
+                    <ui:VisualElement name="attraction-row" class="stat-row">
+                        <ui:Label text="MAGNET" class="stat-row__label"/>
+                        <ui:Label name="attraction-val" text="0/3" class="stat-row__val"/>
+                        <ui:Button name="upgrade-attraction-btn" text="UPGRADE (20)" class="buy-btn"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement name="homing-row" class="stat-row">
+                        <ui:Label text="HOMING" class="stat-row__label"/>
+                        <ui:Label name="homing-val" text="0/3" class="stat-row__val"/>
+                        <ui:Button name="upgrade-homing-btn" text="UPGRADE (25)" class="buy-btn"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <ui:VisualElement class="panel__rule"/>
+            <ui:VisualElement class="nav-row nav-row--split">
+                <ui:Button name="back-btn" text="BACK" class="menu-btn"/>
+                <ui:Button name="launch-btn" text="LAUNCH SECTOR" class="menu-btn"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

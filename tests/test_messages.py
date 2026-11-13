@@ -28,7 +28,7 @@ from flightrec.messages import (
     replay,
 )
 
-# The examples from docs/architecture.md (release_selected gains the "t" every message
+# The examples from docs/flightrec/architecture.md (release_selected gains the "t" every message
 # carries; the doc's example omitted it).
 DOC_EXAMPLES = [
     {"v": 1, "type": "features", "t": 123.456, "onset": True, "onset_strength": 0.82,

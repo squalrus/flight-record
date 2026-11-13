@@ -1,0 +1,19 @@
+.resource-alert {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 230px;
+    align-items: center;
+    -unity-font-definition: url("project://database/Assets/Art/Fonts/Orbitron/Orbitron-Regular%20SDF.ttf?fileID=12800000&guid=362601a4043a3254388ca3ba9b3358af&type=3#Orbitron-Regular SDF");
+}
+
+.resource-alert__text {
+    font-size: 20px;
+    letter-spacing: 3px;
+    -unity-font-style: bold;
+    color: rgb(255, 196, 77);
+}
+
+.resource-alert__text--critical {
+    color: rgb(255, 90, 90);
+}

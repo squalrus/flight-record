@@ -1,0 +1,68 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/ShipManagement/ShipManagement.uss?fileID=7433441132597879392&amp;guid=c0f071ae5474c28305cd3bd12e27675d&amp;type=3#ShipManagement"/>
+    <Style src="project://database/Assets/UI/Common/MenuButton.uss"/>
+    <ui:VisualElement name="ship-management" class="ship-management">
+        <ui:VisualElement name="panel" class="panel">
+            <ui:VisualElement class="panel__header">
+                <ui:VisualElement name="title-group" class="panel__title-group">
+                    <ui:Label text="SHIP MANAGEMENT" class="panel__title"/>
+                    <ui:Label text="PARTS:" class="panel__title-parts-label"/>
+                    <ui:Label name="parts-val" text="0" class="panel__title-parts"/>
+                </ui:VisualElement>
+                <ui:Button name="close-btn" text="X" class="close-btn"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="panel__rule"/>
+
+            <ui:VisualElement name="categories" class="categories">
+                <ui:VisualElement class="category-column">
+                    <ui:Label text="RESOURCES" class="category-label"/>
+                    <ui:VisualElement name="topoff-row" class="stat-row">
+                        <ui:Label text="TOP OFF ALL" class="stat-row__label"/>
+                        <ui:Button name="topoff-btn" text="TOP OFF (0)" class="buy-btn"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement name="health-row" class="stat-row">
+                        <ui:Label text="HEALTH" class="stat-row__label"/>
+                        <ui:Label name="health-val" text="0/0" class="stat-row__val"/>
+                        <ui:Button name="convert-health-btn" text="+20% (5)" class="buy-btn"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement name="fuel-row" class="stat-row">
+                        <ui:Label text="FUEL" class="stat-row__label"/>
+                        <ui:Label name="fuel-val" text="0/0" class="stat-row__val"/>
+                        <ui:Button name="convert-fuel-btn" text="+20% (5)" class="buy-btn"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement name="ammo-row" class="stat-row">
+                        <ui:Label text="AMMO" class="stat-row__label"/>
+                        <ui:Label name="ammo-val" text="0/0" class="stat-row__val"/>
+                        <ui:Button name="convert-ammo-btn" text="+20% (5)" class="buy-btn"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <ui:VisualElement class="category-column category-column--divided">
+                    <ui:Label text="SECTOR EXPLORATION" class="category-label"/>
+                    <ui:Label text="SHIP RADAR RANGE IS LIMITED &#8212; SPEND PARTS ON A ONE-TIME DEEP SCAN. THIS SECTOR ONLY, DOES NOT CARRY OVER." class="category-note"/>
+                    <ui:VisualElement name="portal-row" class="stat-row">
+                        <ui:Label text="PORTAL" class="stat-row__label"/>
+                        <ui:Label name="portal-val" text="UNKNOWN" class="stat-row__val"/>
+                        <ui:Button name="scan-portal-btn" text="SCAN (30)" class="buy-btn"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement name="enemy-locator-row" class="stat-row">
+                        <ui:Label text="HOSTILES" class="stat-row__label"/>
+                        <ui:Label name="enemy-locator-val" text="LOCKED" class="stat-row__val"/>
+                        <ui:Button name="scan-enemy-locator-btn" text="SCAN (30)" class="buy-btn"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement name="asteroid-locator-row" class="stat-row">
+                        <ui:Label text="ASTEROIDS" class="stat-row__label"/>
+                        <ui:Label name="asteroid-locator-val" text="LOCKED" class="stat-row__val"/>
+                        <ui:Button name="scan-asteroid-locator-btn" text="SCAN (30)" class="buy-btn"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement name="parts-locator-row" class="stat-row">
+                        <ui:Label text="PICKUPS" class="stat-row__label"/>
+                        <ui:Label name="parts-locator-val" text="LOCKED" class="stat-row__val"/>
+                        <ui:Button name="scan-parts-locator-btn" text="SCAN (30)" class="buy-btn"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

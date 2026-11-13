@@ -1,6 +1,6 @@
 # 04 · Discogs release lookup
 
-**Status:** in progress. Lookup, side parsing, the one-time confirmation, the local cache, and a live panel work; the 20-record vinyl test set still needs real records. · **Plan:** [docs/experiments.md](../../docs/experiments.md#04--discogs-release-lookup) · **Depends on:** `DISCOGS_TOKEN` in `.env.local` or `.env`
+**Status:** in progress. Lookup, side parsing, the one-time confirmation, the local cache, and a live panel work; the 20-record vinyl test set still needs real records. · **Plan:** [docs/flightrec/experiments.md](../../docs/flightrec/experiments.md#04--discogs-release-lookup) · **Depends on:** `DISCOGS_TOKEN` in `.env.local` or `.env`
 
 ## Goal
 

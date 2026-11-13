@@ -15,10 +15,10 @@ Pre-prototype. The plan is to prove the risky parts with small standalone experi
 | Doc | What it covers |
 | --- | --- |
 | [docs/concept-and-design.md](docs/concept-and-design.md) | Game concept, audio-to-gameplay mapping, level structure, local co-op design intent |
-| [docs/architecture.md](docs/architecture.md) | Modules, message contract, latency model, local co-op notes |
-| [docs/hardware.md](docs/hardware.md) | Signal chain, splitter options, interface requirements |
-| [docs/experiments.md](docs/experiments.md) | **The proof-out plan**: numbered experiments with goals and success criteria |
-| [docs/unity-fork-plan.md](docs/unity-fork-plan.md) | Converting the top-down shooter to vertical scrolling, local co-op, integration approach |
+| [docs/flightrec/architecture.md](docs/flightrec/architecture.md) | Modules, message contract, latency model, local co-op notes |
+| [docs/flightrec/hardware.md](docs/flightrec/hardware.md) | Signal chain, splitter options, interface requirements |
+| [docs/flightrec/experiments.md](docs/flightrec/experiments.md) | **The proof-out plan**: numbered experiments with goals and success criteria |
+| [docs/unity/unity-fork-plan.md](docs/unity/unity-fork-plan.md) | Converting the top-down shooter to vertical scrolling, local co-op, integration approach |
 | [docs/risks-and-open-questions.md](docs/risks-and-open-questions.md) | Known risks, legal/ToS notes, decisions still to make |
 | [docs/naming.md](docs/naming.md) | Name candidates and notes |
 | [docs/decisions.md](docs/decisions.md) | Decisions made and still open |

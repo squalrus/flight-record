@@ -1,0 +1,35 @@
+.achievement-list {
+    margin-bottom: 4px;
+}
+
+.achievement-row {
+    margin-bottom: 10px;
+}
+
+.achievement-row__top {
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.achievement-row__title {
+    color: rgb(255, 255, 255);
+    font-size: 13px;
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+}
+
+.achievement-row__reward {
+    color: rgb(127, 233, 255);
+    font-size: 13px;
+    -unity-font-style: bold;
+}
+
+.achievement-row__desc {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 11px;
+    margin-top: 2px;
+}
+
+.sector-achievements .panel {
+    width: 480px;
+}

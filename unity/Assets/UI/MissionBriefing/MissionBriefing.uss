@@ -1,0 +1,29 @@
+.mission-briefing {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 170px;
+    align-items: center;
+    -unity-font-definition: url("project://database/Assets/Art/Fonts/Orbitron/Orbitron-Regular%20SDF.ttf?fileID=12800000&guid=362601a4043a3254388ca3ba9b3358af&type=3#Orbitron-Regular SDF");
+}
+
+.mission-briefing__tag {
+    font-size: 13px;
+    letter-spacing: 6px;
+    color: rgba(127, 233, 255, 0.65);
+    margin-bottom: 4px;
+}
+
+.mission-briefing__text {
+    font-size: 24px;
+    letter-spacing: 4px;
+    -unity-font-style: bold;
+    color: rgb(255, 255, 255);
+}
+
+.mission-briefing__description {
+    font-size: 13px;
+    letter-spacing: 1px;
+    margin-top: 6px;
+    color: rgba(255, 255, 255, 0.75);
+}

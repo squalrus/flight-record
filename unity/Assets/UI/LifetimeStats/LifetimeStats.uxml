@@ -1,0 +1,72 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Common/Panel.uss"/>
+    <Style src="project://database/Assets/UI/Statistics/Statistics.uss"/>
+    <Style src="project://database/Assets/UI/LifetimeStats/LifetimeStats.uss"/>
+    <ui:VisualElement name="lifetime-stats" class="modal-overlay lifetime-stats">
+        <ui:VisualElement name="panel" class="panel">
+            <ui:VisualElement class="panel__header">
+                <ui:Label text="LIFETIME STATS" class="panel__title"/>
+                <ui:Button name="close-btn" text="X" class="close-btn"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="panel__rule"/>
+            <ui:VisualElement name="stat-categories" class="categories">
+                <ui:VisualElement class="category-column">
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="HIGHEST SECTOR REACHED" class="stat-row__label"/>
+                        <ui:Label name="highest-sector-val" text="0" class="stat-row__val"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="RUNS STARTED" class="stat-row__label"/>
+                        <ui:Label name="runs-started-val" text="0" class="stat-row__val"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="SECTORS CLEARED" class="stat-row__label"/>
+                        <ui:Label name="sectors-cleared-val" text="0" class="stat-row__val"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="PLAYTIME" class="stat-row__label"/>
+                        <ui:Label name="playtime-val" text="0:00" class="stat-row__val"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="ENEMIES DESTROYED" class="stat-row__label"/>
+                        <ui:Label name="enemies-destroyed-val" text="0" class="stat-row__val"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="ASTEROIDS DESTROYED" class="stat-row__label"/>
+                        <ui:Label name="asteroids-destroyed-val" text="0" class="stat-row__val"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="SHOTS FIRED" class="stat-row__label"/>
+                        <ui:Label name="shots-fired-val" text="0" class="stat-row__val"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement class="category-column category-column--divided">
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="ACCURACY" class="stat-row__label"/>
+                        <ui:Label name="accuracy-val" text="0%" class="stat-row__val"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="DAMAGE DEALT" class="stat-row__label"/>
+                        <ui:Label name="damage-dealt-val" text="0" class="stat-row__val"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="DAMAGE TAKEN" class="stat-row__label"/>
+                        <ui:Label name="damage-taken-val" text="0" class="stat-row__val"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="FUEL USED" class="stat-row__label"/>
+                        <ui:Label name="fuel-used-val" text="0" class="stat-row__val"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="PARTS EARNED" class="stat-row__label"/>
+                        <ui:Label name="parts-earned-val" text="0" class="stat-row__val"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="stat-row">
+                        <ui:Label text="PARTS SPENT" class="stat-row__label"/>
+                        <ui:Label name="parts-spent-val" text="0" class="stat-row__val"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,92 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Hud/HUD.uss?fileID=7433441132597879392&amp;guid=47167b9eaa8883e4289c3dcf0fb3dd98&amp;type=3#HUD"/>
+    <ui:VisualElement name="hud" class="hud">
+        <ui:VisualElement name="manage-btn" class="ship-btn" style="padding-top: 4px; padding-bottom: 4px;">
+            <ui:Label name="pilot-avatar" text="v" class="pilot__avatar"/>
+            <ui:VisualElement class="ship-btn__text">
+                <ui:Label text="SHIP" class="ship-btn__title" style="padding-top: 0; padding-bottom: 0; margin-top: 0;"/>
+                <ui:Label text="MANAGE" class="ship-btn__sub" style="padding-top: 0; padding-bottom: 0;"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="sector" class="sector">
+            <ui:VisualElement class="sector__rule"/>
+            <ui:Label name="sector-name" text="SECTOR VII · KESPRA" class="sector__name"/>
+            <ui:Label name="sector-time" text="· 0:00" class="sector__time"/>
+            <ui:VisualElement class="sector__rule"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="sector-progress" class="sector-progress">
+            <ui:Label name="sector-progress-status" text="SCANNING FOR PORTAL..." class="sector-progress__status"/>
+            <ui:VisualElement name="sector-progress-track" class="sector-progress__track">
+                <ui:VisualElement name="sector-progress-fill" class="sector-progress__fill"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="gauges" class="gauges">
+            <ui:VisualElement name="health-gauge" class="dial">
+                <ui:Label name="health-val" text="83/100" class="dial__val"/>
+                <ui:Label text="HEALTH" class="dial__label dial__label--health"/>
+            </ui:VisualElement>
+            <ui:VisualElement name="ammo-gauge" class="dial">
+                <ui:Label name="ammo-val" text="98/100" class="dial__val"/>
+                <ui:Label text="AMMO" class="dial__label dial__label--ammo"/>
+            </ui:VisualElement>
+            <ui:VisualElement name="fuel-gauge" class="dial">
+                <ui:Label name="fuel-val" text="68/100" class="dial__val"/>
+                <ui:Label text="FUEL" class="dial__label dial__label--fuel"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="parts" class="parts">
+            <ui:Label text="PARTS" class="parts__label"/>
+            <ui:Label name="parts-val" text="00" class="parts__val"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="topright" class="topright">
+            <ui:VisualElement name="pause-btn" class="ship-btn" style="position: relative; top: 0; left: 0; padding-top: 4px; padding-bottom: 4px; margin-bottom: 18px;">
+                <ui:VisualElement class="ship-btn__text">
+                    <ui:Label text="PAUSE" class="ship-btn__title" style="padding-top: 0; padding-bottom: 0; margin-top: 0;"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement class="radar-wrap">
+                <ui:VisualElement name="radar" class="radar"/>
+                <ui:VisualElement class="legend">
+                    <ui:Label text="◆ YOU" class="legend__item legend__item--you"/>
+                    <ui:Label text="◆ HOSTILE" class="legend__item legend__item--hostile"/>
+                    <ui:Label text="◇ ROCK" class="legend__item legend__item--rock"/>
+                    <ui:Label text="◈ PORTAL" class="legend__item legend__item--portal"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="upgrades" class="upgrades">
+            <ui:VisualElement class="upgrade">
+                <ui:Label text="ROF" class="upgrade__label"/>
+                <ui:VisualElement name="rof-pips" class="upgrade__pips">
+                    <ui:VisualElement class="pip pip--off"/>
+                    <ui:VisualElement class="pip pip--off"/>
+                    <ui:VisualElement class="pip pip--off"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement class="upgrade">
+                <ui:Label text="HP" class="upgrade__label"/>
+                <ui:Label name="hp-val" text="Lv 0" class="upgrade__val"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="upgrade">
+                <ui:Label text="DMG" class="upgrade__label"/>
+                <ui:Label name="dmg-val" text="Lv 0" class="upgrade__val"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="upgrade">
+                <ui:Label text="FUEL" class="upgrade__label"/>
+                <ui:Label name="fuel-cap-val" text="Lv 0" class="upgrade__val"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="upgrade">
+                <ui:Label text="AMMO" class="upgrade__label"/>
+                <ui:Label name="ammo-cap-val" text="Lv 0" class="upgrade__val"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="upgrade">
+                <ui:Label text="HOM" class="upgrade__label"/>
+                <ui:Label name="hom-val" text="Lv 0" class="upgrade__val"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="upgrade">
+                <ui:Label text="MAG" class="upgrade__label"/>
+                <ui:Label name="mag-val" text="Lv 0" class="upgrade__val"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

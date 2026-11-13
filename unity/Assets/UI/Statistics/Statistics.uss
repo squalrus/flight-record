@@ -1,0 +1,17 @@
+.stat-row {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.stat-row__label {
+    color: rgb(127, 233, 255);
+    letter-spacing: 1.5px;
+    font-size: 13px;
+}
+
+.stat-row__val {
+    color: rgb(255, 255, 255);
+    font-size: 13px;
+    -unity-font-style: bold;
+}

@@ -1,0 +1,20 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Common/Panel.uss"/>
+    <Style src="project://database/Assets/UI/Common/MenuButton.uss"/>
+    <Style src="project://database/Assets/UI/SectorAchievements/SectorAchievements.uss"/>
+    <ui:VisualElement name="sector-achievements" class="modal-overlay sector-achievements">
+        <ui:VisualElement name="panel" class="panel">
+            <ui:VisualElement class="panel__header">
+                <ui:Label name="title-label" text="SECTOR ACHIEVEMENTS" class="panel__title"/>
+                <ui:Label text="2 / 3" class="page-indicator"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="panel__rule"/>
+            <ui:VisualElement name="achievement-list" class="achievement-list"/>
+            <ui:VisualElement class="panel__rule"/>
+            <ui:VisualElement class="nav-row nav-row--split">
+                <ui:Button name="back-btn" text="BACK" class="menu-btn"/>
+                <ui:Button name="next-btn" text="NEXT" class="menu-btn"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

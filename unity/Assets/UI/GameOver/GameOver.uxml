@@ -1,0 +1,112 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Common/Panel.uss"/>
+    <Style src="project://database/Assets/UI/Common/MenuButton.uss"/>
+    <Style src="project://database/Assets/UI/GameOver/GameOver.uss"/>
+    <ui:VisualElement name="game-over" class="game-over">
+
+        <ui:VisualElement name="mission-failed-screen" class="modal-overlay">
+            <ui:VisualElement name="panel" class="panel">
+                <ui:VisualElement class="panel__header">
+                    <ui:Label text="MISSION FAILED" class="panel__title game-over__title"/>
+                </ui:VisualElement>
+                <ui:Label name="mission-failed-subtitle" text="SECTOR I &#8212; CLEAR THE HOSTILES" class="game-over__subtitle"/>
+                <ui:VisualElement class="panel__rule"/>
+                <ui:VisualElement class="stat-row">
+                    <ui:Label text="ENEMIES DESTROYED" class="stat-row__label"/>
+                    <ui:Label name="sector-enemies-val" text="0/0" class="stat-row__val"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="stat-row">
+                    <ui:Label text="ASTEROIDS DESTROYED" class="stat-row__label"/>
+                    <ui:Label name="sector-asteroids-val" text="0/0" class="stat-row__val"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="stat-row">
+                    <ui:Label text="SHOTS FIRED" class="stat-row__label"/>
+                    <ui:Label name="sector-shots-val" text="0" class="stat-row__val"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="stat-row">
+                    <ui:Label text="ACCURACY" class="stat-row__label"/>
+                    <ui:Label name="sector-accuracy-val" text="0%" class="stat-row__val"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="stat-row">
+                    <ui:Label text="DAMAGE DEALT" class="stat-row__label"/>
+                    <ui:Label name="sector-damage-dealt-val" text="0" class="stat-row__val"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="stat-row">
+                    <ui:Label text="DAMAGE TAKEN" class="stat-row__label"/>
+                    <ui:Label name="sector-damage-taken-val" text="0" class="stat-row__val"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="stat-row">
+                    <ui:Label text="FUEL USED" class="stat-row__label"/>
+                    <ui:Label name="sector-fuel-val" text="0" class="stat-row__val"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="stat-row">
+                    <ui:Label text="PARTS COLLECTED" class="stat-row__label"/>
+                    <ui:Label name="sector-parts-earned-val" text="0" class="stat-row__val"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="stat-row">
+                    <ui:Label text="PARTS CONSUMED" class="stat-row__label"/>
+                    <ui:Label name="sector-parts-spent-val" text="0" class="stat-row__val"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="stat-row">
+                    <ui:Label text="TIME IN SECTOR" class="stat-row__label"/>
+                    <ui:Label name="sector-time-val" text="0:00" class="stat-row__val"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="panel__rule"/>
+                <ui:Button name="sector-continue-btn" text="CONTINUE" class="menu-btn game-over__continue-btn"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="run-summary-screen" class="modal-overlay" style="display: none;">
+            <ui:VisualElement name="panel" class="panel">
+                <ui:VisualElement class="panel__header">
+                    <ui:Label text="RUN SUMMARY" class="panel__title game-over__title"/>
+                </ui:VisualElement>
+                <ui:Label name="run-summary-subtitle" text="0 SECTORS CLEARED" class="game-over__subtitle"/>
+                <ui:VisualElement class="panel__rule"/>
+                <ui:VisualElement class="stat-row">
+                    <ui:Label text="ENEMIES DESTROYED" class="stat-row__label"/>
+                    <ui:Label name="run-enemies-val" text="0" class="stat-row__val"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="stat-row">
+                    <ui:Label text="ASTEROIDS DESTROYED" class="stat-row__label"/>
+                    <ui:Label name="run-asteroids-val" text="0" class="stat-row__val"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="stat-row">
+                    <ui:Label text="SHOTS FIRED" class="stat-row__label"/>
+                    <ui:Label name="run-shots-val" text="0" class="stat-row__val"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="stat-row">
+                    <ui:Label text="ACCURACY" class="stat-row__label"/>
+                    <ui:Label name="run-accuracy-val" text="0%" class="stat-row__val"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="stat-row">
+                    <ui:Label text="DAMAGE DEALT" class="stat-row__label"/>
+                    <ui:Label name="run-damage-dealt-val" text="0" class="stat-row__val"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="stat-row">
+                    <ui:Label text="DAMAGE TAKEN" class="stat-row__label"/>
+                    <ui:Label name="run-damage-taken-val" text="0" class="stat-row__val"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="stat-row">
+                    <ui:Label text="FUEL USED" class="stat-row__label"/>
+                    <ui:Label name="run-fuel-val" text="0" class="stat-row__val"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="stat-row">
+                    <ui:Label text="PARTS EARNED" class="stat-row__label"/>
+                    <ui:Label name="run-parts-earned-val" text="0" class="stat-row__val"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="stat-row">
+                    <ui:Label text="PARTS SPENT" class="stat-row__label"/>
+                    <ui:Label name="run-parts-spent-val" text="0" class="stat-row__val"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="stat-row">
+                    <ui:Label text="TOTAL PLAYTIME" class="stat-row__label"/>
+                    <ui:Label name="run-playtime-val" text="0:00" class="stat-row__val"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="panel__rule"/>
+                <ui:Button name="main-menu-btn" text="MAIN MENU" class="menu-btn game-over__continue-btn"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+</ui:UXML>

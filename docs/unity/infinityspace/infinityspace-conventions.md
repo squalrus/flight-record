@@ -1,0 +1,107 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project
+
+Unity 6 (6000.3.17f1) top-down 2D survival space shooter targeting Android. Original Unity 2018.3 project resumed and upgraded in June 2026. Full technical audit is in [AUDIT.md](AUDIT.md); planned work is in [BACKLOG.md](BACKLOG.md).
+
+Several `*-reference.html` design-reference docs in `Design/Reference/` (`sector-reference.html`, `entity-reference.html`, `font-reference.html`, `economy-reference.html`) mirror baked Inspector/prefab values for human review. When shipping a change that touches the values one of these docs describes (sector size/spawn counts, entity stats, economy/upgrade costs, fonts), check whether the doc needs a matching update before the change ships — these are hand-maintained and silently go stale otherwise.
+
+## Commands
+
+Unity has no CLI build pipeline configured. All builds go through the Unity Editor.
+
+**Android sideload (after building APK from Editor):**
+```
+[sdk]\platform-tools\adb.exe install path\to\InfinitySpace.apk
+[sdk]\platform-tools\adb.exe install -r path\to\InfinitySpace.apk    # replace existing
+[sdk]\platform-tools\adb.exe logcat -s Unity                          # live Unity log
+```
+
+**Run tests:** Unity Editor → Window → General → Test Runner → EditMode / PlayMode tab → Run All. The test framework package (`com.unity.test-framework 1.6.0`) is installed; no test files exist yet.
+
+**There is no linter, formatter, or pre-commit hook for C# in this project.**
+
+## Architecture
+
+### Scenes
+Three scenes form the complete flow: `Start` (title/main menu) → `Main` (gameplay) → `GameOver`. `LoadLevel.cs` and `SceneManager.LoadScene` handle transitions.
+
+### Class Hierarchy
+`DestroyableObject` (abstract `MonoBehaviour`) is the base for everything that takes damage and can be destroyed. `Ship`, `Asteroid`, `Missile`, and `Collectible` all extend it. `ICanTakeDamage` defines the `AddHealth(int)` / `Destruct()` contract — use the interface at call sites rather than `SendMessage` (which is being phased out).
+
+`Ship` (`Assets/Scripts/Entities/Ship.cs`) is attached to both `Player.prefab` and every enemy prefab (`Enemy.cs` does `GetComponent<Ship>()` for firing/movement stats) and holds only what both need: health bar, ammo, weapon fire, speed, parts-drop-on-death. `Player` (`Assets/Scripts/Player/Player.cs`, `: Ship`, only ever on `Player.prefab`) adds everything genuinely player-only on top: Parts economy, Fuel, all permanent upgrades, Portal/Sector Locator scanning, Pickup Attraction magnet, Homing Rocket proc, haptic rumble, and the HUD low-resource alerts. Player-only behavior is expressed by `Player` overriding a handful of `protected virtual` hooks on `Ship` (`ApplyStatUpgrades`, `ApplyCarryOverStats`, `OnHealthInitialized`, `OnWeaponFired`, `OnAmmoLow`/`OnAmmoEmpty`) plus normal C# override on `AddHealth`/`Destruct` — never by checking `gameObject.name`. Unity invokes every same-named private `Start()`/`Update()`/`FixedUpdate()` declared anywhere in a component's type hierarchy independently rather than through override dispatch (the same constraint `Enemy.OnSpawn()` works around, see below), so `Player` extends those specific magic methods only via the hooks above, never by re-declaring a second same-named private one.
+
+`Collectible` (abstract, `Assets/Scripts/Entities/Collectible.cs`) is the shared base for `Part` (renamed from `PowerUp` — it never granted a power-up, just stats) and `Relic`: bloom-delay (`IsCollectable`, false for a short window after spawn so a point-blank kill can't be insta-collected before the loot scatters), the pulse-glow visual (works against either a `SpriteRenderer` or a `TextMesh`, whichever the prefab has), and `IMagnetAttractable.Reel(Vector2)` — a speed-ramping direct flight toward the player, called every `FixedUpdate` by `Player`'s magnet loop once a collectible is within `GetPickupAttractionRadius()` and past its bloom delay. Subclasses only implement `OnCollected()` (what happens on pickup) and, optionally, `GetShimmerColor()` (Relic overrides this for a rainbow hue-cycle instead of `Part`'s default pulse-alpha look).
+
+`Missile.cs` is also reused as-is for `HomingRocket.prefab` (a Ship Research-gated bonus projectile fired alongside a regular Missile, see Code Conventions below) rather than getting its own script — the two prefabs just bake different values/visuals onto the same component. Because of that, `Missile.cs` looks up its own `MeshRenderer` with `GetComponentInChildren`, not `GetComponent`: `Missile.prefab`'s mesh-quad visual sits on the root GameObject, but `HomingRocket.prefab`'s glyph (`TextMesh` + `MeshRenderer`) sits on a child. Any other component `Missile.cs` assumes is on the root (e.g. `Rigidbody2D`) needs to stay there in both prefabs, or the same kind of silent `GetComponent` null (which throws *inside* `OnCollisionEnter2D`, before `Destruct()` runs — so the projectile never disappears) will resurface.
+
+```
+MonoBehaviour
+└── DestroyableObject (abstract) — health, AddHealth, Destruct
+    ├── Ship        — ammo, weapon fire, speed, parts-drop-on-death (Player + every enemy prefab)
+    │   └── Player  — Parts economy, fuel, upgrades, magnet, homing proc, rumble (Player.prefab only)
+    ├── Asteroid    — random physics force each LateUpdate
+    ├── Missile     — TTL, collision damage via SendMessage (legacy)
+    └── Collectible (abstract) — bloom delay, pulse glow, magnet reel
+        ├── Part    — transfers parts on pickup
+        └── Relic   — completes/fails the sector's Relic objective on pickup/Destruct
+```
+
+### Singleton
+`GameControl` is a `DontDestroyOnLoad` singleton accessed as `GameControl.control`. It holds session statistics and save/load via `JsonUtility` (save file: `Application.persistentDataPath/stats.json`). Its `Awake()`/`Load()` must run before `SectorSpawner.Awake()` reads `CurrentSector`, enforced via `[DefaultExecutionOrder(-200)]` (vs. `SectorSpawner`'s `-100`). A C# `[DefaultExecutionOrder]` attribute is silently overridden by a manual Script Execution Order value baked into the script's own `.meta` file (`MonoImporter.executionOrder`) — if a script's actual runtime order doesn't match its attribute, check its `.meta` for a stale override before assuming the attribute itself is wrong.
+
+### Namespaces
+- `InfinitySpace` — all gameplay scripts under `Assets/Scripts/`
+- `Squalrus` — shared utilities: `TransformHelper` (LookAt2D extension), `World` (screen ratio), `Squalrus.GUI.GUIStyleBackground` (OnGUI helper — being removed)
+
+### Input
+`PlayerController.cs` uses `com.unity.inputsystem` (`PlayerInput` + `OnMove`/`OnFire` message methods). **Do not add new `Input.GetAxis` or `Input.GetButtonDown` calls** (old Input Manager).
+
+Menu screens (UI Toolkit, not uGUI) get gamepad/keyboard navigation via `GamepadUiNavigation.cs`, not the `EventSystem`'s built-in `InputSystemUIInputModule` Submit binding — that binding relies on a `*/{Submit}` usage tag that doesn't resolve to the south button on every gamepad layout, and UI Toolkit's `Button` doesn't convert a manually-dispatched `NavigationSubmitEvent` into a real click in this Unity version. `GamepadUiNavigation` reads the south button/Enter/Space directly and simulates a `ClickEvent` on the focused element instead. `Cancel` (east button/Escape) is unaffected and goes through the normal `EventSystem` bridge. Any new menu screen's controller script should call `GamepadUiNavigation.EnsureBound(root)` in `OnEnable()`.
+
+`GamepadUiNavigation` dispatches Submit against a single static `_activeRoot`, last set by whichever screen's `EnsureBound(root)` ran most recently. A "home" screen that shows a child screen via `GameObject.SetActive(true)` and hides itself via `style.display = DisplayStyle.None` (instead of also deactivating itself) must call `GamepadUiNavigation.EnsureBound(_root)` again in its own `Close*()` method when the child closes — otherwise `_activeRoot` is left pointed at the now-deactivated child (whose `panel` is null), and Submit silently does nothing on the home screen's own buttons afterward. `PauseMenu.cs` and `MainMenuController.cs` both follow this pattern. Separately: `UIDocument` reuses the same `rootVisualElement` (and its children) across every `SetActive(false)`/`(true)` cycle instead of rebuilding it from the UXML — it's only detached from the panel on disable, not destroyed — so `RegisterCallback` calls in `OnEnable()` must be gated behind a one-time `_bound` flag for any screen that can be shown more than once per scene load, or each reopen stacks another handler on the same `VisualElement`.
+
+### HUD
+
+The in-game HUD (`Main.unity`) is a UI Toolkit `UIDocument` (`Assets/UI/Hud/HUD.uxml` + `HUD.uss`), not a Canvas. `VectorHudController.cs` draws the radial dials and radar procedurally with `Painter2D` and reads live values from `Player` each frame. New HUD elements should go through UXML/USS, not Canvas/TextMeshPro. A GameObject that starts inactive and has its `Painter2D` content sized off a `VisualElement`'s `contentRect` (e.g. `PortalTransitionController.cs`) must guard with `float.IsNaN(...)` in addition to a `< 1f` check — `contentRect` reports `NaN`, not zero, before the panel's first layout pass, and a `NaN` that leaks into per-frame state stays `NaN` forever since any comparison against it is always `false`.
+
+The HUD's top-left button (`manage-btn`) shows the player's selected pilot avatar glyph (`GameControl.control.AvatarGlyph`, set in Player Profile Setup) and opens Ship Management via `PauseMenu.OpenShipManagement()` — this HUD button (and gamepad Select) is the *only* way to reach Ship Management mid-sector; there is no separate entry inside the Pause Menu screen. The top-right button (`pause-btn`, in the `topright` block above the radar) opens the Pause Menu via `PauseMenu.TogglePause()`. Both buttons are at the same `top` offset from the HUD edge; `pause-btn` sits in `topright`'s normal flex flow rather than being independently `position: absolute`, so any inline style override on it must reset `top`/`left` to `0` — otherwise it inherits `.ship-btn`'s `top: 26px; left: 28px;` as a *relative* offset on top of its flow position instead of an absolute one, double-applying the offset. On gamepad, `<Gamepad>/start` triggers `Pause` and `<Gamepad>/select` triggers `ShipManagement` (`InfinitySpace.inputactions`, `PlayerController.OnPause`/`OnShipManagement`), mirroring the two HUD buttons. `PauseMenu.OpenShipManagement()`/`CloseShipManagement()` save/restore `Time.timeScale` themselves (not via `TogglePause()`) and no-op if the screen is already in the requested state, since a second open call before the screen registers would otherwise overwrite the saved timescale with `0`.
+
+### Menus
+
+Every primary menu screen — Main Menu (`Start.unity`), Player Profile Setup, Pause Menu, Statistics, Ship Management (`Main.unity`), and Game Over (`GameOver.unity`) — is a UI Toolkit `UIDocument` (UXML + USS), not a Canvas. Shared modal chrome and button styles live in `Assets/UI/Common/Panel.uss` and `MenuButton.uss`; per-screen USS files (`MainMenu.uss`, `ProfileSetup.uss`, `PauseMenu.uss`, `Statistics.uss`, `ShipManagement.uss`, `GameOver.uss`) layer on top. New menu screens should follow this pattern, not Canvas/uGUI/TextMeshPro.
+
+`PauseMenu.cs`'s own screen (the `pause-menu` root) never disables its GameObject — it toggles a `display` style on an always-active `UIDocument`. Settings/Statistics/Mission (opened from the Pause Menu) instead toggle a separate GameObject via `SetActive(true/false)`, which is fine for screens with simple state. `ShipManagementController.cs` and the three between-sector screens (`SectorCompleteController.cs`, `SectorAchievementsController.cs`, `ShipUpgradesController.cs`) used to follow the `SetActive` pattern too and had a real bug from it: disabling the GameObject detaches the UI Toolkit panel, and reactivating it left buttons unable to register clicks on a later reopen (root cause unconfirmed beyond "this is the one thing that differed from Pause Menu's own never-disabled pattern and the thing that broke"). They're now fixed to match Pause Menu's pattern: the GameObject stays active permanently, bound once in `OnEnable()`, and `Show()`/`Hide()` toggle the root's `display` style instead of `SetActive`. If another screen develops a similar "works once, breaks on reopen" symptom, converting it to this same always-active/display-toggle pattern is the first thing to try. Note `UIDocument` builds `rootVisualElement` during its own `OnEnable`, and per-GameObject lifecycle order runs every component's `Awake()` before any of their `OnEnable()`s — so read `rootVisualElement` from `OnEnable()`, not `Awake()`, to avoid racing ahead of `UIDocument`'s own setup.
+
+`ShipManagement.uxml`/`ShipManagementController.cs` is mid-sector-only: opened via the HUD's `manage-btn`/gamepad Select (not from inside the Pause Menu screen), it deliberately does **not** pause the game or disable player input (`PauseMenu.OpenShipManagement()`) — enemies, projectiles, and asteroids keep moving, so the player can still take damage while spending Parts. It is not part of the between-sector flow: its Sector Exploration scans (portal/enemy/asteroid/parts locators) don't apply to a sector that hasn't loaded yet.
+
+The between-sector flow (`SectorTransitionController.cs`, triggered by `Portal.cs`) is a paginated 3-screen sequence with Back/Next on each screen and a "N / 3" page indicator: Sector Complete (stats) → Sector Achievements (awards parts for unlocked achievements — guarded by an `_awarded` bool so revisiting via Back/Next doesn't double-pay) → Ship Upgrades (permanent Research/Magnet/Homing upgrades, plus a Resources section at the top — Top Off, Health/Fuel/Ammo conversion — duplicated from `ShipManagementController`'s wiring rather than shared, since Ship Management itself isn't shown here). Ship Upgrades' "Launch Sector" is the flow's terminal action, calling `Player.PersistCarryOverStats()` then `SectorTransitionController.LaunchNextSector()` directly. A scene-only controller that needs to be called from a prefab-bound script (e.g. `Player.cs`, which lives on the `Player` prefab) can't take a `[SerializeField]` reference to it — prefabs can't hold hard references to scene instances. `ResourceAlertController` instead exposes a static `Instance` set in `OnEnable`/cleared in `OnDisable`, the same shape as `GameControl.control`.
+
+### Procedural Spawning
+`Sector.cs` populates the play area on `Start()` — enemy counts, spread, and asteroid counts are Inspector fields. It also tracks how many spawned `Enemy` instances remain against a configurable `_completionPercent` and spawns a `Portal` (`Assets/Scripts/Entities/Portal.cs`) once enemies are placed. The portal stays closed/greyed until that threshold is met, then opens; flying into it calls `SectorTransitionController.BeginTransition()` (see Menus section below), which walks the between-sector flow before eventually calling `GameControl.AdvanceSector()` and reloading `Main`. There is still no difficulty scaling between sectors — see [Level Difficulty Scaling](BACKLOG.md#level-difficulty-scaling).
+
+`Main.unity` no longer has a baked `Sector` instance. `SectorSpawner.cs` (`DefaultExecutionOrder(-100)`, runs before other scripts) instantiates a tier prefab in `Awake()` based on `GameControl.CurrentSector`, chosen via `SectorTypeTable.PickTier()` — a weighted pick (same algorithm as the type pick below) over the `Tiers` array on `Assets/Config/SectorTypeTable.asset`, where each entry is a `{Prefab, MinSector, MaxSector, Weight}` tuple. Currently `Sector L0.prefab` (smaller — 1/3 size/asteroid/Probe count) is the sole candidate for sector 1, `Sector L1.prefab` (the standard configuration) for sectors 2–4, `Sector Triceptor LT.prefab` (single tough enemy + light support, see [Large Threat Sector Type](BACKLOG.md#large-threat-sector-type)) at sector 5 specifically, and sectors 6 onward draw from a weighted pool of `Sector L1.prefab`, `Sector L2.prefab`, and `Sector L3.prefab` (0.333 each) — but since the pick is weighted rather than threshold-only, multiple prefabs can share an overlapping sector range (e.g. to make a tier a probabilistic alternative rather than a hard swap) without a code change. Each prefab bakes its own spawn config (size, entity counts, completion %, portal reference) directly into the prefab — `Instantiate()` does not apply scene-instance Inspector overrides, so new sector tiers must be authored as their own prefab, not as a scene-level override of a shared prefab. Because the sector no longer exists at scene-load time, anything that held a scene-wired reference to it (e.g. `VectorHudController._sector`) must resolve it at runtime instead (`FindFirstObjectByType<Sector>()`).
+
+`Sector.cs`'s `SpawnBoundaryRing()` places purely decorative `BoundaryMarker` instances (`Assets/Scripts/Entities/BoundaryMarker.cs`) in a ring at the sector's edge (`_size / 2`, with one-sided outward jitter — markers never spawn closer than the radius). They're parented under their own `BoundaryRing` container transform (not the Sector's own transform) so the whole ring can be rotated as a group in `Update()` without disturbing the Sector transform that enemies/asteroids/portal are parented under. `BoundaryMarker` deliberately has no `Collider2D`/`Rigidbody2D`/`DestroyableObject` and is scaled below `Asteroid.MinScale` — it must read as distant background dressing, not a same-size hazard.
+
+A sector's *type* (objective) is layered orthogonally on top of its tier (`L0`/`L1` size/composition): `SectorTypeTable` (a `ScriptableObject`, e.g. `Assets/Config/SectorTypeTable.asset`) weighted-picks a `SectorType` per sector number, and `SectorSpawner.Awake()` calls `Sector.ApplyType()` on the freshly instantiated prefab before that `Sector`'s own `Start()` runs (all `Awake()`s finish before any `Start()` does, so this ordering needs no extra plumbing). Most variants only need a different win condition, not a different map, so they apply to either tier prefab without duplicating prefabs per type×tier combination — only a variant that genuinely needs different spawn composition warrants its own dedicated prefab instead, like `LargeThreat` (paired exclusively with `Sector Triceptor LT.prefab` at sector 5 in both the `Tiers` and `Options` arrays of `SectorTypeTable.asset`, since the variant only makes sense with that prefab's lone-boss composition). `LargeThreat` has its own win-condition override too: `Sector` carries a second, separate `_largeThreatEntities` list (alongside the base `_entities` list every type spawns) that only spawns/tracks when populated, and `IsCleared`/`ObjectiveFraction`/`ObjectiveStatusText` switch on `Type` to require all of *that* list destroyed rather than a percentage of the base list — so the base `_entities` list (e.g. `Sector Triceptor LT.prefab`'s Asteroids) is optional flavor/cover for `LargeThreat`, not part of the objective. `Relic`, the first variant with a win-condition override, seeds one already-spawned enemy/asteroid as the carrier (`RelicCarrier`, added at runtime, not its own prefab) — destroying it drops a `Relic` pickup with its own health; collecting it completes the objective, but it being shot down instead fails the sector. `Sector.IsCleared`/`ObjectiveFraction`/`ObjectiveStatusText` are type-aware so `Portal` and `VectorHudController`'s HUD progress bar don't need to know about `SectorType` themselves. Sector-ending failure (player death or a destroyed Relic) goes through a shared `GameControl.FailRun(sector, reason)` rather than each failure path duplicating the capture-snapshot/clear-run/load-GameOver sequence.
+
+### Asset Loading
+Missile and power-up prefabs are loaded at runtime via `Resources.Load` in `Ship.Start()`. New prefab references should be `[SerializeField]` Inspector fields instead — `Resources.Load` is being phased out.
+
+## Version tracking
+
+The canonical version string is `bundleVersion` in `ProjectSettings/ProjectSettings.asset`. At runtime, `Application.version` reflects this value. `MainMenuController.cs` and `PauseMenu.cs` each read `Application.version` directly and set it on a UI Toolkit `Label` in their own UXML.
+
+**To bump the version for a release:** edit `bundleVersion` in `ProjectSettings/ProjectSettings.asset` directly (or via **Edit → Project Settings → Player → Version**).
+
+## Code Conventions
+
+- Private fields: `_camelCase`. Public fields/properties: `PascalCase`. Constants: `UPPER_CASE`.
+- Cache `GetComponent<T>()` in `Awake()`/`Start()` — never call it in `Update()`.
+- No new `SendMessage` calls — use `ICanTakeDamage` or direct typed references.
+- No new `OnGUI` code — the HUD and all menu screens are UI Toolkit (UXML/USS), not Canvas.
+- No new `BinaryFormatter` usage — use `JsonUtility`.
+- **Never hand-author a guid** in a new `.meta` file (or anywhere else Unity expects one, e.g. a hand-edited prefab's `m_Script` reference). Unity ignores an author-supplied guid on import and assigns its own, which orphans anything already wired against the guid you wrote (scene/prefab references resolve by guid+fileID, not by file path) — the fix requires manually patching every affected reference back up. When a new script needs a `.meta`, ask the user to let Unity generate it (open/focus the Editor so it imports the new file) rather than writing the `.meta` yourself.

@@ -1,0 +1,25 @@
+.sector-complete__subtitle {
+    color: rgba(127, 233, 255, 0.7);
+    letter-spacing: 1.5px;
+    font-size: 12px;
+    margin-top: -4px;
+    margin-bottom: 4px;
+}
+
+.stat-row {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.stat-row__label {
+    color: rgb(127, 233, 255);
+    letter-spacing: 1.5px;
+    font-size: 13px;
+}
+
+.stat-row__val {
+    color: rgb(255, 255, 255);
+    font-size: 13px;
+    -unity-font-style: bold;
+}

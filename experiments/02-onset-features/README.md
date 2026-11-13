@@ -1,6 +1,6 @@
 # 02 · Onset and feature extraction
 
-**Status:** in progress. The explorer and feature extraction run live, from WAV, and offline; measured results still need the test corpus (1.2) and the real hardware. · **Plan:** [docs/experiments.md](../../docs/experiments.md#02--onset-and-feature-extraction) · **Depends on:** 1.2 (test corpus) for results, 0.3 (message contract) for log replay
+**Status:** in progress. The explorer and feature extraction run live, from WAV, and offline; measured results still need the test corpus (1.2) and the real hardware. · **Plan:** [docs/flightrec/experiments.md](../../docs/flightrec/experiments.md#02--onset-and-feature-extraction) · **Depends on:** 1.2 (test corpus) for results, 0.3 (message contract) for log replay
 
 ## Goal
 

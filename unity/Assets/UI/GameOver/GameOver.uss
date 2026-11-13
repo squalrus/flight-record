@@ -1,0 +1,45 @@
+.game-over {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgb(8, 9, 13);
+    -unity-font-definition: url("project://database/Assets/Art/Fonts/Orbitron/Orbitron-Regular%20SDF.ttf?fileID=12800000&guid=362601a4043a3254388ca3ba9b3358af&type=3#Orbitron-Regular SDF");
+}
+
+.game-over__title {
+    color: rgb(255, 90, 90);
+}
+
+.game-over__subtitle {
+    color: rgba(127, 233, 255, 0.7);
+    letter-spacing: 1.5px;
+    font-size: 12px;
+    margin-top: -4px;
+    margin-bottom: 4px;
+}
+
+.stat-row {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.stat-row__label {
+    color: rgb(127, 233, 255);
+    letter-spacing: 1.5px;
+    font-size: 13px;
+}
+
+.stat-row__val {
+    color: rgb(255, 255, 255);
+    font-size: 13px;
+    -unity-font-style: bold;
+}
+
+.game-over__continue-btn {
+    align-self: center;
+    margin-top: 6px;
+    margin-bottom: 0;
+}

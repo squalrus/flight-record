@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 3
+  tags:
+  - PlayerSprite
+  - Enemy
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  -
+  -
+  -
+  -
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Background
+    uniqueID: 2656070723
+    locked: 0
+  - name: Parallax_Deep
+    uniqueID: 949818711
+    locked: 0
+  - name: 'Parallax_Galaxy '
+    uniqueID: 3689045011
+    locked: 0
+  - name: Parallax_Mid
+    uniqueID: 852037871
+    locked: 0
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Enemies
+    uniqueID: 1089725485
+    locked: 0
+  - name: Player
+    uniqueID: 1889789525
+    locked: 0
+  - name: Parallax_Fore
+    uniqueID: 1964016927
+    locked: 0
+  m_RenderingLayers:
+  - Default

@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>InfinitySpace — Entity Reference</title>
+<style>
+  @font-face { font-family: 'EarthOrbiter'; src: url('../../Assets/Art/Fonts/EarthOrbiter/earthorbiter.ttf') format('truetype'); }
+  @font-face { font-family: 'InfinityIcons'; src: url('../../Assets/Art/Fonts/InfinityIconsHU/Infinity-Icons-HU.otf') format('opentype'); }
+  @font-face { font-family: 'Unipix'; src: url('../../Assets/Art/Fonts/Unipix/Unipix.ttf') format('truetype'); }
+  @font-face { font-family: 'OpenSans'; src: url('../../Assets/Art/Fonts/OpenSans/OpenSansLight.ttf') format('truetype'); font-weight: 300; }
+  @font-face { font-family: 'OpenSans'; src: url('../../Assets/Art/Fonts/OpenSans/OpenSansRegular.ttf') format('truetype'); font-weight: 400; }
+  @font-face { font-family: 'OpenSans'; src: url('../../Assets/Art/Fonts/OpenSans/OpenSansSemibold.ttf') format('truetype'); font-weight: 600; }
+  @font-face { font-family: 'OpenSans'; src: url('../../Assets/Art/Fonts/OpenSans/OpenSansBold.ttf') format('truetype'); font-weight: 700; }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #0c0e14;
+    color: #9aa0b0;
+    font-family: 'OpenSans', sans-serif;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 1.5;
+    padding: 48px 56px 80px;
+    max-width: 1500px;
+  }
+
+  /* ── Page header ── */
+  .page-header { margin-bottom: 56px; border-bottom: 1px solid #1a1e2a; padding-bottom: 24px; }
+  .page-title { font-family: 'EarthOrbiter', sans-serif; font-size: 26px; color: #e8eaf2; letter-spacing: 0.04em; margin-bottom: 6px; }
+  .page-subtitle { font-size: 12px; color: #8d98b3; }
+  .page-note { font-size: 11px; color: #7c88a4; margin-top: 4px; }
+
+  /* ── Section ── */
+  .section { margin-bottom: 72px; }
+  .section-heading {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #7c88a4;
+    margin-bottom: 24px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #13161e;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-accent {
+    width: 3px;
+    height: 14px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  /* ── Entity card ── */
+  .entity-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .entity-card {
+    background: #10131c;
+    border: 1px solid #181b25;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    flex: none;
+    width: 100%;
+    max-width: 100%;
+  }
+  .entity-card.wide,
+  .entity-card.narrow {
+    flex: none;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* ── Card header ── */
+  .entity-card-header {
+    padding: 14px 20px 12px;
+    border-bottom: 1px solid #13161e;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .entity-path-label {
+    font-size: 10px;
+    color: #7c88a4;
+    letter-spacing: 0.06em;
+    margin-bottom: 2px;
+  }
+  .entity-name {
+    font-family: 'EarthOrbiter', sans-serif;
+    font-size: 17px;
+    color: #c8ccd8;
+    letter-spacing: 0.04em;
+  }
+  .entity-scripts {
+    font-family: monospace;
+    font-size: 10px;
+    color: #7c88a4;
+    text-align: right;
+    white-space: nowrap;
+  }
+  .entity-name-row { display: flex; align-items: center; gap: 8px; }
+  .stub-badge {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #0c0e14;
+    background: #d49a4a;
+    border-radius: 2px;
+    padding: 2px 6px;
+  }
+  .entity-card.stub { border-style: dashed; }
+  .stub-note {
+    font-size: 11px;
+    color: #b3924f;
+    font-style: italic;
+    padding: 4px 0;
+  }
+
+  /* ── Card body ── */
+  .entity-card-body {
+    display: flex;
+    flex: 1;
+  }
+
+  /* ── Glyph panel ── */
+  .entity-glyph-panel {
+    width: 188px;
+    min-width: 188px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px 20px;
+    border-right: 1px solid #13161e;
+    gap: 8px;
+  }
+  .entity-glyph-panel.sm {
+    width: 140px;
+    min-width: 140px;
+  }
+  .entity-glyph {
+    font-family: 'InfinityIcons';
+    font-size: 148px;
+    line-height: 1;
+    user-select: all;
+  }
+  .entity-glyph-meta {
+    font-family: monospace;
+    font-size: 10px;
+    color: #7c88a4;
+    letter-spacing: 0.04em;
+    text-align: center;
+  }
+  .entity-no-glyph {
+    width: 80px;
+    height: 80px;
+    border: 1px dashed;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  /* ── Stats panel ── */
+  .entity-stats-panel {
+    flex: 1;
+    padding: 20px 24px 24px;
+  }
+  .stats-columns {
+    display: flex;
+    gap: 40px;
+  }
+  .stats-col { flex: 1; }
+
+  .stat-group { margin-bottom: 16px; }
+  .stat-group:last-child { margin-bottom: 0; }
+  .stat-group-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #7c88a4;
+    margin-bottom: 6px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #0f121a;
+  }
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 3px 0;
+  }
+  .stat-key { font-size: 11px; color: #8d98b3; }
+  .stat-val { font-size: 11px; color: #b8bccb; font-weight: 600; font-family: monospace; }
+  .stat-note {
+    font-size: 10px;
+    color: #7c88a4;
+    margin-top: 5px;
+    line-height: 1.5;
+    font-style: italic;
+  }
+  .stat-grant-key { font-size: 11px; font-weight: 700; }
+  .stat-grant-val { font-size: 11px; font-weight: 700; font-family: monospace; }
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <div class="page-title">InfinitySpace — Entity Reference</div>
+  <div class="page-subtitle">Assets/Prefabs/ · Stats merged from prefab Inspector fields and script source</div>
+  <div class="page-note">Glyphs: Infinity Icons HU characters used by each entity's TextMesh component in-game. Power-ups and missiles use SpriteRenderer / mesh instead.</div>
+</header>
+
+
+<!-- ══════════════════════════════════════════════════════════ PLAYER -->
+
+<section class="section">
+  <div class="section-heading">
+    <span class="section-accent" style="background:#3d9fd8"></span>
+    Player
+  </div>
+
+  <div class="entity-grid">
+    <div class="entity-card wide">
+      <div class="entity-card-header">
+        <div>
+          <div class="entity-path-label">Player /</div>
+          <div class="entity-name">Player</div>
+        </div>
+        <div class="entity-scripts">Ship.cs · Player.cs · PlayerController.cs</div>
+      </div>
+      <div class="entity-card-body">
+        <div class="entity-glyph-panel">
+          <div class="entity-glyph" style="color:#3d9fd8">R</div>
+          <div class="entity-glyph-meta">U+0052 · Infinity Icons HU</div>
+        </div>
+        <div class="entity-stats-panel">
+          <div class="stats-columns">
+            <div class="stats-col">
+              <div class="stat-group">
+                <div class="stat-group-label">Hull</div>
+                <div class="stat-row">
+                  <span class="stat-key">Max Health</span>
+                  <span class="stat-val">100</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Mass</span>
+                  <span class="stat-val">1</span>
+                </div>
+              </div>
+              <div class="stat-group">
+                <div class="stat-group-label">Weapons</div>
+                <div class="stat-row">
+                  <span class="stat-key">Fire Power</span>
+                  <span class="stat-val">5</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Fire Power Variance</span>
+                  <span class="stat-val">1</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Max Ammo</span>
+                  <span class="stat-val">100</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Cool Down</span>
+                  <span class="stat-val">0.25s</span>
+                </div>
+              </div>
+            </div>
+            <div class="stats-col">
+              <div class="stat-group">
+                <div class="stat-group-label">Propulsion</div>
+                <div class="stat-row">
+                  <span class="stat-key">Speed</span>
+                  <span class="stat-val">50</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Rotation Speed</span>
+                  <span class="stat-val">20</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Max Fuel</span>
+                  <span class="stat-val">1000</span>
+                </div>
+              </div>
+              <div class="stat-group">
+                <div class="stat-group-label">Parts Dropped</div>
+                <div class="stat-row">
+                  <span class="stat-key">Parts Drop</span>
+                  <span class="stat-val">0</span>
+                </div>
+                <div class="stat-note">Player drops no power-ups on death.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════ ENEMIES -->
+
+<!-- Enemies / Fighter -->
+<section class="section">
+  <div class="section-heading">
+    <span class="section-accent" style="background:#d05050"></span>
+    Enemies / FIGHTER
+  </div>
+
+  <div class="entity-grid">
+
+    <!-- Fighter I (stub) -->
+    <div class="entity-card wide stub">
+      <div class="entity-card-header">
+        <div>
+          <div class="entity-path-label">Enemies /</div>
+          <div class="entity-name-row">
+            <div class="entity-name">Fighter I</div>
+            <span class="stub-badge">Planned</span>
+          </div>
+        </div>
+        <div class="entity-scripts">TBD</div>
+      </div>
+      <div class="entity-card-body">
+        <div class="entity-glyph-panel">
+          <div class="entity-glyph" style="color:#d05050">O</div>
+          <div class="entity-glyph-meta">U+004F · Infinity Icons HU · planned, not yet baked into a prefab</div>
+        </div>
+        <div class="entity-stats-panel">
+          <div class="stub-note">Working name — rename freely. A fighter class. Behavior and stats not yet defined.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fighter II (stub) -->
+    <div class="entity-card wide stub">
+      <div class="entity-card-header">
+        <div>
+          <div class="entity-path-label">Enemies /</div>
+          <div class="entity-name-row">
+            <div class="entity-name">Fighter II</div>
+            <span class="stub-badge">Planned</span>
+          </div>
+        </div>
+        <div class="entity-scripts">TBD</div>
+      </div>
+      <div class="entity-card-body">
+        <div class="entity-glyph-panel">
+          <div class="entity-glyph" style="color:#d05050">T</div>
+          <div class="entity-glyph-meta">U+0054 · Infinity Icons HU · planned, not yet baked into a prefab</div>
+        </div>
+        <div class="entity-stats-panel">
+          <div class="stub-note">Working name — rename freely. A fighter class. Behavior and stats not yet defined.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fighter III (stub) -->
+    <div class="entity-card wide stub">
+      <div class="entity-card-header">
+        <div>
+          <div class="entity-path-label">Enemies /</div>
+          <div class="entity-name-row">
+            <div class="entity-name">Fighter III</div>
+            <span class="stub-badge">Planned</span>
+          </div>
+        </div>
+        <div class="entity-scripts">TBD</div>
+      </div>
+      <div class="entity-card-body">
+        <div class="entity-glyph-panel">
+          <div class="entity-glyph" style="color:#d05050">W</div>
+          <div class="entity-glyph-meta">U+0057 · Infinity Icons HU · planned, not yet baked into a prefab</div>
+        </div>
+        <div class="entity-stats-panel">
+          <div class="stub-note">Working name — rename freely. A fighter class. Behavior and stats not yet defined.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- Enemies / Laser -->
+<section class="section">
+  <div class="section-heading">
+    <span class="section-accent" style="background:#d05050"></span>
+    Enemies / LASER
+  </div>
+
+  <div class="entity-grid">
+
+    <!-- Laser I (stub) -->
+    <div class="entity-card wide stub">
+      <div class="entity-card-header">
+        <div>
+          <div class="entity-path-label">Enemies /</div>
+          <div class="entity-name-row">
+            <div class="entity-name">Laser I</div>
+            <span class="stub-badge">Planned</span>
+          </div>
+        </div>
+        <div class="entity-scripts">TBD</div>
+      </div>
+      <div class="entity-card-body">
+        <div class="entity-glyph-panel">
+          <div class="entity-glyph" style="color:#d05050">j</div>
+          <div class="entity-glyph-meta">U+006A · Infinity Icons HU · planned, not yet baked into a prefab</div>
+        </div>
+        <div class="entity-stats-panel">
+          <div class="stub-note">Working name — rename freely. Another laser. Behavior and stats not yet defined.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Laser III (stub) -->
+    <div class="entity-card wide stub">
+      <div class="entity-card-header">
+        <div>
+          <div class="entity-path-label">Enemies /</div>
+          <div class="entity-name-row">
+            <div class="entity-name">Laser III</div>
+            <span class="stub-badge">Planned</span>
+          </div>
+        </div>
+        <div class="entity-scripts">TBD</div>
+      </div>
+      <div class="entity-card-body">
+        <div class="entity-glyph-panel">
+          <div class="entity-glyph" style="color:#d05050">M</div>
+          <div class="entity-glyph-meta">U+004D · Infinity Icons HU · planned, not yet baked into a prefab</div>
+        </div>
+        <div class="entity-stats-panel">
+          <div class="stub-note">Working name — rename freely. Another laser, lower-tier than Laser VI. Behavior and stats not yet defined.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Laser VI (stub) -->
+    <div class="entity-card wide stub">
+      <div class="entity-card-header">
+        <div>
+          <div class="entity-path-label">Enemies /</div>
+          <div class="entity-name-row">
+            <div class="entity-name">Laser VI</div>
+            <span class="stub-badge">Planned</span>
+          </div>
+        </div>
+        <div class="entity-scripts">TBD</div>
+      </div>
+      <div class="entity-card-body">
+        <div class="entity-glyph-panel">
+          <div class="entity-glyph" style="color:#d05050">h</div>
+          <div class="entity-glyph-meta">U+0068 · Infinity Icons HU · planned, not yet baked into a prefab</div>
+        </div>
+        <div class="entity-stats-panel">
+          <div class="stub-note">Working name — rename freely. A giant laser. Behavior and stats not yet defined.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- Enemies / Probe -->
+<section class="section">
+  <div class="section-heading">
+    <span class="section-accent" style="background:#d05050"></span>
+    Enemies / PROBE
+  </div>
+
+  <div class="entity-grid">
+
+    <!-- Probe I -->
+    <div class="entity-card wide">
+      <div class="entity-card-header">
+        <div>
+          <div class="entity-path-label">Enemies /</div>
+          <div class="entity-name">Probe I</div>
+        </div>
+        <div class="entity-scripts">Ship.cs · Probe.cs</div>
+      </div>
+      <div class="entity-card-body">
+        <div class="entity-glyph-panel">
+          <div class="entity-glyph" style="color:#d05050">C</div>
+          <div class="entity-glyph-meta">U+0043 · Infinity Icons HU</div>
+        </div>
+        <div class="entity-stats-panel">
+          <div class="stats-columns">
+            <div class="stats-col">
+              <div class="stat-group">
+                <div class="stat-group-label">Hull</div>
+                <div class="stat-row">
+                  <span class="stat-key">Max Health</span>
+                  <span class="stat-val">20</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Mass</span>
+                  <span class="stat-val">0.75</span>
+                </div>
+              </div>
+              <div class="stat-group">
+                <div class="stat-group-label">Weapons</div>
+                <div class="stat-row">
+                  <span class="stat-key">Fire Power</span>
+                  <span class="stat-val">3</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Fire Power Variance</span>
+                  <span class="stat-val">2</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Max Ammo</span>
+                  <span class="stat-val">100</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Cool Down</span>
+                  <span class="stat-val">3s</span>
+                </div>
+              </div>
+              <div class="stat-group">
+                <div class="stat-group-label">Propulsion</div>
+                <div class="stat-row">
+                  <span class="stat-key">Speed</span>
+                  <span class="stat-val">2</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Rotation Speed</span>
+                  <span class="stat-val">90°/s</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Max Fuel</span>
+                  <span class="stat-val">20</span>
+                </div>
+              </div>
+            </div>
+            <div class="stats-col">
+              <div class="stat-group">
+                <div class="stat-group-label">AI — Detection &amp; Orbit</div>
+                <div class="stat-row">
+                  <span class="stat-key">Radar Distance</span>
+                  <span class="stat-val">27</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Firing Range</span>
+                  <span class="stat-val">17</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Orbit Radius</span>
+                  <span class="stat-val">15</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Orbit Speed</span>
+                  <span class="stat-val">1</span>
+                </div>
+                <div class="stat-note">Orbits the player on radar contact (not just firing range) using a radial + tangential force blend — circles immediately rather than beelining in.</div>
+              </div>
+              <div class="stat-group">
+                <div class="stat-group-label">AI — Patrol (Idle)</div>
+                <div class="stat-row">
+                  <span class="stat-key">Resume Delay</span>
+                  <span class="stat-val">1s</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Move Distance</span>
+                  <span class="stat-val">5</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Move Speed</span>
+                  <span class="stat-val">2</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Scan Duration</span>
+                  <span class="stat-val">2–5s</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Rotation Range</span>
+                  <span class="stat-val">45–180°</span>
+                </div>
+                <div class="stat-note">While outside radar range: thrusts forward, pauses to "scan," then rotates a random amount and repeats. Press F9 in-Editor to visualize radar/firing/orbit ranges as Gizmos.</div>
+              </div>
+            </div>
+            <div class="stats-col">
+              <div class="stat-group">
+                <div class="stat-group-label">Drops on Death</div>
+                <div class="stat-row">
+                  <span class="stat-key">Parts Drop</span>
+                  <span class="stat-val">6</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Parts Variance</span>
+                  <span class="stat-val">2</span>
+                </div>
+                <div class="stat-note">Random.Range(4, 8) → drops 4–8 random power-ups.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ProbeII -->
+    <div class="entity-card wide">
+      <div class="entity-card-header">
+        <div>
+          <div class="entity-path-label">Enemies /</div>
+          <div class="entity-name">Probe II</div>
+        </div>
+        <div class="entity-scripts">Ship.cs · Probe.cs</div>
+      </div>
+      <div class="entity-card-body">
+        <div class="entity-glyph-panel">
+          <div class="entity-glyph" style="color:#d05050">e</div>
+          <div class="entity-glyph-meta">U+0065 · Infinity Icons HU</div>
+        </div>
+        <div class="entity-stats-panel">
+          <div class="stats-columns">
+            <div class="stats-col">
+              <div class="stat-group">
+                <div class="stat-group-label">Hull</div>
+                <div class="stat-row">
+                  <span class="stat-key">Max Health</span>
+                  <span class="stat-val">12</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Mass</span>
+                  <span class="stat-val">0.75</span>
+                </div>
+              </div>
+              <div class="stat-group">
+                <div class="stat-group-label">Weapons</div>
+                <div class="stat-row">
+                  <span class="stat-key">Fire Power</span>
+                  <span class="stat-val">4</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Fire Power Variance</span>
+                  <span class="stat-val">1</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Max Ammo</span>
+                  <span class="stat-val">100</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Cool Down</span>
+                  <span class="stat-val">1.5s</span>
+                </div>
+              </div>
+              <div class="stat-group">
+                <div class="stat-group-label">Propulsion</div>
+                <div class="stat-row">
+                  <span class="stat-key">Speed</span>
+                  <span class="stat-val">3.5</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Rotation Speed</span>
+                  <span class="stat-val">150°/s</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Max Fuel</span>
+                  <span class="stat-val">20</span>
+                </div>
+              </div>
+            </div>
+            <div class="stats-col">
+              <div class="stat-group">
+                <div class="stat-group-label">AI — Detection &amp; Orbit</div>
+                <div class="stat-row">
+                  <span class="stat-key">Radar Distance</span>
+                  <span class="stat-val">27</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Firing Range</span>
+                  <span class="stat-val">17</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Orbit Radius</span>
+                  <span class="stat-val">15</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Orbit Speed</span>
+                  <span class="stat-val">2</span>
+                </div>
+                <div class="stat-note">Now uses Probe.cs's orbit-burst AI (radial + tangential orbit, periodic speed-burst while in combat) instead of the stationary-turret tuning it used to ship with. Same detection/firing/orbit ranges as Probe I, but faster movement (Speed 3.5 vs. 2), faster turning (150°/s vs. 90°/s), faster firing (1.5s cooldown vs. 3s), higher base damage with tighter variance (Fire Power 4 ± 1 vs. Probe I's 3 ± 2), and less health (12 vs. 20) — a quicker, more fragile, more aggressive counterpart to Probe I rather than a hazard you fight at range.</div>
+              </div>
+            </div>
+            <div class="stats-col">
+              <div class="stat-group">
+                <div class="stat-group-label">Drops on Death</div>
+                <div class="stat-row">
+                  <span class="stat-key">Parts Drop</span>
+                  <span class="stat-val">7</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Parts Variance</span>
+                  <span class="stat-val">2</span>
+                </div>
+                <div class="stat-note">Random.Range(5, 9) → drops 5–9 random power-ups.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- Enemies / Satellite -->
+<section class="section">
+  <div class="section-heading">
+    <span class="section-accent" style="background:#d05050"></span>
+    Enemies / SATELLITE
+  </div>
+
+  <div class="entity-grid">
+
+    <!-- Satellite I (stub) -->
+    <div class="entity-card wide stub">
+      <div class="entity-card-header">
+        <div>
+          <div class="entity-path-label">Enemies /</div>
+          <div class="entity-name-row">
+            <div class="entity-name">Satellite I</div>
+            <span class="stub-badge">Planned</span>
+          </div>
+        </div>
+        <div class="entity-scripts">TBD</div>
+      </div>
+      <div class="entity-card-body">
+        <div class="entity-glyph-panel">
+          <div class="entity-glyph" style="color:#d05050">b</div>
+          <div class="entity-glyph-meta">U+0062 · Infinity Icons HU · planned, not yet baked into a prefab</div>
+        </div>
+        <div class="entity-stats-panel">
+          <div class="stub-note">Stats not yet defined.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Satellite II (stub) -->
+    <div class="entity-card wide stub">
+      <div class="entity-card-header">
+        <div>
+          <div class="entity-path-label">Enemies /</div>
+          <div class="entity-name-row">
+            <div class="entity-name">Satellite II</div>
+            <span class="stub-badge">Planned</span>
+          </div>
+        </div>
+        <div class="entity-scripts">TBD</div>
+      </div>
+      <div class="entity-card-body">
+        <div class="entity-glyph-panel">
+          <div class="entity-glyph" style="color:#d05050">Z</div>
+          <div class="entity-glyph-meta">U+005A · Infinity Icons HU · planned, not yet baked into a prefab</div>
+        </div>
+        <div class="entity-stats-panel">
+          <div class="stub-note">Stats not yet defined.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Satellite III (stub) -->
+    <div class="entity-card wide stub">
+      <div class="entity-card-header">
+        <div>
+          <div class="entity-path-label">Enemies /</div>
+          <div class="entity-name-row">
+            <div class="entity-name">Satellite III</div>
+            <span class="stub-badge">Planned</span>
+          </div>
+        </div>
+        <div class="entity-scripts">TBD</div>
+      </div>
+      <div class="entity-card-body">
+        <div class="entity-glyph-panel">
+          <div class="entity-glyph" style="color:#d05050">Y</div>
+          <div class="entity-glyph-meta">U+0059 · Infinity Icons HU · planned, not yet baked into a prefab</div>
+        </div>
+        <div class="entity-stats-panel">
+          <div class="stub-note">Stats not yet defined.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Satellite IV -->
+    <div class="entity-card wide">
+      <div class="entity-card-header">
+        <div>
+          <div class="entity-path-label">Enemies /</div>
+          <div class="entity-name">Satellite IV</div>
+        </div>
+        <div class="entity-scripts">Ship.cs · Enemy.cs · Satellite.cs · BeamEffect.cs</div>
+      </div>
+      <div class="entity-card-body">
+        <div class="entity-glyph-panel">
+          <div class="entity-glyph" style="color:#d05050">a</div>
+          <div class="entity-glyph-meta">U+0061 · Infinity Icons HU</div>
+        </div>
+        <div class="entity-stats-panel">
+          <div class="stats-columns">
+            <div class="stats-col">
+              <div class="stat-group">
+                <div class="stat-group-label">Hull</div>
+                <div class="stat-row">
+                  <span class="stat-key">Max Health</span>
+                  <span class="stat-val">20</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Mass</span>
+                  <span class="stat-val">0.75</span>
+                </div>
+              </div>
+              <div class="stat-group">
+                <div class="stat-group-label">Weapons — Sustained Beam</div>
+                <div class="stat-row">
+                  <span class="stat-key">Beam Interval</span>
+                  <span class="stat-val">4s</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Firing Range</span>
+                  <span class="stat-val">20</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Fire Power / Variance</span>
+                  <span class="stat-val">10 / 2</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Beam Duration</span>
+                  <span class="stat-val">1.5s</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Beam Length / Width</span>
+                  <span class="stat-val">40 / 0.3</span>
+                </div>
+                <div class="stat-note">No missile weapon — <code>Enemy.TryFire()</code> is a no-op override. Every Beam Interval, if the player is within Firing Range, fires a beam that snapshots this satellite's current facing (<code>transform.up</code>) at the moment of firing and stays locked to that direction for the full Beam Duration; the satellite also freezes in place (no orbit/rotation) while the beam is active. Damage rolls off <code>Ship.RollFirePower()</code> like any other shot, dealt once per collider that enters the beam's trigger volume (a direct hit, or the player/an asteroid/the Relic flying into an already-active beam) — enemies are filtered out so a satellite's beam can't hit other enemies.</div>
+              </div>
+            </div>
+            <div class="stats-col">
+              <div class="stat-group">
+                <div class="stat-group-label">AI — Detection &amp; Orbit</div>
+                <div class="stat-row">
+                  <span class="stat-key">Radar Distance</span>
+                  <span class="stat-val">25</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Orbit Radius</span>
+                  <span class="stat-val">22</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Orbit Speed</span>
+                  <span class="stat-val">1</span>
+                </div>
+                <div class="stat-note">Attack (player within Radar Distance): faces and orbits the player like Probe's default behavior, except while a beam is active — then it holds position entirely instead.</div>
+              </div>
+              <div class="stat-group">
+                <div class="stat-group-label">AI — Patrol (Idle)</div>
+                <div class="stat-row">
+                  <span class="stat-key">Patrol Resume Delay</span>
+                  <span class="stat-val">1s</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Patrol Move Distance</span>
+                  <span class="stat-val">5</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Patrol Speed</span>
+                  <span class="stat-val">2</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Patrol Scan Duration</span>
+                  <span class="stat-val">2–5s</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Patrol Rotation</span>
+                  <span class="stat-val">45–180°</span>
+                </div>
+                <div class="stat-note">Uses <code>Enemy</code>'s shared default patrol routine (move, scan, rotate, repeat) unmodified — no Satellite-specific idle behavior.</div>
+              </div>
+            </div>
+            <div class="stats-col">
+              <div class="stat-group">
+                <div class="stat-group-label">Drops on Death</div>
+                <div class="stat-row">
+                  <span class="stat-key">Parts Drop</span>
+                  <span class="stat-val">6</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Parts Variance</span>
+                  <span class="stat-val">2</span>
+                </div>
+                <div class="stat-note">Random.Range(4, 8) → drops 4–8 random power-ups.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- Enemies / Space Station -->
+<section class="section">
+  <div class="section-heading">
+    <span class="section-accent" style="background:#d05050"></span>
+    Enemies / SPACE STATION
+  </div>
+
+  <div class="entity-grid">
+
+    <!-- Space Station I (stub) -->
+    <div class="entity-card wide stub">
+      <div class="entity-card-header">
+        <div>
+          <div class="entity-path-label">Enemies /</div>
+          <div class="entity-name-row">
+            <div class="entity-name">Space Station I</div>
+            <span class="stub-badge">Planned</span>
+          </div>
+        </div>
+        <div class="entity-scripts">TBD</div>
+      </div>
+      <div class="entity-card-body">
+        <div class="entity-glyph-panel">
+          <div class="entity-glyph" style="color:#d05050">c</div>
+          <div class="entity-glyph-meta">U+0063 · Infinity Icons HU · planned, not yet baked into a prefab</div>
+        </div>
+        <div class="entity-stats-panel">
+          <div class="stub-note">Working name — rename freely. A space station. Role undecided — could be an attacker or something the player has to defend. Behavior and stats not yet defined.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Space Station II (stub) -->
+    <div class="entity-card wide stub">
+      <div class="entity-card-header">
+        <div>
+          <div class="entity-path-label">Enemies /</div>
+          <div class="entity-name-row">
+            <div class="entity-name">Space Station II</div>
+            <span class="stub-badge">Planned</span>
+          </div>
+        </div>
+        <div class="entity-scripts">TBD</div>
+      </div>
+      <div class="entity-card-body">
+        <div class="entity-glyph-panel">
+          <div class="entity-glyph" style="color:#d05050">d</div>
+          <div class="entity-glyph-meta">U+0064 · Infinity Icons HU · planned, not yet baked into a prefab</div>
+        </div>
+        <div class="entity-stats-panel">
+          <div class="stub-note">Working name — rename freely. A space station. Role undecided — could be an attacker or something the player has to defend. Behavior and stats not yet defined.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Space Station III (stub) -->
+    <div class="entity-card wide stub">
+      <div class="entity-card-header">
+        <div>
+          <div class="entity-path-label">Enemies /</div>
+          <div class="entity-name-row">
+            <div class="entity-name">Space Station III</div>
+            <span class="stub-badge">Planned</span>
+          </div>
+        </div>
+        <div class="entity-scripts">TBD</div>
+      </div>
+      <div class="entity-card-body">
+        <div class="entity-glyph-panel">
+          <div class="entity-glyph" style="color:#d05050">V</div>
+          <div class="entity-glyph-meta">U+0056 · Infinity Icons HU · planned, not yet baked into a prefab</div>
+        </div>
+        <div class="entity-stats-panel">
+          <div class="stub-note">Working name — rename freely. A space station. Role undecided — could be an attacker or something the player has to defend. Behavior and stats not yet defined.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- Enemies / Structure -->
+<section class="section">
+  <div class="section-heading">
+    <span class="section-accent" style="background:#d05050"></span>
+    Enemies / STRUCTURE
+  </div>
+
+  <div class="entity-grid">
+
+    <!-- Structure I (stub) -->
+    <div class="entity-card wide stub">
+      <div class="entity-card-header">
+        <div>
+          <div class="entity-path-label">Enemies /</div>
+          <div class="entity-name-row">
+            <div class="entity-name">Structure I</div>
+            <span class="stub-badge">Planned</span>
+          </div>
+        </div>
+        <div class="entity-scripts">TBD</div>
+      </div>
+      <div class="entity-card-body">
+        <div class="entity-glyph-panel">
+          <div class="entity-glyph" style="color:#d05050">k</div>
+          <div class="entity-glyph-meta">U+006B · Infinity Icons HU · planned, not yet baked into a prefab</div>
+        </div>
+        <div class="entity-stats-panel">
+          <div class="stub-note">Working name — rename freely. A structure that can be established on large asteroids. Behavior and stats not yet defined.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Structure II (stub) -->
+    <div class="entity-card wide stub">
+      <div class="entity-card-header">
+        <div>
+          <div class="entity-path-label">Enemies /</div>
+          <div class="entity-name-row">
+            <div class="entity-name">Structure II</div>
+            <span class="stub-badge">Planned</span>
+          </div>
+        </div>
+        <div class="entity-scripts">TBD</div>
+      </div>
+      <div class="entity-card-body">
+        <div class="entity-glyph-panel">
+          <div class="entity-glyph" style="color:#d05050">l</div>
+          <div class="entity-glyph-meta">U+006C · Infinity Icons HU · planned, not yet baked into a prefab</div>
+        </div>
+        <div class="entity-stats-panel">
+          <div class="stub-note">Working name — rename freely. A structure that can be established on large asteroids. Behavior and stats not yet defined.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Structure III (stub) -->
+    <div class="entity-card wide stub">
+      <div class="entity-card-header">
+        <div>
+          <div class="entity-path-label">Enemies /</div>
+          <div class="entity-name-row">
+            <div class="entity-name">Structure III</div>
+            <span class="stub-badge">Planned</span>
+          </div>
+        </div>
+        <div class="entity-scripts">TBD</div>
+      </div>
+      <div class="entity-card-body">
+        <div class="entity-glyph-panel">
+          <div class="entity-glyph" style="color:#d05050">m</div>
+          <div class="entity-glyph-meta">U+006D · Infinity Icons HU · planned, not yet baked into a prefab</div>
+        </div>
+        <div class="entity-stats-panel">
+          <div class="stub-note">Working name — rename freely. A structure that can be established on large asteroids. Behavior and stats not yet defined.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Structure IV (stub) -->
+    <div class="entity-card wide stub">
+      <div class="entity-card-header">
+        <div>
+          <div class="entity-path-label">Enemies /</div>
+          <div class="entity-name-row">
+            <div class="entity-name">Structure IV</div>
+            <span class="stub-badge">Planned</span>
+          </div>
+        </div>
+        <div class="entity-scripts">TBD</div>
+      </div>
+      <div class="entity-card-body">
+        <div class="entity-glyph-panel">
+          <div class="entity-glyph" style="color:#d05050">n</div>
+          <div class="entity-glyph-meta">U+006E · Infinity Icons HU · planned, not yet baked into a prefab</div>
+        </div>
+        <div class="entity-stats-panel">
+          <div class="stub-note">Working name — rename freely. A structure that can be established on large asteroids. Behavior and stats not yet defined.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- Enemies / Triceptor -->
+<section class="section">
+  <div class="section-heading">
+    <span class="section-accent" style="background:#d05050"></span>
+    Enemies / TRICEPTOR
+  </div>
+
+  <div class="entity-grid">
+
+    <!-- Triceptor -->
+    <div class="entity-card wide">
+      <div class="entity-card-header">
+        <div>
+          <div class="entity-path-label">Enemies /</div>
+          <div class="entity-name">Triceptor</div>
+        </div>
+        <div class="entity-scripts">Ship.cs · Enemy.cs · Triceptor.cs</div>
+      </div>
+      <div class="entity-card-body">
+        <div class="entity-glyph-panel">
+          <div class="entity-glyph" style="color:#d05050">f</div>
+          <div class="entity-glyph-meta">U+0066 · Infinity Icons HU · working name — rename freely</div>
+        </div>
+        <div class="entity-stats-panel">
+          <div class="stats-columns">
+            <div class="stats-col">
+              <div class="stat-group">
+                <div class="stat-group-label">Hull</div>
+                <div class="stat-row">
+                  <span class="stat-key">Max Health</span>
+                  <span class="stat-val">20</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Mass</span>
+                  <span class="stat-val">0.75</span>
+                </div>
+              </div>
+              <div class="stat-group">
+                <div class="stat-group-label">Weapons — Cannon Volley</div>
+                <div class="stat-row">
+                  <span class="stat-key">Cannons</span>
+                  <span class="stat-val">3, fixed 120° apart</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Volley Interval</span>
+                  <span class="stat-val">2s</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Firing Range</span>
+                  <span class="stat-val">12</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Fire Power / Variance</span>
+                  <span class="stat-val">1 / 4</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Homing Turn Rate / Delay / Range</span>
+                  <span class="stat-val">400°/s / 0.75s / 8</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Launch Speed</span>
+                  <span class="stat-val">12</span>
+                </div>
+                <div class="stat-note">All three cannons fire a homing rocket simultaneously every Volley Interval, but only when the player is within Firing Range — checked at each tick, in both Patrol and Attack. Not gated by Ship's ammo/cooldown like the rest of the roster.</div>
+              </div>
+            </div>
+            <div class="stats-col">
+              <div class="stat-group">
+                <div class="stat-group-label">AI — Detection &amp; Orbit</div>
+                <div class="stat-row">
+                  <span class="stat-key">Radar Distance</span>
+                  <span class="stat-val">15</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Orbit Radius</span>
+                  <span class="stat-val">6</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Orbit Speed</span>
+                  <span class="stat-val">1</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Attack Spin Rate</span>
+                  <span class="stat-val">120°/s</span>
+                </div>
+                <div class="stat-note">Attack (player within Radar Distance): spins in place at Attack Spin Rate while orbiting the player — own AI state machine, not the Probe-style aim-and-orbit pattern.</div>
+              </div>
+              <div class="stat-group">
+                <div class="stat-group-label">AI — Patrol (Idle)</div>
+                <div class="stat-row">
+                  <span class="stat-key">Patrol Spin Rate</span>
+                  <span class="stat-val">30°/s</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Patrol Drift Speed</span>
+                  <span class="stat-val">1</span>
+                </div>
+                <div class="stat-note">While outside radar range: spins slowly in place and drifts forward along its own facing (which keeps changing as it spins), tracing a slow drifting circle/spiral.</div>
+              </div>
+            </div>
+            <div class="stats-col">
+              <div class="stat-group">
+                <div class="stat-group-label">Drops on Death</div>
+                <div class="stat-row">
+                  <span class="stat-key">Parts Drop</span>
+                  <span class="stat-val">10</span>
+                </div>
+                <div class="stat-row">
+                  <span class="stat-key">Parts Variance</span>
+                  <span class="stat-val">3</span>
+                </div>
+                <div class="stat-note">Random.Range(7, 13) → drops 7–13 random power-ups.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════ ASTEROID -->
+
+<section class="section">
+  <div class="section-heading">
+    <span class="section-accent" style="background:#788ea0"></span>
+    Asteroid
+  </div>
+
+  <div class="entity-grid">
+    <div class="entity-card">
+      <div class="entity-card-header">
+        <div>
+          <div class="entity-path-label">Entities /</div>
+          <div class="entity-name">Asteroid</div>
+        </div>
+        <div class="entity-scripts">Asteroid.cs · DestroyableObject</div>
+      </div>
+      <div class="entity-card-body">
+        <div class="entity-glyph-panel">
+          <div class="entity-glyph" style="color:#788ea0">z</div>
+          <div class="entity-glyph-meta">U+007A · Infinity Icons HU</div>
+        </div>
+        <div class="entity-stats-panel">
+          <div class="stat-group">
+            <div class="stat-group-label">Hull</div>
+            <div class="stat-row">
+              <span class="stat-key">Max Health</span>
+              <span class="stat-val">1000</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-key">Mass</span>
+              <span class="stat-val">5</span>
+            </div>
+          </div>
+          <div class="stat-group">
+            <div class="stat-group-label">Physics</div>
+            <div class="stat-row">
+              <span class="stat-key">Linear Damping</span>
+              <span class="stat-val">0</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-key">Angular Damping</span>
+              <span class="stat-val">0</span>
+            </div>
+            <div class="stat-note">Drifts freely with no drag. Asteroid.cs applies a random physics force each LateUpdate.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- ══════════════════════════════════════════════════════════ MISSILE -->
+
+<section class="section">
+  <div class="section-heading">
+    <span class="section-accent" style="background:#c08030"></span>
+    Missile
+  </div>
+
+  <div class="entity-grid">
+    <div class="entity-card">
+      <div class="entity-card-header">
+        <div>
+          <div class="entity-path-label">Entities / Missile /</div>
+          <div class="entity-name">Missile</div>
+        </div>
+        <div class="entity-scripts">Missile.cs · DestroyableObject</div>
+      </div>
+      <div class="entity-card-body">
+        <div class="entity-glyph-panel">
+          <div class="entity-glyph" style="color:#c08030">▫</div>
+          <div class="entity-glyph-meta">U+25AB · Infinity Icons HU · rendered via a child TextMesh (mesh quad disabled)</div>
+        </div>
+        <div class="entity-stats-panel">
+          <div class="stat-group">
+            <div class="stat-group-label">Combat</div>
+            <div class="stat-row">
+              <span class="stat-key">Damage</span>
+              <span class="stat-val">= FirePower</span>
+            </div>
+            <div class="stat-note" style="margin-bottom:8px;">SetHealth(FirePower) is called on the missile at spawn by Ship.cs. In practice: Player = 5, Probe I/Probe II = 1.</div>
+            <div class="stat-row">
+              <span class="stat-key">TTL</span>
+              <span class="stat-val">7s</span>
+            </div>
+          </div>
+          <div class="stat-group">
+            <div class="stat-group-label">Physics</div>
+            <div class="stat-row">
+              <span class="stat-key">Mass</span>
+              <span class="stat-val">0.001</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-key">Scale</span>
+              <span class="stat-val">0.25 × 0.25</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Homing Rocket -->
+    <div class="entity-card">
+      <div class="entity-card-header">
+        <div>
+          <div class="entity-path-label">Entities / Missile /</div>
+          <div class="entity-name">Homing Rocket</div>
+        </div>
+        <div class="entity-scripts">Missile.cs · DestroyableObject</div>
+      </div>
+      <div class="entity-card-body">
+        <div class="entity-glyph-panel">
+          <div class="entity-glyph" style="color:#c08030">(</div>
+          <div class="entity-glyph-meta">U+0028 · Infinity Icons HU</div>
+        </div>
+        <div class="entity-stats-panel">
+          <div class="stat-group">
+            <div class="stat-group-label">Combat</div>
+            <div class="stat-row">
+              <span class="stat-key">Damage</span>
+              <span class="stat-val">= FirePower</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-key">TTL</span>
+              <span class="stat-val">7s</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-key">Damage multiplier</span>
+              <span class="stat-val">2× (Ship.HomingRocketDamageMultiplier)</span>
+            </div>
+            <div class="stat-note">Same Missile.cs script and stats as the regular Missile (it is one, with a baked-in homing config) — only the glyph visual and the always-on steering-toward-nearest-target behavior differ. Targets the nearest Enemy or Asteroid, whichever is closer. Damage still rolls off Ship's FirePower/FirePowerVariance like every shot, then gets multiplied by HomingRocketDamageMultiplier so the rocket hits harder than the Missile it accompanies.</div>
+          </div>
+          <div class="stat-group">
+            <div class="stat-group-label">Homing Upgrade (player only)</div>
+            <div class="stat-row">
+              <span class="stat-key">Proc chance</span>
+              <span class="stat-val">2% → 30% (Lv 1–30)</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-key">Turn rate</span>
+              <span class="stat-val">400°/s (constant, all levels)</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-key">Homing delay / range</span>
+              <span class="stat-val">0.75s / 8 units</span>
+            </div>
+            <div class="stat-note">Replaces the old behavior where the Homing upgrade bent the player's regular Missile. Each Missile shot now independently rolls the Lv-based proc chance; on a hit, a Homing Rocket fires alongside the Missile at no extra ammo cost. Only the proc chance scales with level (30 levels, mirroring Magnet's cost curve and cap) -- the rocket's turn rate is a flat constant regardless of level, so the rocket itself is always equally capable, only rarer at low levels. The rocket flies straight at launch (no force/turn applied) for a flat HomingDelay, and even past that delay keeps flying straight until a target comes within HomingRange -- so it reads as ballistic at range and only locks on once a target is close. The rocket turns via Rigidbody2D.MoveRotation, and once locked on, redirects its existing velocity vector onto the new facing every FixedUpdate rather than accelerating toward a fixed speed -- it keeps exactly whatever speed it already had at launch (ship momentum included) for its whole flight, only ever changing heading, so locking onto a target never reads as a sudden speed change. The homing FixedUpdate loop (and its velocity) stops the instant the rocket takes damage/explodes, instead of continuing to steer during the 0.2s explosion-to-destroy window. Ship.cs: HomingProcChances / HomingRocketTurnRate / HomingDelay / HomingRange.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════ POWER-UPS -->
+
+<section class="section">
+  <div class="section-heading">
+    <span class="section-accent" style="background:#50a060"></span>
+    Power-Ups
+  </div>
+
+  <div class="entity-grid">
+
+    <!-- Part -->
+    <div class="entity-card narrow">
+      <div class="entity-card-header">
+        <div>
+          <div class="entity-path-label">Collectable /</div>
+          <div class="entity-name">Part</div>
+        </div>
+        <div class="entity-scripts">Part.cs</div>
+      </div>
+      <div class="entity-card-body">
+        <div class="entity-glyph-panel sm">
+          <div class="entity-glyph" style="color:#50a060">⛯</div>
+          <div class="entity-glyph-meta">U+26EF · Infinity Icons HU · rendered via a child TextMesh (SpriteRenderer removed)</div>
+        </div>
+        <div class="entity-stats-panel">
+          <div class="stat-group">
+            <div class="stat-group-label">Durability</div>
+            <div class="stat-row">
+              <span class="stat-key">Max Health</span>
+              <span class="stat-val">10</span>
+            </div>
+          </div>
+          <div class="stat-group">
+            <div class="stat-group-label">On Pickup</div>
+            <div class="stat-row">
+              <span class="stat-grant-key" style="color:#50a060;">+ Parts</span>
+              <span class="stat-grant-val" style="color:#50a060;">10</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Relic (stub) -->
+    <div class="entity-card narrow stub">
+      <div class="entity-card-header">
+        <div>
+          <div class="entity-path-label">Collectable /</div>
+          <div class="entity-name-row">
+            <div class="entity-name">Relic</div>
+            <span class="stub-badge">Planned</span>
+          </div>
+        </div>
+        <div class="entity-scripts">TBD</div>
+      </div>
+      <div class="entity-card-body">
+        <div class="entity-glyph-panel sm">
+          <div class="entity-glyph" style="color:#50a060">*</div>
+          <div class="entity-glyph-meta">U+002A · Infinity Icons HU · planned, not yet baked into a prefab</div>
+        </div>
+        <div class="entity-stats-panel">
+          <div class="stat-group">
+            <div class="stat-group-label">Durability</div>
+            <div class="stat-row">
+              <span class="stat-key">Max Health</span>
+              <span class="stat-val">TBD</span>
+            </div>
+          </div>
+          <div class="stub-note">For certain map types: one enemy or asteroid on the sector is seeded to carry a Relic. Destroying that specific entity drops it; picking it up opens the portal (in place of, or alongside, the normal completion-percent threshold — TBD). The Relic itself has health once dropped/exposed — if it is destroyed, the sector is failed. Remaining stats not yet defined.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+</body>
+</html>

@@ -5,3 +5,5 @@ The instructions above are the single source of truth for coding agents in this 
 ## Version tracking
 
 Version is tracked in `VERSION` (plain text file at the repo root).
+
+The Unity game's version (`bundleVersion` in `unity/ProjectSettings/ProjectSettings.asset`) is kept equal to `VERSION`; bump both together.

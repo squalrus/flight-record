@@ -1,6 +1,6 @@
 # 06 · Message bridge to Unity
 
-**Status:** not started · **Plan:** [docs/experiments.md](../../docs/experiments.md#06--message-bridge-to-unity) · **Depends on:** 0.3, 0.4
+**Status:** not started · **Plan:** [docs/flightrec/experiments.md](../../docs/flightrec/experiments.md#06--message-bridge-to-unity) · **Depends on:** 0.3, 0.4
 
 ## Goal
 

@@ -17,8 +17,6 @@ Legend: 🔌 needs the physical hardware (turntable, interface) · 🌐 needs an
   *Done when:* at least 10 clips exist with source/genre/notes, and none are full tracks.
 - [ ] **1.3 🖥️ Experiment 02: onset and features.** Per-band triggers, energies, loudness, brightness, tempo, and chroma/key, with a live explorer window (`experiments/02-onset-features/explore.py`, in progress). Exploring needs nothing else; the measured results need the corpus (1.2), and a message-log replay needs 0.3. Confirm live on hardware.
   *Done when:* `RESULTS.md` has onset recall/false-positive numbers per clip, tempo convergence times, key accuracy against known keys, and CPU use.
-- [ ] **1.4 🖥️ Feature stream recorder.** Save the real-time feature stream to a message log so the Unity generator can be developed from recordings. Depends on 0.3, 1.3.
-  *Done when:* a recorded log replays identically through `replay.py`.
 
 ## Phase 2: Identification
 

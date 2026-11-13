@@ -453,3 +453,54 @@ class TempoPanel(Panel):
 def status_lines(win: Window, lines: Sequence[str], top: float) -> None:
     for i, line in enumerate(lines):
         win.text(line, (16, top + i * 20))
+
+
+class IdentificationPanel(Panel):
+    """What is playing, from a background ``flightrec.identification.Identifier``: status,
+    the current match (artist, title, album, confidence, latency), and recent attempts."""
+
+    STATUS_COLORS: dict[str, Color] = {
+        "listening": DIM,
+        "identifying": WARN,
+        "matched": GOOD,
+        "no match": DIM,
+        "error": BAD,
+        "limit reached": BAD,
+    }
+
+    def draw(self, identifier: Any, audio_t: float) -> None:
+        self.frame()
+        r = self.rect
+        win = self.win
+        status = identifier.status(audio_t)
+        spinner = "|/-\\"[int(time.perf_counter() * 8) % 4] if status == "identifying" else ""
+        next_s = identifier.seconds_until_next(audio_t)
+        header = f"{identifier.service.name}: {status} {spinner}"
+        win.text(header, (r.left + 6, r.top + 4), self.STATUS_COLORS.get(status, TEXT))
+        counts = f"requests {identifier.requests}/{identifier.max_requests}"
+        if next_s is not None:
+            counts += f"   next in {next_s:4.1f} s"
+        win.text(counts, (r.left + 300, r.top + 4), DIM)
+
+        current = identifier.current
+        if current is None:
+            win.text("no match yet", (r.left + 8, r.top + 28), DIM, big=True)
+        else:
+            res = current.result
+            win.text(f"{res.artist} - {res.title}"[:56], (r.left + 8, r.top + 28), HOLD, big=True)
+            detail = f"{res.album or '(no album)'}"
+            conf = "n/a" if res.score is None else f"{res.score:.2f}"
+            detail += f"   confidence {conf}   {res.latency_s:.2f} s   at {current.t:5.1f} s"
+            win.text(detail[:110], (r.left + 8, r.top + 66), TEXT)
+
+        y = r.top + 90
+        for attempt in reversed(identifier.history[-3:]):
+            res = attempt.result
+            if res.matched:
+                line, color = f"match     {res.artist} - {res.title}", GOOD
+            elif res.error:
+                line, color = f"error     {res.error}", BAD
+            else:
+                line, color = "no match", DIM
+            win.text(f"{attempt.t:7.1f} s  {line}"[:120], (r.left + 8, y), color)
+            y += 16

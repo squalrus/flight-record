@@ -36,7 +36,7 @@ The repo is in the **pre-prototype** phase. Right now the work is small, standal
 
 ## Secrets and credentials
 
-- API keys and tokens (Discogs, ACRCloud, AudD, etc.) go in environment variables or an untracked `.env` file. **Never commit them.** Provide a committed `.env.example` listing the variable names with empty values.
+- API keys and tokens (Discogs, ACRCloud, AudD, etc.) go in environment variables or an untracked `.env.local` or `.env` file (both git-ignored; `flightrec.env.load_env()` reads them, shell variables first). **Never commit them, and never read, print, or log their values.** Provide a committed `.env.example` listing the variable names with empty values.
 - Do not paste keys into docs, issues, logs, or `RESULTS.md`.
 
 ## Copyright and samples

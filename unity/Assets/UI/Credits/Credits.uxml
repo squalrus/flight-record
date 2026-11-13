@@ -1,0 +1,33 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Common/Panel.uss"/>
+    <Style src="project://database/Assets/UI/Credits/Credits.uss"/>
+    <ui:VisualElement name="credits" class="modal-overlay credits">
+        <ui:VisualElement name="panel" class="panel">
+            <ui:VisualElement class="panel__header">
+                <ui:Label text="CREDITS" class="panel__title"/>
+                <ui:Button name="close-btn" text="X" class="close-btn"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="panel__rule"/>
+            <ui:VisualElement class="credits-section">
+                <ui:Label text="PROGRAMMING &amp; DESIGN" class="credits-section__heading"/>
+                <ui:Label text="Chad Schulz" class="credits-section__name"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="credits-section">
+                <ui:Label text="TESTING" class="credits-section__heading"/>
+                <ui:Label text="Finn Schulz" class="credits-section__name"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="credits-section">
+                <ui:Label text="FONTS" class="credits-section__heading"/>
+                <ui:Label text="Orbitron (Matt McInerney / The League of Moveable Type)" class="credits-section__name"/>
+                <ui:Label text="Share Tech Mono (Carrois Type Design)" class="credits-section__name"/>
+                <ui:Label text="Infinity Icons HU" class="credits-section__name"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="credits-section">
+                <ui:Label text="SPECIAL THANKS" class="credits-section__heading"/>
+                <ui:Label text="Renee Schulz" class="credits-section__name"/>
+                <ui:Label text="The Schulz Family" class="credits-section__name"/>
+                <ui:Label text="Adam Katyi, for inspiration" class="credits-section__name"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

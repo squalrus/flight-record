@@ -1,6 +1,6 @@
 # Experiments
 
-Each folder is a standalone project that retires one risk. The plan, methods, and success criteria are in [../docs/experiments.md](../docs/experiments.md). The ordered task list is [../BACKLOG.md](../BACKLOG.md).
+Each folder is a standalone project that retires one risk. The plan, methods, and success criteria are in [../docs/flightrec/experiments.md](../docs/flightrec/experiments.md). The ordered task list is [../BACKLOG.md](../BACKLOG.md).
 
 | Folder | Experiment | Needs hardware | Needs API key |
 | --- | --- | --- | --- |

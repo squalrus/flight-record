@@ -3,7 +3,7 @@
 - **Date:**
 - **Author / agent:**
 - **Commit:**
-- **Plan:** link to the section in `docs/experiments.md`
+- **Plan:** link to the section in `docs/flightrec/experiments.md`
 
 ## Setup
 

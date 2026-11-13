@@ -1,0 +1,1672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>InfinitySpace — Sector Reference</title>
+<style>
+  @font-face { font-family: 'Orbitron'; src: url('../../Assets/Art/Fonts/Orbitron/Orbitron-Regular SDF.ttf') format('truetype'); font-weight: 700; }
+  @font-face { font-family: 'InfinityIcons'; src: url('../../Assets/Art/Fonts/InfinityIconsHU/Infinity-Icons-HU.otf') format('opentype'); }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #0c0e14;
+    color: #9aa0b0;
+    font-family: sans-serif;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 1.5;
+    padding: 48px 56px 80px;
+    max-width: 1500px;
+  }
+
+  /* ── Page header ── */
+  .page-header { margin-bottom: 56px; border-bottom: 1px solid #1a1e2a; padding-bottom: 24px; }
+  .page-title { font-family: 'Orbitron', sans-serif; font-size: 26px; color: #e8eaf2; letter-spacing: 0.04em; margin-bottom: 6px; }
+  .page-subtitle { font-size: 12px; color: #8d98b3; }
+  .page-note { font-size: 11px; color: #7c88a4; margin-top: 4px; }
+
+  /* ── Section ── */
+  .section { margin-bottom: 72px; }
+  .section-heading {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #7c88a4;
+    margin-bottom: 24px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #13161e;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-accent { width: 3px; height: 14px; border-radius: 2px; flex-shrink: 0; }
+
+  /* ── Prose block for spawn system explanation ── */
+  .prose {
+    max-width: 760px;
+    font-size: 12px;
+    color: #8d98b3;
+    line-height: 1.7;
+  }
+  .prose + .prose { margin-top: 12px; }
+  .prose code {
+    font-family: monospace;
+    font-size: 11px;
+    color: #8090a8;
+    background: #10131c;
+    padding: 1px 5px;
+    border-radius: 3px;
+    border: 1px solid #181b25;
+  }
+  .prose strong { color: #7a8498; font-weight: 600; }
+
+  /* ── Formula display ── */
+  .formula-block {
+    display: inline-block;
+    margin: 14px 0;
+    padding: 10px 18px;
+    background: #10131c;
+    border: 1px solid #181b25;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 12px;
+    color: #7090b0;
+    line-height: 1.8;
+  }
+  .formula-block em { font-style: normal; color: #6a93b8; }
+
+  /* ── Common preset cards ── */
+  .preset-grid { display: flex; flex-wrap: wrap; gap: 12px; }
+  .preset-card {
+    background: #10131c;
+    border: 1px solid #181b25;
+    border-radius: 6px;
+    padding: 16px 20px;
+    min-width: 220px;
+    flex: 1;
+    max-width: 320px;
+  }
+  .preset-name {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: #8898b0;
+    margin-bottom: 10px;
+  }
+  .preset-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 3px 0;
+    border-bottom: 1px solid #0f121a;
+  }
+  .preset-row:last-child { border-bottom: none; }
+  .preset-key { font-size: 11px; color: #8d98b3; }
+  .preset-val { font-size: 11px; color: #7888a0; font-family: monospace; }
+  .preset-placeholder {
+    background: #0e1018;
+    border: 1px dashed #181b25;
+    border-radius: 6px;
+    padding: 20px;
+    min-width: 220px;
+    flex: 1;
+    max-width: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #7c88a4;
+  }
+
+  /* ── Sector cards ── */
+  .sector-grid { display: flex; flex-direction: column; gap: 28px; }
+  .sector-card {
+    background: #10131c;
+    border: 1px solid #181b25;
+    border-radius: 6px;
+  }
+  .sector-card-header {
+    padding: 16px 24px 14px;
+    border-bottom: 1px solid #13161e;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .sector-number-badge {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: #7c88a4;
+    margin-bottom: 3px;
+  }
+  .sector-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 20px;
+    color: #c8ccd8;
+    letter-spacing: 0.04em;
+  }
+  .sector-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .sector-meta-item {
+    font-size: 11px;
+    color: #7c88a4;
+  }
+  .sector-meta-val {
+    color: #8d98b3;
+    font-weight: 600;
+    font-family: monospace;
+  }
+
+  /* ── Sector card body: diagram + tables ── */
+  .sector-card-body {
+    display: flex;
+    gap: 0;
+  }
+
+  /* spawn diagram */
+  .sector-diagram-panel {
+    width: 240px;
+    min-width: 240px;
+    padding: 28px 24px;
+    border-right: 1px solid #13161e;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 20px;
+  }
+  .diagram-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #7c88a4;
+    margin-bottom: -12px;
+    align-self: flex-start;
+  }
+  .sector-map {
+    width: 176px;
+    height: 176px;
+    border: 1px solid #1e2535;
+    border-radius: 3px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0c0f17;
+  }
+  .sector-map-label {
+    position: absolute;
+    bottom: -18px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-family: monospace;
+    font-size: 9px;
+    color: #7c88a4;
+  }
+  .spawn-zone {
+    position: absolute;
+    border-style: solid;
+    border-radius: 2px;
+  }
+  .spawn-dots {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .dot {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .diagram-legend {
+    align-self: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+  }
+  .legend-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    color: #7c88a4;
+  }
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .legend-glyph {
+    font-family: 'InfinityIcons';
+    font-size: 14px;
+    line-height: 1;
+    flex-shrink: 0;
+    width: 16px;
+    text-align: center;
+  }
+
+  /* spawn tables */
+  .sector-tables-panel {
+    flex: 1;
+    padding: 24px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .spawn-table-wrapper {}
+  .spawn-table-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #7c88a4;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #0f121a;
+  }
+  .spawn-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .spawn-table th {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #7c88a4;
+    text-align: left;
+    padding: 0 12px 8px 0;
+    white-space: nowrap;
+  }
+  .spawn-table th:last-child { padding-right: 0; }
+  .spawn-table td {
+    font-size: 11px;
+    color: #8d98b3;
+    padding: 6px 12px 6px 0;
+    border-top: 1px solid #0f121a;
+    vertical-align: middle;
+  }
+  .spawn-table td:last-child { padding-right: 0; }
+  .spawn-table .cell-glyph {
+    font-family: 'InfinityIcons';
+    font-size: 20px;
+    line-height: 1;
+    width: 28px;
+  }
+  .spawn-table .cell-name { color: #8898a8; font-weight: 600; }
+  .spawn-table .cell-count { font-family: monospace; color: #a0aab8; font-weight: 700; }
+  .spawn-table .cell-spread { font-family: monospace; }
+  .spread-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .spread-bar-track {
+    width: 80px;
+    height: 4px;
+    background: #13161e;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .spread-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+  }
+  .spread-pct { font-family: monospace; font-size: 11px; color: #8d98b3; }
+  .cell-range { font-family: monospace; font-size: 11px; color: #7c88a4; }
+  .cell-total { font-family: monospace; font-size: 11px; color: #8d98b3; font-weight: 700; }
+
+  /* notes row */
+  .sector-notes {
+    padding: 0 28px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .sector-note {
+    font-size: 10px;
+    color: #7c88a4;
+    background: #0e1018;
+    border: 1px solid #13161e;
+    border-radius: 3px;
+    padding: 5px 10px;
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  /* future sector placeholder */
+  .sector-placeholder {
+    background: #0e1018;
+    border: 1px dashed #13161e;
+    border-radius: 6px;
+    padding: 32px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .sector-placeholder-number {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 48px;
+    color: #7c88a4;
+    letter-spacing: 0.02em;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .sector-placeholder-text {
+    font-size: 11px;
+    color: #7c88a4;
+    line-height: 1.7;
+  }
+  .sector-placeholder-text strong { color: #7c88a4; font-weight: 600; }
+
+  .divider { border: none; border-top: 1px solid #13161e; margin: 32px 0; }
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <div class="page-title">InfinitySpace — Sector Reference</div>
+  <div class="page-subtitle">Assets/Prefabs/World/Sector L0.prefab · Sector L1.prefab · Sector L2.prefab · Sector L3.prefab · Assets/Scripts/World/SectorSpawner.cs · Assets/Scripts/World/Sector.cs</div>
+  <div class="page-note">Spawn positions are randomized per-run. Counts, spreads, and entity types are Inspector-configured (baked) on each Sector prefab.</div>
+</header>
+
+
+<!-- ══════════════════════════════════════════════════════════ HOW SECTORS WORK -->
+
+<section class="section">
+  <div class="section-heading">
+    <span class="section-accent" style="background:#3d5a8a"></span>
+    How Sectors Work
+  </div>
+
+  <div class="prose">
+    <code>Main.unity</code> no longer holds a baked Sector instance — a <code>SectorSpawner</code> component instantiates a tier prefab in <code>Awake()</code>, weighted-picked from <code>SectorTypeTable.asset</code>'s <code>Tiers</code> array for the current <code>GameControl.CurrentSector</code>: <strong>Sector L0</strong> for the player's first sector, <strong>Sector L1</strong> from sector 2 through 4, <strong>Sector Triceptor LT</strong> at sector 5 specifically, then an even <strong>Sector L1</strong>/<strong>Sector L2</strong>/<strong>Sector L3</strong> 0.333/0.333/0.333 weighted pick from sector 6 onward. Because the assignment is data on the asset rather than hardcoded thresholds, tiers can also be configured to compete probabilistically within an overlapping sector range instead of switching outright — sector 6+ is itself an example of this now. <code>Instantiate()</code> does not apply scene-instance Inspector overrides, so each tier's config (size, entity counts, spreads, completion %, portal reference) is baked directly into its own prefab rather than overridden per scene.
+  </div>
+  <div class="prose" style="margin-top: 12px;">
+    A <strong>Sector</strong> is a Unity prefab with a <code>Sector</code> MonoBehaviour. Play area size is set by the <code>_size</code> Inspector field (world units) — the <code>SpriteRenderer</code> that previously drove this has been removed and the Sector's transform scale is now <code>(1, 1, 1)</code>. On <code>Start()</code>, the component spawns each entry in its <code>List&lt;EntitySpawn&gt;</code> at a random position within that entry's spread zone, offset from the Sector's own world position. All spawned objects become children of the Sector transform.
+  </div>
+  <div class="prose" style="margin-top: 12px;">
+    Entity types are configured as a <code>List&lt;EntitySpawn&gt;</code> — each entry carries a <strong>Prefab</strong>, <strong>Count</strong>, and <strong>Spread</strong>. Any number of types can be added or removed in the Inspector without code changes. <strong>Spread</strong> is a 1–100 value: <code>100</code> fills the full sector area; <code>90</code> constrains to 90% of each axis from center; <code>50</code> clusters to the inner half. Spread shapes a square region, not a circle.
+  </div>
+
+  <div class="formula-block">
+    halfSize = _size / 2<br>
+    range    = (spread / 100) × halfSize<br>
+    <em>posX     = sector.x + Random(−range, +range)</em><br>
+    <em>posY     = sector.y + Random(−range, +range)</em>
+  </div>
+
+  <div class="prose" style="margin-top: 4px;">
+    Sector L1 uses <strong>_size = 500</strong>, giving a half-size of <strong>250 units</strong>. A spread of <code>90</code> produces a ±225-unit spawn window on each axis. The area was deliberately widened so the player has to explore rather than seeing the whole enemy population from spawn. Sector L0 uses <strong>_size = 150</strong> (half-size <strong>75 units</strong>, ±67.5-unit spawn window at 90% spread) — a smaller, faster-to-clear opening sector for new runs. Sector L2 and Sector L3 both keep the same <strong>_size = 500</strong> as L1 but raise the entity composition instead of widening the play area further — L2 adds Probe II and Triceptor as live enemy types plus more asteroids, while L3 leans into a heavy Satellite IV presence (×20) backed by lighter Probe/Triceptor counts.
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════ SECTOR TYPES -->
+
+<section class="section">
+  <div class="section-heading">
+    <span class="section-accent" style="background:#a08030"></span>
+    Sector Types
+  </div>
+
+  <div class="prose">
+    A sector's <strong>type</strong> (objective) is layered orthogonally on top of its tier (L0/L1 above) rather than baked into the tier prefab. <code>Assets/Config/SectorTypeTable.asset</code> weighted-picks a <code>SectorType</code> per sector number; <code>SectorSpawner</code> applies it to the freshly instantiated Sector prefab before that Sector's own <code>Start()</code> runs.
+  </div>
+
+  <table class="spawn-table" style="margin-top: 16px; max-width: 640px;">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Sector Range</th>
+        <th>Weight</th>
+        <th>Win Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="cell-name">Clear Hostiles</td>
+        <td class="cell-range">1</td>
+        <td class="cell-count">1.0</td>
+        <td class="preset-key">80% of spawned enemies destroyed</td>
+      </tr>
+      <tr>
+        <td class="cell-name">Clear Hostiles</td>
+        <td class="cell-range">2-4</td>
+        <td class="cell-count">0.5</td>
+        <td class="preset-key">80% of spawned enemies destroyed</td>
+      </tr>
+      <tr>
+        <td class="cell-name">Relic</td>
+        <td class="cell-range">2-4</td>
+        <td class="cell-count">0.5</td>
+        <td class="preset-key">Collect the relic dropped by its seeded carrier</td>
+      </tr>
+      <tr>
+        <td class="cell-name">Large Threat</td>
+        <td class="cell-range">5</td>
+        <td class="cell-count">1.0</td>
+        <td class="preset-key">Destroy the boss + its escort (kill-all, not %)</td>
+      </tr>
+      <tr>
+        <td class="cell-name">Clear Hostiles</td>
+        <td class="cell-range">6+</td>
+        <td class="cell-count">0.5</td>
+        <td class="preset-key">80% of spawned enemies destroyed</td>
+      </tr>
+      <tr>
+        <td class="cell-name">Relic</td>
+        <td class="cell-range">6+</td>
+        <td class="cell-count">0.5</td>
+        <td class="preset-key">Collect the relic dropped by its seeded carrier</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="prose" style="margin-top: 16px;">
+    <strong>Relic</strong> seeds one already-spawned enemy or asteroid (picked at random, preferring enemies) as the carrier. Destroying it drops a <code>Relic</code> pickup (glyph <code>*</code>) with its own health — collecting it opens the portal, but shooting it down instead fails the sector (same Game Over flow as player death, distinct "RELIC LOST" subtitle).
+  </div>
+
+  <div class="prose" style="margin-top: 8px;">
+    <strong>Large Threat</strong> is exclusive to sector 5, where it always pairs with the dedicated <code>Sector Triceptor LT.prefab</code> tier (see <code>Tiers</code> in <code>SectorTypeTable.asset</code>) — Clear Hostiles/Relic aren't eligible for sector 5. It has its own win-condition override: <code>Sector</code> carries a second <code>_largeThreatEntities</code> list (the boss + escort) separate from the base <code>_entities</code> list, and <code>IsCleared</code>/<code>ObjectiveFraction</code> require that second list fully destroyed rather than a percentage — the base list (Asteroids, for this prefab) is optional flavor/cover, not part of the objective.
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════ COMMON SPAWN CONFIGS -->
+
+<section class="section">
+  <div class="section-heading">
+    <span class="section-accent" style="background:#2a5040"></span>
+    Common Spawn Configs
+  </div>
+
+  <div class="prose" style="margin-bottom: 20px;">
+    Planned reusable presets that individual sectors will reference instead of hard-coding raw counts. These are design targets — not yet implemented in code. When the <strong>DifficultyManager</strong> backlog item ships, these will likely become <code>ScriptableObject</code> assets.
+  </div>
+
+  <div class="preset-grid">
+
+    <div class="preset-card">
+      <div class="preset-name">Patrol · Opening</div>
+      <div class="preset-row"><span class="preset-key">Probe I</span><span class="preset-val">7 × 90%</span></div>
+      <div class="preset-row"><span class="preset-key">Probe II</span><span class="preset-val">0 × 90%</span></div>
+      <div class="preset-row"><span class="preset-key">Asteroid</span><span class="preset-val">3 × 90%</span></div>
+      <div style="margin-top: 10px; font-size: 10px; color: #1e2838; font-style: italic;">Current Sector L0 config — roughly 1/3 of Patrol · Standard's counts (rounded up), spawned via SectorSpawner for the player's first sector only.</div>
+    </div>
+
+    <div class="preset-card">
+      <div class="preset-name">Patrol · Standard</div>
+      <div class="preset-row"><span class="preset-key">Probe I</span><span class="preset-val">20 × 90%</span></div>
+      <div class="preset-row"><span class="preset-key">Probe II</span><span class="preset-val">0 × 90%</span></div>
+      <div class="preset-row"><span class="preset-key">Asteroid</span><span class="preset-val">10 × 90%</span></div>
+      <div style="margin-top: 10px; font-size: 10px; color: #1e2838; font-style: italic;">Current Sector L1 config. Probe II count is 0 — disabled for this sector. All entity types now share a 90% spread.</div>
+    </div>
+
+    <div class="preset-card">
+      <div class="preset-name">Patrol · Heavy</div>
+      <div class="preset-row"><span class="preset-key">Probe I</span><span class="preset-val">8 × 90%</span></div>
+      <div class="preset-row"><span class="preset-key">Probe II</span><span class="preset-val">8 × 90%</span></div>
+      <div class="preset-row"><span class="preset-key">Triceptor</span><span class="preset-val">8 × 90%</span></div>
+      <div class="preset-row"><span class="preset-key">Asteroid</span><span class="preset-val">15 × 90%</span></div>
+      <div style="margin-top: 10px; font-size: 10px; color: #1e2838; font-style: italic;">Current Sector L2 config (one of three weighted picks for sector 6+, alongside Sector L1 and Sector L3; sector 5 is the dedicated Sector Triceptor LT tier instead) — activates Probe II and Triceptor as live enemy types alongside Probe I, plus 50% more asteroids than Patrol · Standard.</div>
+    </div>
+
+    <div class="preset-card">
+      <div class="preset-name">Patrol · Swarm</div>
+      <div class="preset-row"><span class="preset-key">Probe I</span><span class="preset-val">2 × 90%</span></div>
+      <div class="preset-row"><span class="preset-key">Probe II</span><span class="preset-val">2 × 90%</span></div>
+      <div class="preset-row"><span class="preset-key">Triceptor</span><span class="preset-val">4 × 90%</span></div>
+      <div class="preset-row"><span class="preset-key">Satellite IV</span><span class="preset-val">20 × 90%</span></div>
+      <div class="preset-row"><span class="preset-key">Asteroid</span><span class="preset-val">15 × 90%</span></div>
+      <div style="margin-top: 10px; font-size: 10px; color: #1e2838; font-style: italic;">Current Sector L3 config (one of three weighted picks for sector 6+, alongside Sector L1 and Sector L2) — activates Satellite IV as a live enemy type at a much larger count than any other single type, while cutting Probe I/Probe II/Triceptor well below Sector L2's counts to compensate.</div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════ SECTORS -->
+
+<section class="section">
+  <div class="section-heading">
+    <span class="section-accent" style="background:#7040a0"></span>
+    Sectors
+  </div>
+
+  <div class="sector-grid">
+
+    <!-- ── Sector L0 ── -->
+    <div class="sector-card">
+      <div class="sector-card-header">
+        <div>
+          <div class="sector-number-badge">Sector</div>
+          <div class="sector-name">L0</div>
+        </div>
+        <div class="sector-meta-row">
+          <div class="sector-meta-item">Size <span class="sector-meta-val">150 × 150</span></div>
+          <div class="sector-meta-item">Total entities <span class="sector-meta-val">10</span></div>
+          <div class="sector-meta-item">Portal opens at <span class="sector-meta-val">80%</span></div>
+          <div class="sector-meta-item">Config <span class="sector-meta-val">Patrol · Opening</span></div>
+        </div>
+      </div>
+
+      <div class="sector-card-body">
+
+        <!-- Spawn map diagram -->
+        <div class="sector-diagram-panel">
+          <div class="diagram-label">Spawn Map</div>
+
+          <div style="position: relative;">
+            <div class="sector-map">
+              <!-- 90% zone — shared by all entity types -->
+              <div class="spawn-zone" style="
+                inset: 5%;
+                border-color: #553030;
+                border-width: 1px;
+                border-style: dashed;
+              "></div>
+
+              <!-- Representative dots — Probe I (red), ×7 -->
+              <div class="dot" style="background:#7a3535; top:22%; left:38%;"></div>
+              <div class="dot" style="background:#7a3535; top:48%; left:18%;"></div>
+              <div class="dot" style="background:#7a3535; top:72%; left:52%;"></div>
+              <div class="dot" style="background:#7a3535; top:35%; left:72%;"></div>
+              <div class="dot" style="background:#7a3535; top:60%; left:30%;"></div>
+              <div class="dot" style="background:#7a3535; top:80%; left:75%;"></div>
+              <div class="dot" style="background:#7a3535; top:14%; left:80%;"></div>
+
+              <!-- Asteroids (steel, larger), ×3 -->
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:8%;  left:8%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:90%; left:10%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:50%; left:90%;"></div>
+            </div>
+            <div class="sector-map-label">150 × 150 world units</div>
+          </div>
+
+          <div class="diagram-legend">
+            <div class="legend-row">
+              <span class="legend-glyph" style="color:#7a3535">C</span>
+              <span>Probe I (×7, 90%)</span>
+            </div>
+            <div class="legend-row">
+              <span class="legend-glyph" style="color:#503060">e</span>
+              <span>Probe II (×0 — disabled this sector)</span>
+            </div>
+            <div class="legend-row">
+              <div class="legend-dot" style="background:#2a3848; width:7px; height:7px; border-radius:50%;"></div>
+              <span>Asteroid (×3, 90%)</span>
+            </div>
+            <div class="legend-row" style="margin-top: 4px;">
+              <div style="width: 16px; height: 8px; border: 1px dashed #553030;"></div>
+              <span>90% spawn boundary (shared by all types)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Entity spawn table -->
+        <div class="sector-tables-panel">
+
+          <div class="spawn-table-wrapper">
+            <div class="spawn-table-label">Enemies</div>
+            <table class="spawn-table">
+              <thead>
+                <tr>
+                  <th style="width:28px;"></th>
+                  <th>Entity</th>
+                  <th>Count</th>
+                  <th>Spread</th>
+                  <th>Effective Range</th>
+                  <th>Script</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="cell-glyph" style="color:#b04040">C</td>
+                  <td class="cell-name">Probe I</td>
+                  <td class="cell-count">7</td>
+                  <td>
+                    <div class="spread-bar-wrap">
+                      <div class="spread-bar-track">
+                        <div class="spread-bar-fill" style="width:90%; background:#553535;"></div>
+                      </div>
+                      <span class="spread-pct">90%</span>
+                    </div>
+                  </td>
+                  <td class="cell-range">± 67.5 units</td>
+                  <td class="preset-key" style="font-family:monospace; font-size:10px;">Ship + Enemy</td>
+                </tr>
+                <tr>
+                  <td class="cell-glyph" style="color:#7050a0">a</td>
+                  <td class="cell-name">Probe II</td>
+                  <td class="cell-count">0</td>
+                  <td>
+                    <div class="spread-bar-wrap">
+                      <div class="spread-bar-track">
+                        <div class="spread-bar-fill" style="width:90%; background:#402860;"></div>
+                      </div>
+                      <span class="spread-pct">90%</span>
+                    </div>
+                  </td>
+                  <td class="cell-range">± 67.5 units</td>
+                  <td class="preset-key" style="font-family:monospace; font-size:10px;">Ship + Enemy</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="spawn-table-wrapper">
+            <div class="spawn-table-label">Hazards</div>
+            <table class="spawn-table">
+              <thead>
+                <tr>
+                  <th style="width:28px;"></th>
+                  <th>Entity</th>
+                  <th>Count</th>
+                  <th>Spread</th>
+                  <th>Effective Range</th>
+                  <th>Script</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="cell-glyph" style="color:#4a5c6a">z</td>
+                  <td class="cell-name">Asteroid</td>
+                  <td class="cell-count">3</td>
+                  <td>
+                    <div class="spread-bar-wrap">
+                      <div class="spread-bar-track">
+                        <div class="spread-bar-fill" style="width:90%; background:#253040;"></div>
+                      </div>
+                      <span class="spread-pct">90%</span>
+                    </div>
+                  </td>
+                  <td class="cell-range">± 67.5 units</td>
+                  <td class="preset-key" style="font-family:monospace; font-size:10px;">Asteroid</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="spawn-table-wrapper">
+            <div class="spawn-table-label">Totals</div>
+            <table class="spawn-table">
+              <tbody>
+                <tr>
+                  <td class="preset-key" style="width:160px;">Total enemies</td>
+                  <td class="cell-total">7</td>
+                </tr>
+                <tr>
+                  <td class="preset-key">Total hazards</td>
+                  <td class="cell-total">3</td>
+                </tr>
+                <tr>
+                  <td class="preset-key">Total entities</td>
+                  <td class="cell-total">10</td>
+                </tr>
+                <tr>
+                  <td class="preset-key">Max power-up drops</td>
+                  <td class="cell-total" style="color:#508060;">~56</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="sector-notes">
+        <div class="sector-note">Spawned instead of Sector L1 only for the player's very first sector — the sole <code>Tiers</code> candidate on <code>SectorTypeTable.asset</code> for sector 1, with Sector L1 taking over for sectors 2-4.</div>
+        <div class="sector-note">Counts are roughly 1/3 of Sector L1's (10 → 3 Asteroids, 20 → 7 Probe Is, rounded up), giving new runs a smaller, faster-to-clear opening sector before scaling up to the standard configuration.</div>
+        <div class="sector-note">Portal opens once 80% of spawned enemies (Probe I + Probe II, not Asteroids) are destroyed, same threshold as Sector L1.</div>
+        <div class="sector-note">Portal vanishes and the sector fails if not exited within <code>_timeoutSeconds</code> (600s / 10 min default) of sector start, regardless of objective progress — same default as every other tier unless overridden per-prefab.</div>
+        <div class="sector-note">Baked as its own prefab (<code>Sector L0.prefab</code>) rather than a scene-instance override, since <code>SectorSpawner</code> calls <code>Instantiate()</code> at runtime — Inspector overrides on a scene instance would not apply.</div>
+        <div class="sector-note">96 purely decorative <code>BoundaryMarker</code> instances are placed in a ring starting at <code>_size / 2</code> (75 units, +0–16% outward jitter, so 75–87 units) around the sector edge — no collider/health, just a visual cue for where the play area ends. Not counted in "Total entities" above.</div>
+      </div>
+    </div>
+
+
+    <!-- ── Sector L1 ── -->
+    <div class="sector-card">
+      <div class="sector-card-header">
+        <div>
+          <div class="sector-number-badge">Sector</div>
+          <div class="sector-name">L1</div>
+        </div>
+        <div class="sector-meta-row">
+          <div class="sector-meta-item">Size <span class="sector-meta-val">500 × 500</span></div>
+          <div class="sector-meta-item">Total entities <span class="sector-meta-val">30</span></div>
+          <div class="sector-meta-item">Portal opens at <span class="sector-meta-val">80%</span></div>
+          <div class="sector-meta-item">Config <span class="sector-meta-val">Patrol · Standard</span></div>
+        </div>
+      </div>
+
+      <div class="sector-card-body">
+
+        <!-- Spawn map diagram -->
+        <div class="sector-diagram-panel">
+          <div class="diagram-label">Spawn Map</div>
+
+          <div style="position: relative;">
+            <div class="sector-map">
+              <!-- 90% zone — shared by all entity types now -->
+              <div class="spawn-zone" style="
+                inset: 5%;
+                border-color: #553030;
+                border-width: 1px;
+                border-style: dashed;
+              "></div>
+
+              <!-- Representative dots — Probe I (red) -->
+              <div class="dot" style="background:#7a3535; top:22%; left:38%;"></div>
+              <div class="dot" style="background:#7a3535; top:48%; left:18%;"></div>
+              <div class="dot" style="background:#7a3535; top:72%; left:52%;"></div>
+              <div class="dot" style="background:#7a3535; top:35%; left:72%;"></div>
+              <div class="dot" style="background:#7a3535; top:60%; left:30%;"></div>
+              <div class="dot" style="background:#7a3535; top:28%; left:60%;"></div>
+              <div class="dot" style="background:#7a3535; top:80%; left:75%;"></div>
+              <div class="dot" style="background:#7a3535; top:14%; left:80%;"></div>
+              <div class="dot" style="background:#7a3535; top:55%; left:68%;"></div>
+              <div class="dot" style="background:#7a3535; top:40%; left:42%;"></div>
+              <div class="dot" style="background:#7a3535; top:10%; left:50%;"></div>
+              <div class="dot" style="background:#7a3535; top:65%; left:12%;"></div>
+              <div class="dot" style="background:#7a3535; top:85%; left:40%;"></div>
+              <div class="dot" style="background:#7a3535; top:30%; left:90%;"></div>
+              <div class="dot" style="background:#7a3535; top:45%; left:55%;"></div>
+              <div class="dot" style="background:#7a3535; top:18%; left:62%;"></div>
+              <div class="dot" style="background:#7a3535; top:75%; left:25%;"></div>
+              <div class="dot" style="background:#7a3535; top:52%; left:82%;"></div>
+              <div class="dot" style="background:#7a3535; top:8%;  left:30%;"></div>
+              <div class="dot" style="background:#7a3535; top:90%; left:60%;"></div>
+
+              <!-- Asteroids (steel, larger) -->
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:8%;  left:8%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:90%; left:10%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:5%;  left:90%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:92%; left:88%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:50%; left:5%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:6%;  left:50%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:95%; left:48%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:50%; left:95%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:25%; left:6%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:75%; left:92%;"></div>
+            </div>
+            <div class="sector-map-label">500 × 500 world units</div>
+          </div>
+
+          <div class="diagram-legend">
+            <div class="legend-row">
+              <span class="legend-glyph" style="color:#7a3535">C</span>
+              <span>Probe I (×20, 90%)</span>
+            </div>
+            <div class="legend-row">
+              <span class="legend-glyph" style="color:#503060">e</span>
+              <span>Probe II (×0 — disabled this sector)</span>
+            </div>
+            <div class="legend-row">
+              <div class="legend-dot" style="background:#2a3848; width:7px; height:7px; border-radius:50%;"></div>
+              <span>Asteroid (×10, 90%)</span>
+            </div>
+            <div class="legend-row" style="margin-top: 4px;">
+              <div style="width: 16px; height: 8px; border: 1px dashed #553030;"></div>
+              <span>90% spawn boundary (shared by all types)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Entity spawn table -->
+        <div class="sector-tables-panel">
+
+          <div class="spawn-table-wrapper">
+            <div class="spawn-table-label">Enemies</div>
+            <table class="spawn-table">
+              <thead>
+                <tr>
+                  <th style="width:28px;"></th>
+                  <th>Entity</th>
+                  <th>Count</th>
+                  <th>Spread</th>
+                  <th>Effective Range</th>
+                  <th>Script</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="cell-glyph" style="color:#b04040">C</td>
+                  <td class="cell-name">Probe I</td>
+                  <td class="cell-count">20</td>
+                  <td>
+                    <div class="spread-bar-wrap">
+                      <div class="spread-bar-track">
+                        <div class="spread-bar-fill" style="width:90%; background:#553535;"></div>
+                      </div>
+                      <span class="spread-pct">90%</span>
+                    </div>
+                  </td>
+                  <td class="cell-range">± 225 units</td>
+                  <td class="preset-key" style="font-family:monospace; font-size:10px;">Ship + Enemy</td>
+                </tr>
+                <tr>
+                  <td class="cell-glyph" style="color:#7050a0">a</td>
+                  <td class="cell-name">Probe II</td>
+                  <td class="cell-count">0</td>
+                  <td>
+                    <div class="spread-bar-wrap">
+                      <div class="spread-bar-track">
+                        <div class="spread-bar-fill" style="width:90%; background:#402860;"></div>
+                      </div>
+                      <span class="spread-pct">90%</span>
+                    </div>
+                  </td>
+                  <td class="cell-range">± 225 units</td>
+                  <td class="preset-key" style="font-family:monospace; font-size:10px;">Ship + Enemy</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="spawn-table-wrapper">
+            <div class="spawn-table-label">Hazards</div>
+            <table class="spawn-table">
+              <thead>
+                <tr>
+                  <th style="width:28px;"></th>
+                  <th>Entity</th>
+                  <th>Count</th>
+                  <th>Spread</th>
+                  <th>Effective Range</th>
+                  <th>Script</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="cell-glyph" style="color:#4a5c6a">z</td>
+                  <td class="cell-name">Asteroid</td>
+                  <td class="cell-count">10</td>
+                  <td>
+                    <div class="spread-bar-wrap">
+                      <div class="spread-bar-track">
+                        <div class="spread-bar-fill" style="width:90%; background:#253040;"></div>
+                      </div>
+                      <span class="spread-pct">90%</span>
+                    </div>
+                  </td>
+                  <td class="cell-range">± 225 units</td>
+                  <td class="preset-key" style="font-family:monospace; font-size:10px;">Asteroid</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="spawn-table-wrapper">
+            <div class="spawn-table-label">Totals</div>
+            <table class="spawn-table">
+              <tbody>
+                <tr>
+                  <td class="preset-key" style="width:160px;">Total enemies</td>
+                  <td class="cell-total">20</td>
+                </tr>
+                <tr>
+                  <td class="preset-key">Total hazards</td>
+                  <td class="cell-total">10</td>
+                </tr>
+                <tr>
+                  <td class="preset-key">Total entities</td>
+                  <td class="cell-total">30</td>
+                </tr>
+                <tr>
+                  <td class="preset-key">Max power-up drops</td>
+                  <td class="cell-total" style="color:#508060;">~160</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="sector-notes">
+        <div class="sector-note">Probe II count is 0 for Sector L1 — disabled while it's tuned (see the Probe II Enemy Behavior Enhancement backlog item). It now shares Probe I's orbit-burst AI and detection/firing/orbit ranges, but is faster, fires more rapidly, deals less damage, and has less health (see Entity Reference); Probe II keeps its tighter drop variance (5–9 vs Probe I's 4–8) for whenever it's re-enabled.</div>
+        <div class="sector-note">Max drops ≈ 160 assumes all 20 Probe Is each drop their maximum (8). In practice, drops average ~5–6 per enemy.</div>
+        <div class="sector-note">Portal opens once 80% of spawned enemies (Probe I + Probe II, not Asteroids) are destroyed — <code>_completionPercent</code> baked on the Sector L1 prefab. <code>Sector.cs</code>'s <code>RequiredFraction</code> reads this value.</div>
+        <div class="sector-note">Portal vanishes and the sector fails if not exited within <code>_timeoutSeconds</code> (600s / 10 min default) of sector start, regardless of objective progress.</div>
+        <div class="sector-note"><code>_size</code> was deliberately widened from 50 to 500 so the player has to explore to find enemies rather than seeing the whole population at spawn. (An unused <code>BoxCollider2D</code> the Sector prefab carried since its first version — never wired to any logic — was removed.)</div>
+        <div class="sector-note">The SpriteRenderer has been removed from the Sector prefab. Play area is now owned by the <code>_size</code> field on <code>Sector.cs</code>; transform scale is (1, 1, 1).</div>
+        <div class="sector-note">Renamed from <code>Sector.prefab</code> to <code>Sector L1.prefab</code> to make room for additional sector configurations (Sector L2, L3, …) without overloading one prefab's Inspector values per level.</div>
+        <div class="sector-note">224 purely decorative <code>BoundaryMarker</code> instances are placed in a ring starting at <code>_size / 2</code> (250 units, +0–16% outward jitter, so 250–290 units) around the sector edge — no collider/health, just a visual cue for where the play area ends. Not counted in "Total entities" above.</div>
+      </div>
+    </div>
+
+
+    <!-- ── Sector Triceptor LT (sector 5, Large Threat type) ── -->
+    <div class="sector-card">
+      <div class="sector-card-header">
+        <div>
+          <div class="sector-number-badge">Sector</div>
+          <div class="sector-name">Triceptor LT</div>
+        </div>
+        <div class="sector-meta-row">
+          <div class="sector-meta-item">Size <span class="sector-meta-val">180 × 180</span></div>
+          <div class="sector-meta-item">Total entities <span class="sector-meta-val">20</span></div>
+          <div class="sector-meta-item">Portal opens at <span class="sector-meta-val">all 5 large-threat enemies</span></div>
+          <div class="sector-meta-item">Config <span class="sector-meta-val">Triceptor LT Boss</span></div>
+        </div>
+      </div>
+
+      <div class="sector-card-body">
+
+        <!-- Spawn map diagram -->
+        <div class="sector-diagram-panel">
+          <div class="diagram-label">Spawn Map</div>
+
+          <div style="position: relative;">
+            <div class="sector-map">
+              <!-- 90% zone — shared by all entity types -->
+              <div class="spawn-zone" style="
+                inset: 5%;
+                border-color: #553030;
+                border-width: 1px;
+                border-style: dashed;
+              "></div>
+
+              <!-- Triceptor LT boss (gold, larger), ×1 -->
+              <div class="dot" style="background:#c9a227; width:11px; height:11px; top:50%; left:50%;"></div>
+
+              <!-- Probe II (medium red), ×4 -->
+              <div class="dot" style="background:#934545; top:25%; left:30%;"></div>
+              <div class="dot" style="background:#934545; top:70%; left:65%;"></div>
+              <div class="dot" style="background:#934545; top:30%; left:75%;"></div>
+              <div class="dot" style="background:#934545; top:75%; left:25%;"></div>
+
+              <!-- Asteroids (steel, larger), ×15 -->
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:8%;  left:10%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:92%; left:12%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:6%;  left:88%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:90%; left:90%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:45%; left:6%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:8%;  left:48%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:92%; left:50%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:50%; left:93%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:20%; left:8%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:80%; left:92%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:14%; left:94%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:86%; left:7%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:38%; left:38%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:93%; left:70%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:7%;  left:28%;"></div>
+            </div>
+            <div class="sector-map-label">180 × 180 world units</div>
+          </div>
+
+          <div class="diagram-legend">
+            <div class="legend-row">
+              <div class="legend-dot" style="background:#c9a227; width:9px; height:9px; border-radius:50%;"></div>
+              <span>Triceptor LT — boss (×1, 90%)</span>
+            </div>
+            <div class="legend-row">
+              <span class="legend-glyph" style="color:#934545">e</span>
+              <span>Probe II (×4, 90%)</span>
+            </div>
+            <div class="legend-row">
+              <div class="legend-dot" style="background:#2a3848; width:7px; height:7px; border-radius:50%;"></div>
+              <span>Asteroid (×15, 90%)</span>
+            </div>
+            <div class="legend-row" style="margin-top: 4px;">
+              <div style="width: 16px; height: 8px; border: 1px dashed #553030;"></div>
+              <span>90% spawn boundary (shared by all types)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Entity spawn table -->
+        <div class="sector-tables-panel">
+
+          <div class="spawn-table-wrapper">
+            <div class="spawn-table-label">Enemies</div>
+            <table class="spawn-table">
+              <thead>
+                <tr>
+                  <th style="width:28px;"></th>
+                  <th>Entity</th>
+                  <th>Count</th>
+                  <th>Spread</th>
+                  <th>Effective Range</th>
+                  <th>Script</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="cell-glyph" style="color:#c9a227">f</td>
+                  <td class="cell-name">Triceptor LT (boss)</td>
+                  <td class="cell-count">1</td>
+                  <td>
+                    <div class="spread-bar-wrap">
+                      <div class="spread-bar-track">
+                        <div class="spread-bar-fill" style="width:90%; background:#5c4528;"></div>
+                      </div>
+                      <span class="spread-pct">90%</span>
+                    </div>
+                  </td>
+                  <td class="cell-range">± 81 units</td>
+                  <td class="preset-key" style="font-family:monospace; font-size:10px;">Ship + Enemy + Triceptor</td>
+                </tr>
+                <tr>
+                  <td class="cell-glyph" style="color:#c05050">e</td>
+                  <td class="cell-name">Probe II</td>
+                  <td class="cell-count">4</td>
+                  <td>
+                    <div class="spread-bar-wrap">
+                      <div class="spread-bar-track">
+                        <div class="spread-bar-fill" style="width:90%; background:#5c3030;"></div>
+                      </div>
+                      <span class="spread-pct">90%</span>
+                    </div>
+                  </td>
+                  <td class="cell-range">± 81 units</td>
+                  <td class="preset-key" style="font-family:monospace; font-size:10px;">Ship + Enemy</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="spawn-table-wrapper">
+            <div class="spawn-table-label">Hazards</div>
+            <table class="spawn-table">
+              <thead>
+                <tr>
+                  <th style="width:28px;"></th>
+                  <th>Entity</th>
+                  <th>Count</th>
+                  <th>Spread</th>
+                  <th>Effective Range</th>
+                  <th>Script</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="cell-glyph" style="color:#4a5c6a">z</td>
+                  <td class="cell-name">Asteroid</td>
+                  <td class="cell-count">15</td>
+                  <td>
+                    <div class="spread-bar-wrap">
+                      <div class="spread-bar-track">
+                        <div class="spread-bar-fill" style="width:90%; background:#253040;"></div>
+                      </div>
+                      <span class="spread-pct">90%</span>
+                    </div>
+                  </td>
+                  <td class="cell-range">± 81 units</td>
+                  <td class="preset-key" style="font-family:monospace; font-size:10px;">Asteroid</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="spawn-table-wrapper">
+            <div class="spawn-table-label">Totals</div>
+            <table class="spawn-table">
+              <tbody>
+                <tr>
+                  <td class="preset-key" style="width:160px;">Total enemies</td>
+                  <td class="cell-total">5</td>
+                </tr>
+                <tr>
+                  <td class="preset-key">Total hazards</td>
+                  <td class="cell-total">15</td>
+                </tr>
+                <tr>
+                  <td class="preset-key">Total entities</td>
+                  <td class="cell-total">20</td>
+                </tr>
+                <tr>
+                  <td class="preset-key">Max power-up drops</td>
+                  <td class="cell-total" style="color:#508060;">~61</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="sector-notes">
+        <div class="sector-note">Spawned exclusively at sector 5 — the sole <code>Tiers</code> candidate on <code>SectorTypeTable.asset</code> for that sector number, always paired with the <code>LargeThreat</code> entry in the same asset's <code>Options</code> array (see Sector Types above) so this tier and its mission text always go together.</div>
+        <div class="sector-note">Single tough enemy in place of the usual crowd — <code>Triceptor LT.prefab</code> shares <code>Triceptor.prefab</code>'s glyph (<code>f</code>) and 3-cannon volley AI but at <code>MaxHealth: 750</code> (vs. Triceptor's much lower base health) and 3× visual scale, with a thin Probe II escort rather than a full enemy roster. Its volley fires twice as often as the regular Triceptor's (<code>VolleyInterval</code> 2 vs. 4).</div>
+        <div class="sector-note">Drop range follows the same <code>Random.Range(PartsDrop - PartsVariance, PartsDrop + PartsVariance)</code> formula as every other enemy (<code>Ship.cs</code>): Probe II (Drop 7 / Var 2) drops 5–9, Triceptor LT (Drop 25 / Var 0) always drops exactly 25. Max drops ≈ 61 assumes every enemy drops its maximum (4 × 9 Probe II + 1 × 25 Triceptor LT); in practice, Probe II drops average well below its max per enemy.</div>
+        <div class="sector-note">Portal opens once <strong>all 5</strong> enemies in <code>Sector._largeThreatEntities</code> (the Triceptor LT boss + its 4 Probe II escort) are destroyed — a kill-all condition, not the percentage-based <code>_completionPercent</code> threshold the other tiers use. The 15 Asteroids live in the base <code>_entities</code> list instead, so they spawn as flavor/cover but are optional — not required for the portal to open.</div>
+        <div class="sector-note"><code>_size = 180</code> — smaller than every other tier (L1/L2 are 500) so a single boss-plus-escort encounter doesn't feel sparse in a wide-open map.</div>
+        <div class="sector-note">96 purely decorative <code>BoundaryMarker</code> instances are placed in a ring starting at <code>_size / 2</code> (90 units, +0–8% outward jitter, so 90–97 units) around the sector edge. Not counted in "Total entities" above.</div>
+        <div class="sector-note">Portal vanishes and the sector fails if not exited within <code>_timeoutSeconds</code> (600s / 10 min default) of sector start, regardless of objective progress.</div>
+      </div>
+    </div>
+
+
+    <!-- ── Sector L2 ── -->
+    <div class="sector-card">
+      <div class="sector-card-header">
+        <div>
+          <div class="sector-number-badge">Sector</div>
+          <div class="sector-name">L2</div>
+        </div>
+        <div class="sector-meta-row">
+          <div class="sector-meta-item">Size <span class="sector-meta-val">500 × 500</span></div>
+          <div class="sector-meta-item">Total entities <span class="sector-meta-val">39</span></div>
+          <div class="sector-meta-item">Portal opens at <span class="sector-meta-val">80%</span></div>
+          <div class="sector-meta-item">Config <span class="sector-meta-val">Patrol · Heavy</span></div>
+        </div>
+      </div>
+
+      <div class="sector-card-body">
+
+        <!-- Spawn map diagram -->
+        <div class="sector-diagram-panel">
+          <div class="diagram-label">Spawn Map</div>
+
+          <div style="position: relative;">
+            <div class="sector-map">
+              <!-- 90% zone — shared by all entity types -->
+              <div class="spawn-zone" style="
+                inset: 5%;
+                border-color: #553030;
+                border-width: 1px;
+                border-style: dashed;
+              "></div>
+
+              <!-- Probe I (dark red), ×8 -->
+              <div class="dot" style="background:#7a3535; top:20%; left:35%;"></div>
+              <div class="dot" style="background:#7a3535; top:45%; left:15%;"></div>
+              <div class="dot" style="background:#7a3535; top:70%; left:55%;"></div>
+              <div class="dot" style="background:#7a3535; top:30%; left:75%;"></div>
+              <div class="dot" style="background:#7a3535; top:60%; left:25%;"></div>
+              <div class="dot" style="background:#7a3535; top:80%; left:80%;"></div>
+              <div class="dot" style="background:#7a3535; top:10%; left:60%;"></div>
+              <div class="dot" style="background:#7a3535; top:50%; left:45%;"></div>
+
+              <!-- Probe II (medium red), ×8 -->
+              <div class="dot" style="background:#934545; top:25%; left:55%;"></div>
+              <div class="dot" style="background:#934545; top:55%; left:20%;"></div>
+              <div class="dot" style="background:#934545; top:75%; left:40%;"></div>
+              <div class="dot" style="background:#934545; top:15%; left:30%;"></div>
+              <div class="dot" style="background:#934545; top:40%; left:70%;"></div>
+              <div class="dot" style="background:#934545; top:65%; left:10%;"></div>
+              <div class="dot" style="background:#934545; top:85%; left:60%;"></div>
+              <div class="dot" style="background:#934545; top:35%; left:90%;"></div>
+
+              <!-- Triceptor (amber), ×8 -->
+              <div class="dot" style="background:#8a5a30; top:12%; left:45%;"></div>
+              <div class="dot" style="background:#8a5a30; top:48%; left:12%;"></div>
+              <div class="dot" style="background:#8a5a30; top:68%; left:68%;"></div>
+              <div class="dot" style="background:#8a5a30; top:22%; left:20%;"></div>
+              <div class="dot" style="background:#8a5a30; top:58%; left:55%;"></div>
+              <div class="dot" style="background:#8a5a30; top:78%; left:30%;"></div>
+              <div class="dot" style="background:#8a5a30; top:32%; left:85%;"></div>
+              <div class="dot" style="background:#8a5a30; top:88%; left:15%;"></div>
+
+              <!-- Asteroids (steel, larger), ×15 -->
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:8%;  left:8%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:90%; left:10%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:5%;  left:90%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:92%; left:88%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:50%; left:5%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:6%;  left:50%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:95%; left:48%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:50%; left:95%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:25%; left:6%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:75%; left:92%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:15%; left:95%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:85%; left:5%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:40%; left:38%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:95%; left:75%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:5%;  left:25%;"></div>
+            </div>
+            <div class="sector-map-label">500 × 500 world units</div>
+          </div>
+
+          <div class="diagram-legend">
+            <div class="legend-row">
+              <span class="legend-glyph" style="color:#7a3535">C</span>
+              <span>Probe I (×8, 90%)</span>
+            </div>
+            <div class="legend-row">
+              <span class="legend-glyph" style="color:#934545">e</span>
+              <span>Probe II (×8, 90%)</span>
+            </div>
+            <div class="legend-row">
+              <span class="legend-glyph" style="color:#8a5a30">f</span>
+              <span>Triceptor (×8, 90%)</span>
+            </div>
+            <div class="legend-row">
+              <div class="legend-dot" style="background:#2a3848; width:7px; height:7px; border-radius:50%;"></div>
+              <span>Asteroid (×15, 90%)</span>
+            </div>
+            <div class="legend-row" style="margin-top: 4px;">
+              <div style="width: 16px; height: 8px; border: 1px dashed #553030;"></div>
+              <span>90% spawn boundary (shared by all types)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Entity spawn table -->
+        <div class="sector-tables-panel">
+
+          <div class="spawn-table-wrapper">
+            <div class="spawn-table-label">Enemies</div>
+            <table class="spawn-table">
+              <thead>
+                <tr>
+                  <th style="width:28px;"></th>
+                  <th>Entity</th>
+                  <th>Count</th>
+                  <th>Spread</th>
+                  <th>Effective Range</th>
+                  <th>Script</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="cell-glyph" style="color:#b04040">C</td>
+                  <td class="cell-name">Probe I</td>
+                  <td class="cell-count">8</td>
+                  <td>
+                    <div class="spread-bar-wrap">
+                      <div class="spread-bar-track">
+                        <div class="spread-bar-fill" style="width:90%; background:#553535;"></div>
+                      </div>
+                      <span class="spread-pct">90%</span>
+                    </div>
+                  </td>
+                  <td class="cell-range">± 225 units</td>
+                  <td class="preset-key" style="font-family:monospace; font-size:10px;">Ship + Enemy</td>
+                </tr>
+                <tr>
+                  <td class="cell-glyph" style="color:#c05050">e</td>
+                  <td class="cell-name">Probe II</td>
+                  <td class="cell-count">8</td>
+                  <td>
+                    <div class="spread-bar-wrap">
+                      <div class="spread-bar-track">
+                        <div class="spread-bar-fill" style="width:90%; background:#5c3030;"></div>
+                      </div>
+                      <span class="spread-pct">90%</span>
+                    </div>
+                  </td>
+                  <td class="cell-range">± 225 units</td>
+                  <td class="preset-key" style="font-family:monospace; font-size:10px;">Ship + Enemy</td>
+                </tr>
+                <tr>
+                  <td class="cell-glyph" style="color:#c0793f">f</td>
+                  <td class="cell-name">Triceptor</td>
+                  <td class="cell-count">8</td>
+                  <td>
+                    <div class="spread-bar-wrap">
+                      <div class="spread-bar-track">
+                        <div class="spread-bar-fill" style="width:90%; background:#5c4528;"></div>
+                      </div>
+                      <span class="spread-pct">90%</span>
+                    </div>
+                  </td>
+                  <td class="cell-range">± 225 units</td>
+                  <td class="preset-key" style="font-family:monospace; font-size:10px;">Ship + Enemy + Triceptor</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="spawn-table-wrapper">
+            <div class="spawn-table-label">Hazards</div>
+            <table class="spawn-table">
+              <thead>
+                <tr>
+                  <th style="width:28px;"></th>
+                  <th>Entity</th>
+                  <th>Count</th>
+                  <th>Spread</th>
+                  <th>Effective Range</th>
+                  <th>Script</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="cell-glyph" style="color:#4a5c6a">z</td>
+                  <td class="cell-name">Asteroid</td>
+                  <td class="cell-count">15</td>
+                  <td>
+                    <div class="spread-bar-wrap">
+                      <div class="spread-bar-track">
+                        <div class="spread-bar-fill" style="width:90%; background:#253040;"></div>
+                      </div>
+                      <span class="spread-pct">90%</span>
+                    </div>
+                  </td>
+                  <td class="cell-range">± 225 units</td>
+                  <td class="preset-key" style="font-family:monospace; font-size:10px;">Asteroid</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="spawn-table-wrapper">
+            <div class="spawn-table-label">Totals</div>
+            <table class="spawn-table">
+              <tbody>
+                <tr>
+                  <td class="preset-key" style="width:160px;">Total enemies</td>
+                  <td class="cell-total">24</td>
+                </tr>
+                <tr>
+                  <td class="preset-key">Total hazards</td>
+                  <td class="cell-total">15</td>
+                </tr>
+                <tr>
+                  <td class="preset-key">Total entities</td>
+                  <td class="cell-total">39</td>
+                </tr>
+                <tr>
+                  <td class="preset-key">Max power-up drops</td>
+                  <td class="cell-total" style="color:#508060;">~240</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="sector-notes">
+        <div class="sector-note">Spawned for roughly a third of sectors from sector 6 onward — <code>SectorTypeTable.asset</code>'s <code>Tiers</code> array now weights this prefab at 0.333 against equal-weight 0.333 entries for Sector L1 and the newer Sector L3 over that same range (<code>SectorSpawner.Awake()</code> reads the weighted pick via <code>PickTier()</code>), after Sector L1 covers sectors 2 through 4 outright and a dedicated Sector Triceptor LT prefab is spawned at sector 5 specifically.</div>
+        <div class="sector-note">First sector tier to activate Probe II and Triceptor as live spawned enemies — both are baked at count 0 in Sector L0 and L1. Probe I drops 4–8, Probe II drops 5–9, Triceptor drops 7–13.</div>
+        <div class="sector-note">Max drops ≈ 240 assumes every enemy drops its maximum (8 × 8 Probe I + 8 × 9 Probe II + 8 × 13 Triceptor). In practice, drops average well below the max per enemy.</div>
+        <div class="sector-note">Portal opens once 80% of spawned enemies (Probe I + Probe II + Triceptor, not Asteroids) are destroyed — same <code>_completionPercent</code> threshold as Sector L0/L1.</div>
+        <div class="sector-note">Portal vanishes and the sector fails if not exited within <code>_timeoutSeconds</code> (600s / 10 min default) of sector start, regardless of objective progress.</div>
+        <div class="sector-note">Same <code>_size = 500</code> as Sector L1 — the difficulty increase here comes from entity composition (more asteroids, two additional live enemy types), not a larger play area.</div>
+        <div class="sector-note">224 purely decorative <code>BoundaryMarker</code> instances are placed in a ring starting at <code>_size / 2</code> (250 units, +0–16% outward jitter, so 250–290 units) around the sector edge — no collider/health, just a visual cue for where the play area ends. Not counted in "Total entities" above.</div>
+      </div>
+    </div>
+
+    <!-- ── Sector L3 ── -->
+    <div class="sector-card">
+      <div class="sector-card-header">
+        <div>
+          <div class="sector-number-badge">Sector</div>
+          <div class="sector-name">L3</div>
+        </div>
+        <div class="sector-meta-row">
+          <div class="sector-meta-item">Size <span class="sector-meta-val">500 × 500</span></div>
+          <div class="sector-meta-item">Total entities <span class="sector-meta-val">43</span></div>
+          <div class="sector-meta-item">Portal opens at <span class="sector-meta-val">80%</span></div>
+          <div class="sector-meta-item">Config <span class="sector-meta-val">Patrol · Swarm</span></div>
+        </div>
+      </div>
+
+      <div class="sector-card-body">
+
+        <!-- Spawn map diagram -->
+        <div class="sector-diagram-panel">
+          <div class="diagram-label">Spawn Map</div>
+
+          <div style="position: relative;">
+            <div class="sector-map">
+              <!-- 90% zone — shared by all entity types -->
+              <div class="spawn-zone" style="
+                inset: 5%;
+                border-color: #553030;
+                border-width: 1px;
+                border-style: dashed;
+              "></div>
+
+              <!-- Probe I (dark red), ×2 -->
+              <div class="dot" style="background:#7a3535; top:20%; left:35%;"></div>
+              <div class="dot" style="background:#7a3535; top:70%; left:55%;"></div>
+
+              <!-- Probe II (medium red), ×2 -->
+              <div class="dot" style="background:#934545; top:25%; left:55%;"></div>
+              <div class="dot" style="background:#934545; top:75%; left:40%;"></div>
+
+              <!-- Triceptor (amber), ×4 -->
+              <div class="dot" style="background:#8a5a30; top:12%; left:45%;"></div>
+              <div class="dot" style="background:#8a5a30; top:48%; left:12%;"></div>
+              <div class="dot" style="background:#8a5a30; top:68%; left:68%;"></div>
+              <div class="dot" style="background:#8a5a30; top:78%; left:30%;"></div>
+
+              <!-- Satellite IV (violet), ×20 -->
+              <div class="dot" style="background:#6a4a90; top:5%;  left:15%;"></div>
+              <div class="dot" style="background:#6a4a90; top:15%; left:65%;"></div>
+              <div class="dot" style="background:#6a4a90; top:25%; left:80%;"></div>
+              <div class="dot" style="background:#6a4a90; top:35%; left:25%;"></div>
+              <div class="dot" style="background:#6a4a90; top:45%; left:60%;"></div>
+              <div class="dot" style="background:#6a4a90; top:55%; left:90%;"></div>
+              <div class="dot" style="background:#6a4a90; top:65%; left:20%;"></div>
+              <div class="dot" style="background:#6a4a90; top:75%; left:75%;"></div>
+              <div class="dot" style="background:#6a4a90; top:85%; left:45%;"></div>
+              <div class="dot" style="background:#6a4a90; top:95%; left:10%;"></div>
+              <div class="dot" style="background:#6a4a90; top:10%; left:38%;"></div>
+              <div class="dot" style="background:#6a4a90; top:20%; left:92%;"></div>
+              <div class="dot" style="background:#6a4a90; top:30%; left:8%;"></div>
+              <div class="dot" style="background:#6a4a90; top:40%; left:48%;"></div>
+              <div class="dot" style="background:#6a4a90; top:50%; left:70%;"></div>
+              <div class="dot" style="background:#6a4a90; top:60%; left:32%;"></div>
+              <div class="dot" style="background:#6a4a90; top:70%; left:88%;"></div>
+              <div class="dot" style="background:#6a4a90; top:80%; left:18%;"></div>
+              <div class="dot" style="background:#6a4a90; top:90%; left:58%;"></div>
+              <div class="dot" style="background:#6a4a90; top:8%;  left:78%;"></div>
+
+              <!-- Asteroids (steel, larger), ×15 -->
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:8%;  left:8%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:90%; left:10%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:5%;  left:90%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:92%; left:88%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:50%; left:5%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:6%;  left:50%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:95%; left:48%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:50%; left:95%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:25%; left:6%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:75%; left:92%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:15%; left:95%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:85%; left:5%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:40%; left:38%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:95%; left:75%;"></div>
+              <div class="dot" style="background:#2a3848; width:6px; height:6px; top:5%;  left:25%;"></div>
+            </div>
+            <div class="sector-map-label">500 × 500 world units</div>
+          </div>
+
+          <div class="diagram-legend">
+            <div class="legend-row">
+              <span class="legend-glyph" style="color:#7a3535">C</span>
+              <span>Probe I (×2, 90%)</span>
+            </div>
+            <div class="legend-row">
+              <span class="legend-glyph" style="color:#934545">e</span>
+              <span>Probe II (×2, 90%)</span>
+            </div>
+            <div class="legend-row">
+              <span class="legend-glyph" style="color:#8a5a30">f</span>
+              <span>Triceptor (×4, 90%)</span>
+            </div>
+            <div class="legend-row">
+              <span class="legend-glyph" style="color:#6a4a90">a</span>
+              <span>Satellite IV (×20, 90%)</span>
+            </div>
+            <div class="legend-row">
+              <div class="legend-dot" style="background:#2a3848; width:7px; height:7px; border-radius:50%;"></div>
+              <span>Asteroid (×15, 90%)</span>
+            </div>
+            <div class="legend-row" style="margin-top: 4px;">
+              <div style="width: 16px; height: 8px; border: 1px dashed #553030;"></div>
+              <span>90% spawn boundary (shared by all types)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Entity spawn table -->
+        <div class="sector-tables-panel">
+
+          <div class="spawn-table-wrapper">
+            <div class="spawn-table-label">Enemies</div>
+            <table class="spawn-table">
+              <thead>
+                <tr>
+                  <th style="width:28px;"></th>
+                  <th>Entity</th>
+                  <th>Count</th>
+                  <th>Spread</th>
+                  <th>Effective Range</th>
+                  <th>Script</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="cell-glyph" style="color:#b04040">C</td>
+                  <td class="cell-name">Probe I</td>
+                  <td class="cell-count">2</td>
+                  <td>
+                    <div class="spread-bar-wrap">
+                      <div class="spread-bar-track">
+                        <div class="spread-bar-fill" style="width:90%; background:#553535;"></div>
+                      </div>
+                      <span class="spread-pct">90%</span>
+                    </div>
+                  </td>
+                  <td class="cell-range">± 225 units</td>
+                  <td class="preset-key" style="font-family:monospace; font-size:10px;">Ship + Enemy</td>
+                </tr>
+                <tr>
+                  <td class="cell-glyph" style="color:#c05050">e</td>
+                  <td class="cell-name">Probe II</td>
+                  <td class="cell-count">2</td>
+                  <td>
+                    <div class="spread-bar-wrap">
+                      <div class="spread-bar-track">
+                        <div class="spread-bar-fill" style="width:90%; background:#5c3030;"></div>
+                      </div>
+                      <span class="spread-pct">90%</span>
+                    </div>
+                  </td>
+                  <td class="cell-range">± 225 units</td>
+                  <td class="preset-key" style="font-family:monospace; font-size:10px;">Ship + Enemy</td>
+                </tr>
+                <tr>
+                  <td class="cell-glyph" style="color:#c0793f">f</td>
+                  <td class="cell-name">Triceptor</td>
+                  <td class="cell-count">4</td>
+                  <td>
+                    <div class="spread-bar-wrap">
+                      <div class="spread-bar-track">
+                        <div class="spread-bar-fill" style="width:90%; background:#5c4528;"></div>
+                      </div>
+                      <span class="spread-pct">90%</span>
+                    </div>
+                  </td>
+                  <td class="cell-range">± 225 units</td>
+                  <td class="preset-key" style="font-family:monospace; font-size:10px;">Ship + Enemy + Triceptor</td>
+                </tr>
+                <tr>
+                  <td class="cell-glyph" style="color:#8a5ac0">a</td>
+                  <td class="cell-name">Satellite IV</td>
+                  <td class="cell-count">20</td>
+                  <td>
+                    <div class="spread-bar-wrap">
+                      <div class="spread-bar-track">
+                        <div class="spread-bar-fill" style="width:90%; background:#4a3a5c;"></div>
+                      </div>
+                      <span class="spread-pct">90%</span>
+                    </div>
+                  </td>
+                  <td class="cell-range">± 225 units</td>
+                  <td class="preset-key" style="font-family:monospace; font-size:10px;">Ship + Enemy + Satellite</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="spawn-table-wrapper">
+            <div class="spawn-table-label">Hazards</div>
+            <table class="spawn-table">
+              <thead>
+                <tr>
+                  <th style="width:28px;"></th>
+                  <th>Entity</th>
+                  <th>Count</th>
+                  <th>Spread</th>
+                  <th>Effective Range</th>
+                  <th>Script</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="cell-glyph" style="color:#4a5c6a">z</td>
+                  <td class="cell-name">Asteroid</td>
+                  <td class="cell-count">15</td>
+                  <td>
+                    <div class="spread-bar-wrap">
+                      <div class="spread-bar-track">
+                        <div class="spread-bar-fill" style="width:90%; background:#253040;"></div>
+                      </div>
+                      <span class="spread-pct">90%</span>
+                    </div>
+                  </td>
+                  <td class="cell-range">± 225 units</td>
+                  <td class="preset-key" style="font-family:monospace; font-size:10px;">Asteroid</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="spawn-table-wrapper">
+            <div class="spawn-table-label">Totals</div>
+            <table class="spawn-table">
+              <tbody>
+                <tr>
+                  <td class="preset-key" style="width:160px;">Total enemies</td>
+                  <td class="cell-total">28</td>
+                </tr>
+                <tr>
+                  <td class="preset-key">Total hazards</td>
+                  <td class="cell-total">15</td>
+                </tr>
+                <tr>
+                  <td class="preset-key">Total entities</td>
+                  <td class="cell-total">43</td>
+                </tr>
+                <tr>
+                  <td class="preset-key">Max power-up drops</td>
+                  <td class="cell-total" style="color:#508060;">~246</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="sector-notes">
+        <div class="sector-note">Spawned for roughly a third of sectors from sector 6 onward — <code>SectorTypeTable.asset</code>'s <code>Tiers</code> array weights this prefab at 0.333 against equal-weight 0.333 entries for Sector L1 and Sector L2 over that same range (<code>SectorSpawner.Awake()</code> reads the weighted pick via <code>PickTier()</code>), after Sector L1 covers sectors 2 through 4 outright and a dedicated Sector Triceptor LT prefab is spawned at sector 5 specifically.</div>
+        <div class="sector-note">First sector tier to activate Satellite IV as a live spawned enemy (×20 — by far the largest single-type count of any tier), while Probe I/Probe II/Triceptor counts are cut well below Sector L2's (8/8/8 → 2/2/4) to keep total entities comparable. Probe I drops 4–8, Probe II drops 5–9, Triceptor drops 7–13, Satellite IV drops 4–8.</div>
+        <div class="sector-note">Max drops ≈ 246 assumes every enemy drops its maximum (2 × 8 Probe I + 2 × 9 Probe II + 4 × 13 Triceptor + 20 × 8 Satellite IV). In practice, drops average well below the max per enemy.</div>
+        <div class="sector-note">Portal opens once 80% of spawned enemies (Probe I + Probe II + Triceptor + Satellite IV, not Asteroids) are destroyed — same <code>_completionPercent</code> threshold as the other tiers.</div>
+        <div class="sector-note">Portal vanishes and the sector fails if not exited within <code>_timeoutSeconds</code> (600s / 10 min default) of sector start, regardless of objective progress.</div>
+        <div class="sector-note">Same <code>_size = 500</code> as Sector L1/L2 — the difficulty increase here comes from entity composition (a heavy Satellite IV presence backed by lighter melee/orbit support), not a larger play area.</div>
+        <div class="sector-note">224 purely decorative <code>BoundaryMarker</code> instances are placed in a ring starting at <code>_size / 2</code> (250 units, +0–16% outward jitter, so 250–290 units) around the sector edge — no collider/health, just a visual cue for where the play area ends. Not counted in "Total entities" above.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+</body>
+</html>

@@ -1,0 +1,59 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Common/Panel.uss"/>
+    <Style src="project://database/Assets/UI/Common/MenuButton.uss"/>
+    <Style src="project://database/Assets/UI/SectorComplete/SectorComplete.uss"/>
+    <ui:VisualElement name="sector-complete" class="modal-overlay sector-complete">
+        <ui:VisualElement name="panel" class="panel">
+            <ui:VisualElement class="panel__header">
+                <ui:Label name="title-label" text="SECTOR COMPLETE" class="panel__title"/>
+                <ui:Label text="1 / 3" class="page-indicator"/>
+            </ui:VisualElement>
+            <ui:Label name="mission-label" text="MISSION: CLEAR THE HOSTILES" class="sector-complete__subtitle"/>
+            <ui:VisualElement class="panel__rule"/>
+            <ui:VisualElement class="stat-row">
+                <ui:Label text="ENEMIES DESTROYED" class="stat-row__label"/>
+                <ui:Label name="enemies-destroyed-val" text="0" class="stat-row__val"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="stat-row">
+                <ui:Label text="ASTEROIDS DESTROYED" class="stat-row__label"/>
+                <ui:Label name="asteroids-destroyed-val" text="0" class="stat-row__val"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="stat-row">
+                <ui:Label text="SHOTS FIRED" class="stat-row__label"/>
+                <ui:Label name="shots-fired-val" text="0" class="stat-row__val"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="stat-row">
+                <ui:Label text="ACCURACY" class="stat-row__label"/>
+                <ui:Label name="accuracy-val" text="0%" class="stat-row__val"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="stat-row">
+                <ui:Label text="DAMAGE DEALT" class="stat-row__label"/>
+                <ui:Label name="damage-dealt-val" text="0" class="stat-row__val"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="stat-row">
+                <ui:Label text="DAMAGE TAKEN" class="stat-row__label"/>
+                <ui:Label name="damage-taken-val" text="0" class="stat-row__val"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="stat-row">
+                <ui:Label text="FUEL USED" class="stat-row__label"/>
+                <ui:Label name="fuel-used-val" text="0" class="stat-row__val"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="stat-row">
+                <ui:Label text="PARTS COLLECTED" class="stat-row__label"/>
+                <ui:Label name="parts-earned-val" text="0" class="stat-row__val"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="stat-row">
+                <ui:Label text="PARTS CONSUMED" class="stat-row__label"/>
+                <ui:Label name="parts-consumed-val" text="0" class="stat-row__val"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="stat-row">
+                <ui:Label text="TIME" class="stat-row__label"/>
+                <ui:Label name="time-val" text="0:00" class="stat-row__val"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="panel__rule"/>
+            <ui:VisualElement class="nav-row nav-row--end">
+                <ui:Button name="next-btn" text="NEXT" class="menu-btn"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>InfinitySpace — Economy Reference</title>
+<style>
+  @font-face { font-family: 'Orbitron'; src: url('../../Assets/Art/Fonts/Orbitron/Orbitron-Regular SDF.ttf') format('truetype'); font-weight: 700; }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #0c0e14;
+    color: #9aa0b0;
+    font-family: sans-serif;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 1.5;
+    padding: 48px 56px 80px;
+    max-width: 1500px;
+  }
+
+  /* ── Page header ── */
+  .page-header { margin-bottom: 56px; border-bottom: 1px solid #1a1e2a; padding-bottom: 24px; }
+  .page-title { font-family: 'Orbitron', sans-serif; font-size: 26px; color: #e8eaf2; letter-spacing: 0.04em; margin-bottom: 6px; }
+  .page-subtitle { font-size: 12px; color: #8d98b3; }
+  .page-note { font-size: 11px; color: #7c88a4; margin-top: 4px; }
+
+  /* ── Table of contents ── */
+  .toc {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .toc a {
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: #7c88a4;
+    text-decoration: none;
+    background: #10131c;
+    border: 1px solid #181b25;
+    border-radius: 4px;
+    padding: 5px 10px;
+  }
+  .toc a:hover { color: #8d98b3; border-color: #2e3a55; }
+
+  /* ── Section ── */
+  .section { margin-bottom: 72px; }
+  .section-heading {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #7c88a4;
+    margin-bottom: 24px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #13161e;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-accent { width: 3px; height: 14px; border-radius: 2px; flex-shrink: 0; }
+
+  /* ── Subsection ── */
+  .subsection { margin-bottom: 36px; }
+  .subsection-heading {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .subsection-name { font-family: 'Orbitron', sans-serif; font-size: 15px; color: #c8ccd8; letter-spacing: 0.03em; }
+  .tag {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 10px;
+    border: 1px solid #2e3648;
+    color: #7c88a4;
+  }
+  .tag.planned { border-color: rgba(255, 194, 77, 0.45); color: #d4a45a; }
+  .tag.source { border-color: rgba(54, 255, 158, 0.4); color: #4fcf94; }
+  .tag.sink { border-color: rgba(127, 233, 255, 0.4); color: #6fb8cc; }
+
+  /* ── Prose ── */
+  .prose { max-width: 820px; font-size: 12px; color: #8d98b3; line-height: 1.7; margin-bottom: 14px; }
+  .prose code {
+    font-family: monospace;
+    font-size: 11px;
+    color: #8090a8;
+    background: #10131c;
+    padding: 1px 5px;
+    border-radius: 3px;
+    border: 1px solid #181b25;
+  }
+  .prose strong { color: #7a8498; font-weight: 600; }
+
+  /* ── Formula block ── */
+  .formula-block {
+    display: inline-block;
+    margin: 14px 0;
+    padding: 10px 18px;
+    background: #10131c;
+    border: 1px solid #181b25;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 12px;
+    color: #7090b0;
+    line-height: 1.8;
+  }
+  .formula-block em { font-style: normal; color: #6a93b8; }
+
+  /* ── Reference table ── */
+  .ref-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+  .ref-table th {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #7c88a4;
+    text-align: left;
+    padding: 0 16px 8px 0;
+    border-bottom: 1px solid #1a1e2a;
+    white-space: nowrap;
+  }
+  .ref-table th:last-child, .ref-table td:last-child { padding-right: 0; }
+  .ref-table td {
+    font-size: 11px;
+    color: #8d98b3;
+    padding: 8px 16px 8px 0;
+    border-bottom: 1px solid #13161e;
+    vertical-align: middle;
+  }
+  .ref-table tr:last-child td { border-bottom: none; }
+  .ref-table .cell-name { color: #8898a8; font-weight: 600; }
+  .ref-table .cell-val { font-family: monospace; color: #a0aab8; }
+  .ref-table .cell-method { font-family: monospace; font-size: 10px; color: #7c88a4; }
+
+  /* ── Resource card grid ── */
+  .resource-grid { display: flex; flex-wrap: wrap; gap: 12px; }
+  .resource-card {
+    background: #10131c;
+    border: 1px solid #181b25;
+    border-radius: 6px;
+    padding: 16px 20px;
+    min-width: 260px;
+    flex: 1;
+    max-width: 420px;
+  }
+  .resource-card h4 {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: #8898b0;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .resource-card p { font-size: 11px; color: #8d98b3; line-height: 1.7; }
+
+  .divider { border: none; border-top: 1px solid #13161e; margin: 32px 0; }
+
+  footer {
+    margin-top: 60px;
+    color: #7c88a4;
+    font-size: 11px;
+    border-top: 1px solid #1a1e2a;
+    padding-top: 16px;
+  }
+  footer code {
+    font-family: monospace;
+    font-size: 10px;
+    color: #8090a8;
+    background: #10131c;
+    padding: 1px 5px;
+    border-radius: 3px;
+    border: 1px solid #181b25;
+  }
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <div class="page-title">InfinitySpace — Economy Reference</div>
+  <div class="page-subtitle">Parts: where they come from, where they go</div>
+  <div class="page-note">Covers every source and sink of the Parts currency — shipped and planned. Shipped spending mechanics live in <code>Assets/Scripts/Player/Player.cs</code> (Parts drop-on-death, the earning side, is in <code>Assets/Scripts/Entities/Ship.cs</code>).</div>
+  <div class="toc">
+    <a href="#sources">Where Parts Come From</a>
+    <a href="#resources">Resources</a>
+    <a href="#research">Ship Upgrades / Research</a>
+    <a href="#exploration">Sector Exploration</a>
+    <a href="#planned">Planned / Backlog</a>
+  </div>
+</header>
+
+
+<!-- ══════════════════════════════════════════════════════════ SOURCES -->
+
+<section class="section" id="sources">
+  <div class="section-heading">
+    <span class="section-accent" style="background:#36a06a"></span>
+    Where Parts Come From
+  </div>
+
+  <div class="prose">
+    Parts only enter play as <strong>Part pickups</strong> (<code>Assets/Prefabs/Entities/Collectable/Part.prefab</code>, <code>TransferrableParts: 1</code> each) scattered into the world on destruction, then collected by flying into them or via the Magnet upgrade (<code>Collectible.OnCollected()</code> → <code>Ship.AddParts()</code>). There is no other way to gain Parts during a run.
+  </div>
+
+  <table class="ref-table">
+    <thead>
+      <tr><th>Source</th><th>Pickups dropped</th><th>≈ Parts (at 1/pickup)</th><th>Method</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="cell-name">Destroying an Asteroid</td>
+        <td class="cell-val">Random(PartsDrop−PartsVariance, PartsDrop+PartsVariance)<br><span class="cell-method">20 ± 5</span></td>
+        <td class="cell-val">15–25</td>
+        <td class="cell-method">Asteroid.Destruct()</td>
+      </tr>
+      <tr>
+        <td class="cell-name">Destroying a Probe I</td>
+        <td class="cell-val">Random(PartsDrop−PartsVariance, PartsDrop+PartsVariance)<br><span class="cell-method">10 ± 5</span></td>
+        <td class="cell-val">5–15</td>
+        <td class="cell-method">Ship.Destruct()</td>
+      </tr>
+      <tr>
+        <td class="cell-name">Destroying a Probe II</td>
+        <td class="cell-val">Random(PartsDrop−PartsVariance, PartsDrop+PartsVariance)<br><span class="cell-method">15 ± 5</span></td>
+        <td class="cell-val">10–20</td>
+        <td class="cell-method">Ship.Destruct()</td>
+      </tr>
+      <tr>
+        <td class="cell-name">Destroying a Triceptor / Triceptor LT</td>
+        <td class="cell-val">Random(PartsDrop−PartsVariance, PartsDrop+PartsVariance)<br><span class="cell-method">10 ± 5</span></td>
+        <td class="cell-val">5–15</td>
+        <td class="cell-method">Ship.Destruct()</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="prose">
+    <code>Ship.Destruct()</code> is shared by every <code>Ship</code> component, so it also fires for the player's own death (<code>PartsDrop: 0</code> on the Player prefab — no drop, since the run is over anyway). Per-prefab drop counts (<code>PartsDrop</code>/<code>PartsVariance</code> on both <code>Asteroid</code> and <code>Ship</code> — <code>PartsDrop</code> is the average drop count, <code>PartsVariance</code> the ± swing around it) are Inspector-tunable on each enemy/asteroid prefab. <code>Asteroid</code>'s formula clamps the lower bound at 0 and rolls inclusive of both ends (<code>int</code> overload of <code>Random.Range</code>); <code>Ship</code>'s <code>PartsDrop</code> is a <code>float</code>, so it uses the inclusive-both-ends <code>float</code> overload directly.
+  </div>
+
+  <div class="prose">
+    The only non-pickup source: <strong>Sector Achievements</strong>, awarded directly to <code>Parts</code> (no Part pickup involved) on the Sector Achievements screen between sectors, once per sector per achievement.
+  </div>
+
+  <table class="ref-table">
+    <thead>
+      <tr><th>Achievement</th><th>Condition</th><th>Reward</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="cell-name">Sector Clear</td><td>Reach the portal and clear the sector</td><td class="cell-val">5 parts</td></tr>
+      <tr><td class="cell-name">Natural Navigator</td><td>Discover the portal without purchasing a scan</td><td class="cell-val">10 parts</td></tr>
+      <tr><td class="cell-name">Pristine Run</td><td>Complete the sector without taking any damage</td><td class="cell-val">25 parts</td></tr>
+      <tr><td class="cell-name">Sharpshooter</td><td>Land over half of shots fired this sector</td><td class="cell-val">5 parts</td></tr>
+      <tr><td class="cell-name">Perfect Accuracy</td><td>Land every shot fired this sector</td><td class="cell-val">25 parts</td></tr>
+      <tr><td class="cell-name">Speedrun</td><td>Clear the sector in under 2 minutes</td><td class="cell-val">5 parts</td></tr>
+      <tr><td class="cell-name">Pacifist Drifter</td><td>Complete the sector without destroying any asteroids</td><td class="cell-val">5 parts</td></tr>
+      <tr><td class="cell-name">Exterminator</td><td>Destroy every enemy in the sector</td><td class="cell-val">15 parts</td></tr>
+      <tr><td class="cell-name">Clean Sweep</td><td>Destroy every asteroid in the sector</td><td class="cell-val">15 parts</td></tr>
+      <tr><td class="cell-name">No Survivors</td><td>Destroy every enemy and every asteroid in the sector</td><td class="cell-val">30 parts</td></tr>
+      <tr><td class="cell-name">Big Spender</td><td>Spend over 100 Parts in a single sector</td><td class="cell-val">10 parts</td></tr>
+      <tr><td class="cell-name">Hoarder</td><td>Complete the sector without spending any Parts</td><td class="cell-val">10 parts</td></tr>
+      <tr><td class="cell-name">Close Call</td><td>Survive the sector after dropping to 5 HP or below</td><td class="cell-val">20 parts</td></tr>
+      <tr><td class="cell-name">Scrap Collector</td><td>Collect every Part dropped in the sector</td><td class="cell-val">15 parts</td></tr>
+      <tr><td class="cell-name">Relic Hunter</td><td>Recover the relic and complete the sector (Sector Type: Relic only)</td><td class="cell-val">15 parts</td></tr>
+      <tr><td class="cell-name">Threat Neutralized</td><td>Take down the large threat and complete the sector (Sector Type: Large Threat only)</td><td class="cell-val">25 parts</td></tr>
+    </tbody>
+  </table>
+  <div class="prose">
+    Up to 210 parts per sector if every achievement unlocks (Big Spender/Hoarder are mutually exclusive within any sector, and Relic Hunter/Threat Neutralized each require a specific Sector Type — Relic and Large Threat respectively — so at most one of those two can fire per sector; only the higher-reward Threat Neutralized counts toward the max). Catalog lives in <code>Assets/Scripts/Systems/SectorAchievements.cs</code> (<code>RewardParts</code> per entry); awarded by <code>SectorAchievementsController.Award()</code>.
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════ RESOURCES -->
+
+<section class="section" id="resources">
+  <div class="section-heading">
+    <span class="section-accent" style="background:#3d5a8a"></span>
+    Resources <span class="tag sink" style="margin-left:4px;">sink</span>
+  </div>
+
+  <div class="prose">
+    Spends Parts to top off a resource's <strong>current</strong> value toward its cap. Does not increase the cap itself. Repeatable any number of times per visit, as long as the resource isn't already full.
+  </div>
+
+  <table class="ref-table">
+    <thead>
+      <tr><th>Row</th><th>Cost</th><th>Effect</th><th>Method</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="cell-name">Health</td>
+        <td class="cell-val">5 parts</td>
+        <td>+20% of Max Health, instantly</td>
+        <td class="cell-method">Ship.ConvertPartsToHealth()</td>
+      </tr>
+      <tr>
+        <td class="cell-name">Fuel</td>
+        <td class="cell-val">5 parts</td>
+        <td>+20% of Max Fuel, instantly</td>
+        <td class="cell-method">Ship.ConvertPartsToFuel()</td>
+      </tr>
+      <tr>
+        <td class="cell-name">Ammo</td>
+        <td class="cell-val">5 parts</td>
+        <td>+20% of Max Ammo, instantly</td>
+        <td class="cell-method">Ship.ConvertPartsToAmmo()</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="prose">
+    Cost (<code>PartsConversionCost</code>, 5) and percent (<code>PartsConversionPercent</code>, 20%) are shared, flat values — they don't scale with repeated use or upgrade level. The percentage automatically scales with each stat's current cap, so buying a Max Fuel/Ammo/Health upgrade also makes these refills more effective per purchase.
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════ SHIP UPGRADES / RESEARCH -->
+
+<section class="section" id="research">
+  <div class="section-heading">
+    <span class="section-accent" style="background:#2a5040"></span>
+    Ship Upgrades / Research <span class="tag sink" style="margin-left:4px;">sink</span>
+  </div>
+
+  <div class="prose">
+    Permanent stat increases. Levels and Parts spent persist across sector reloads and saves (via <code>GameControl</code> / <code>PlayerStatistics</code>) — they are not lost when starting a new sector, only reset on <strong>New Game</strong>.
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-heading">
+      <span class="subsection-name">Fire Rate, Max Health, Firepower, Max Fuel, Max Ammo</span>
+      <span class="tag">unlimited levels</span>
+    </div>
+    <div class="prose">
+      These five share one cost formula and have no level cap — buy as many levels as you can afford, forever. The first two levels are flat, easily-attainable steps (<code>StatUpgradeFirstLevelCost</code>, <code>StatUpgradeSecondLevelCost</code>) so the climb into the geometric progression isn't a steep 5→30 jump; the established progression resumes unchanged from level 2→3 onward:
+    </div>
+
+    <div class="formula-block">
+      cost(0→1) = StatUpgradeFirstLevelCost = 5<br>
+      cost(1→2) = StatUpgradeSecondLevelCost = 15<br>
+      cost(level→level+1), level ≥ 2 = round( StatUpgradeBaseCost × StatUpgradeCostGrowth <sup>level</sup> )<br>
+      <em>= round( 25 × 1.2 <sup>level</sup> )</em>
+    </div>
+
+    <table class="ref-table">
+      <thead>
+        <tr><th>Level (current → next)</th><th>0→1</th><th>1→2</th><th>2→3</th><th>3→4</th><th>4→5</th><th>5→6</th><th>6→7</th><th>7→8</th><th>8→9</th><th>9→10</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Cost (parts)</td><td class="cell-val">5</td><td class="cell-val">15</td><td class="cell-val">36</td><td class="cell-val">43</td><td class="cell-val">52</td><td class="cell-val">62</td><td class="cell-val">75</td><td class="cell-val">90</td><td class="cell-val">107</td><td class="cell-val">129</td></tr>
+      </tbody>
+    </table>
+    <div class="prose">Cost keeps climbing the same way past level 10 — there is no maximum level for any of these five upgrades.</div>
+
+    <table class="ref-table">
+      <thead>
+        <tr><th>Row</th><th>Base value</th><th>Effect per level</th><th>Field(s) modified</th><th>Method</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="cell-name">Fire Rate</td><td class="cell-val">0.25s</td><td>&#8722;0.02s primary weapon cooldown per level, floored at 0.05s (<code>MinPrimaryCoolDown</code>)</td><td class="cell-method">PrimaryCoolDown</td><td class="cell-method">Ship.UpgradeFireRate()</td></tr>
+        <tr><td class="cell-name">Max Health</td><td class="cell-val">90</td><td>+10 Max Health, and the ship is instantly healed by the same amount</td><td class="cell-method">MaxHealth</td><td class="cell-method">Ship.UpgradeHealth()</td></tr>
+        <tr><td class="cell-name">Firepower</td><td class="cell-val">4</td><td>+1 Firepower (missile damage)</td><td class="cell-method">FirePower</td><td class="cell-method">Ship.UpgradeFirePower()</td></tr>
+        <tr><td class="cell-name">Max Fuel</td><td class="cell-val">90</td><td>+10 Max Fuel, and the tank is instantly topped up by the same amount</td><td class="cell-method">MaxFuel</td><td class="cell-method">Ship.UpgradeFuel()</td></tr>
+        <tr><td class="cell-name">Max Ammo</td><td class="cell-val">90</td><td>+10 Max Ammo, and the magazine is instantly topped up by the same amount</td><td class="cell-method">MaxPrimaryAmmunition</td><td class="cell-method">Ship.UpgradeAmmo()</td></tr>
+      </tbody>
+    </table>
+    <div class="prose">
+      Base values for Max Health/Firepower/Max Fuel/Max Ammo on the Player prefab are set one delta <strong>below</strong> what they used to be — buying the cheap level-1 upgrade brings a new player right back to the old starting point (e.g. Max Health 90 + 10 = 100), so the cheap first purchase reads as a deliberate early goal rather than a balance change. Fire Rate has no such history — <code>PrimaryCoolDown</code> 0.25s is simply the prefab's shipped default, since this upgrade replaced Speed rather than inheriting a prior baseline of its own. Per-level deltas (<code>FireRateCoolDownDelta</code>, <code>HealthUpgradeDelta</code>, <code>FirePowerUpgradeDelta</code>, <code>FuelUpgradeDelta</code>, <code>AmmoUpgradeDelta</code>) and the shared <code>StatUpgradeBaseCost</code> / <code>StatUpgradeCostGrowth</code> / <code>StatUpgradeFirstLevelCost</code> / <code>StatUpgradeSecondLevelCost</code> are all Inspector-tunable on the Player prefab's <code>Ship</code> component.
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="subsection">
+    <div class="subsection-heading">
+      <span class="subsection-name">Magnet (Pickup Attraction)</span>
+      <span class="tag">30 levels</span>
+    </div>
+    <div class="prose">Pulls nearby Collectibles (Parts and Relics) toward the ship within a radius, flying them directly at the player with a ramping speed (<code>Collectible.Reel()</code>) rather than a physics push. The first three levels ramp up cheaply (5 / 10 / 15) before settling into the flat 20-parts-per-level cost; radius grows +1 per level.</div>
+
+    <table class="ref-table">
+      <thead>
+        <tr><th>Level</th><th>1</th><th>2</th><th>3</th><th>4</th><th>…</th><th>15</th><th>…</th><th>29</th><th>30</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Cost (parts)</td><td class="cell-val">5</td><td class="cell-val">10</td><td class="cell-val">15</td><td class="cell-val">20</td><td class="cell-val">20</td><td class="cell-val">20</td><td class="cell-val">20</td><td class="cell-val">20</td><td class="cell-val">20</td></tr>
+        <tr><td>Radius</td><td class="cell-val">3</td><td class="cell-val">4</td><td class="cell-val">5</td><td class="cell-val">6</td><td class="cell-val">…</td><td class="cell-val">17</td><td class="cell-val">…</td><td class="cell-val">31</td><td class="cell-val">32</td></tr>
+      </tbody>
+    </table>
+    <div class="prose">Costs come from <code>PickupAttractionUpgradeCosts</code>, capped at level 30 (radius 32, force 1). Method: <code>Ship.UpgradePickupAttraction()</code>.</div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="subsection">
+    <div class="subsection-heading">
+      <span class="subsection-name">Homing</span>
+      <span class="tag">30 levels</span>
+    </div>
+    <div class="prose">No longer bends the primary Missile's path itself — each level instead raises the odds that firing a Missile also launches a separate, always-homing <strong>Homing Rocket</strong> alongside it (no extra ammo cost). Same cost curve as Magnet (5 / 10 / 15, then flat 20) and the same 30-level cap; only the proc chance improves per level — the rocket's turn rate is a flat constant, not a per-level scale.</div>
+
+    <table class="ref-table">
+      <thead>
+        <tr><th>Level</th><th>1</th><th>2</th><th>3</th><th>4</th><th>…</th><th>15</th><th>…</th><th>29</th><th>30</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Cost (parts)</td><td class="cell-val">5</td><td class="cell-val">10</td><td class="cell-val">15</td><td class="cell-val">20</td><td class="cell-val">20</td><td class="cell-val">20</td><td class="cell-val">20</td><td class="cell-val">20</td><td class="cell-val">20</td></tr>
+        <tr><td>Proc chance (%)</td><td class="cell-val">2</td><td class="cell-val">3</td><td class="cell-val">4</td><td class="cell-val">5</td><td class="cell-val">…</td><td class="cell-val">16</td><td class="cell-val">…</td><td class="cell-val">29</td><td class="cell-val">30</td></tr>
+      </tbody>
+    </table>
+    <div class="prose">Costs come from <code>HomingUpgradeCosts</code>, proc chances from <code>HomingProcChances</code>, capped at level 30 (30% proc chance). The Homing Rocket's turn rate (<code>HomingRocketTurnRate</code>, 400°/s) is a flat constant at every level — it doesn't scale with level. The rocket flies straight for a flat <code>HomingDelay</code> (default 0.75s) before it's even eligible to home, and only actually starts homing once a target is within <code>HomingRange</code> (default 8 units) — both gates must pass. Method: <code>Ship.UpgradeHoming()</code>.</div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════ SECTOR EXPLORATION -->
+
+<section class="section" id="exploration">
+  <div class="section-heading">
+    <span class="section-accent" style="background:#7040a0"></span>
+    Sector Exploration <span class="tag sink" style="margin-left:4px;">sink</span>
+  </div>
+
+  <div class="prose">Specific to the <strong>current sector only</strong> — does not carry over when the sector advances or reloads. All four rows below share the same one-time-per-sector, plain-instance-field-on-<code>Ship</code> shape rather than persisting via <code>GameControl</code>/<code>PlayerStatistics</code>.</div>
+
+  <table class="ref-table">
+    <thead>
+      <tr><th>Row</th><th>Cost</th><th>Effect</th><th>Method</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="cell-name">Portal Scan</td>
+        <td class="cell-val">30 parts</td>
+        <td>Immediately reveals the sector's portal location on the radar, without needing to find it by exploring</td>
+        <td class="cell-method">Ship.ScanForPortal()</td>
+      </tr>
+      <tr>
+        <td class="cell-name">Enemy Locator</td>
+        <td class="cell-val">30 parts</td>
+        <td>Shows off-screen direction indicators for hostile blips beyond radar range. In-range enemies already show on the radar regardless — this only extends visibility to ones currently off-screen.</td>
+        <td class="cell-method">Ship.PurchaseEnemyLocator()</td>
+      </tr>
+      <tr>
+        <td class="cell-name">Asteroid Locator</td>
+        <td class="cell-val">30 parts</td>
+        <td>Same as Enemy Locator, but for asteroid blips.</td>
+        <td class="cell-method">Ship.PurchaseAsteroidLocator()</td>
+      </tr>
+      <tr>
+        <td class="cell-name">Parts Locator</td>
+        <td class="cell-val">30 parts</td>
+        <td>Unlike the other two, Part pickups don't appear on the radar <strong>at all</strong> until this is purchased — not even in-range ones. Once purchased, both in-range and off-screen Parts blips show.</td>
+        <td class="cell-method">Ship.PurchasePartsLocator()</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="prose">Portal Scan disables once the portal has already been discovered (<code>Ship.IsPortalDiscovered()</code>), whether by scanning or by flying close enough to it naturally. The other three are one-time per-sector purchases gated by their own <code>_enemyLocatorPurchased</code> / <code>_asteroidLocatorPurchased</code> / <code>_partsLocatorPurchased</code> flag (<code>LocatorScanCost</code>, 30, shared by all three) — <code>VectorHudController.RefreshBlips()</code> reads each flag to decide whether to draw that blip kind's off-screen direction arrows (or, for Parts, whether to draw the blip at all).</div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════ PLANNED -->
+
+<section class="section" id="planned">
+  <div class="section-heading">
+    <span class="section-accent" style="background:#7c5a2a"></span>
+    Planned / Backlog
+  </div>
+
+  <div class="prose">Tracked in <code>BACKLOG.md</code>. Not yet implemented — shown here so the full economy, shipped and planned, stays visible in one place.</div>
+
+  <div class="subsection">
+    <div class="subsection-heading">
+      <span class="subsection-name">Planned sources</span>
+    </div>
+    <div class="resource-grid">
+      <div class="resource-card">
+        <h4>Equipment Upgrade Sell-Back <span class="tag planned">planned</span></h4>
+        <p>Downgrade any purchased upgrade for a partial refund (60–75% of cost), spendable immediately elsewhere. A reverse flow on top of every sink above, not a new pickup type.</p>
+      </div>
+      <div class="resource-card">
+        <h4>Harvest Sector Type <span class="tag planned">planned</span></h4>
+        <p>Part of <strong>Sector Type Variants</strong> — a sector variant focused on parts/resource collection rather than clearing hostiles, giving Parts a dedicated gameplay loop instead of only coming as a kill byproduct.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-heading">
+      <span class="subsection-name">Planned sinks</span>
+    </div>
+    <div class="resource-grid">
+      <div class="resource-card">
+        <h4>Parts Capacity <span class="tag planned">planned</span></h4>
+        <p>Parts currently have no maximum — <code>Ship.AddParts()</code> never clamps. Planned: a purchasable <code>MaxParts</code> cap (same escalating-cost pattern as the other capacity upgrades). Once at the cap, Part pickups should stop being collected and stop being pulled in by Magnet, so the player can visibly see they're full and has to spend down before picking up more.</p>
+      </div>
+      <div class="resource-card">
+        <h4>Shield System <span class="tag planned">planned</span></h4>
+        <p>A blockable-damage shield with tiers (10% / 25% / 50% block chance) purchasable via parts investment, with its own stat row in Ship Management.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<footer>
+  Generated for InfinitySpace — reflects <code>Assets/Scripts/Entities/Ship.cs</code>, <code>Assets/Scripts/Player/Player.cs</code>, <code>Asteroid.cs</code>, <code>SectorAchievements.cs</code>, <code>VectorHudController.cs</code>, and <code>BACKLOG.md</code> at the time of writing. Re-check the source if economy balance or scope changes.
+</footer>
+
+</body>
+</html>

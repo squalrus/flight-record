@@ -1,6 +1,6 @@
 # 01 · Capture and visualize
 
-**Status:** in progress. The code runs live and from WAV; measurements still need the real hardware chain. · **Plan:** [docs/experiments.md](../../docs/experiments.md#01--capture-and-visualize) · **Depends on:** 0.2 (replay tooling)
+**Status:** in progress. The code runs live and from WAV; measurements still need the real hardware chain. · **Plan:** [docs/flightrec/experiments.md](../../docs/flightrec/experiments.md#01--capture-and-visualize) · **Depends on:** 0.2 (replay tooling)
 
 ## Goal
 

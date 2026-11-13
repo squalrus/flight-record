@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/PortalTransition/PortalTransition.uss"/>
+    <ui:VisualElement name="starfield" class="portal-transition"/>
+</ui:UXML>

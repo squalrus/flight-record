@@ -1,0 +1,127 @@
+.main-menu {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    align-items: center;
+    justify-content: center;
+    -unity-font-definition: url("project://database/Assets/Art/Fonts/Orbitron/Orbitron-Regular%20SDF.ttf?fileID=12800000&guid=362601a4043a3254388ca3ba9b3358af&type=3#Orbitron-Regular SDF");
+}
+
+.title-block {
+    margin-bottom: 36px;
+    align-items: center;
+}
+
+.title {
+    font-size: 42px;
+    letter-spacing: 6px;
+    -unity-font-style: bold;
+    color: rgb(127, 233, 255);
+    -unity-text-align: middle-center;
+}
+
+.menu-buttons {
+    align-items: center;
+}
+
+.continue-card {
+    width: 340px;
+    height: 108px;
+    margin-bottom: 20px;
+    padding: 10px 16px;
+    flex-direction: row;
+    align-items: center;
+    border-width: 1px;
+    border-color: rgba(127, 233, 255, 0.55);
+    border-radius: 8px;
+    background-color: rgba(10, 20, 26, 0.7);
+}
+
+.continue-card:hover {
+    background-color: rgba(127, 233, 255, 0.12);
+    border-color: rgb(127, 233, 255);
+}
+
+.continue-card:focus {
+    background-color: rgba(127, 233, 255, 0.18);
+    border-color: rgb(127, 233, 255);
+}
+
+.continue-card:disabled {
+    border-color: rgba(127, 233, 255, 0.2);
+    background-color: rgba(10, 20, 26, 0.4);
+}
+
+.continue-card__glyphs {
+    flex-direction: row;
+    align-items: center;
+    margin-right: 16px;
+}
+
+.continue-card__glyph {
+    width: 56px;
+    height: 56px;
+    font-size: 48px;
+    padding-top: 20px;
+    color: rgb(127, 233, 255);
+    -unity-text-align: middle-center;
+    -unity-font-definition: url("project://database/Assets/Art/Fonts/InfinityIconsHU/Infinity-Icons-HU.otf?fileID=12800000&guid=7ce3ec5a2b4c0374e809c27570342a60&type=3#Infinity-Icons-HU");
+}
+
+.continue-card__glyph--avatar {
+    color: rgb(54, 255, 158);
+    margin-left: -10px;
+}
+
+.continue-card__info {
+    flex-grow: 1;
+    align-items: flex-start;
+}
+
+.continue-card__label {
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: rgba(127, 233, 255, 0.7);
+    -unity-font-style: bold;
+}
+
+.continue-card__sector {
+    margin-top: 2px;
+    font-size: 18px;
+    letter-spacing: 1px;
+    color: rgb(255, 255, 255);
+    -unity-font-style: bold;
+}
+
+.continue-card__stats-row {
+    flex-direction: row;
+    margin-top: 6px;
+}
+
+.continue-card__stat {
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: rgba(127, 233, 255, 0.85);
+    margin-right: 14px;
+}
+
+.version-label {
+    position: absolute;
+    left: 12px;
+    bottom: 10px;
+    font-size: 12px;
+    color: rgba(127, 233, 255, 0.55);
+}
+
+.confirm-dialog__message {
+    color: rgba(127, 233, 255, 0.85);
+    font-size: 13px;
+    white-space: normal;
+    margin-bottom: 16px;
+}
+
+.new-game-confirm .panel {
+    width: 480px;
+}

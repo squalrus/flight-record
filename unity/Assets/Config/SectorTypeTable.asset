@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0688c8fd0b8426428a1e622dbc3ced3, type: 3}
+  m_Name: SectorTypeTable
+  m_EditorClassIdentifier: Assembly-CSharp::InfinitySpace.SectorTypeTable
+  Tiers:
+  - Prefab: {fileID: 196558, guid: 6b05031bf0fa6d24db479c8f5dd40a71, type: 3}
+    MinSector: 1
+    MaxSector: 1
+    Weight: 1
+  - Prefab: {fileID: 196558, guid: a3f48237e9de46c48b251c33dd9ca317, type: 3}
+    MinSector: 2
+    MaxSector: 4
+    Weight: 1
+  - Prefab: {fileID: 196558, guid: bb3eee56a47d4bb46904b89398772253, type: 3}
+    MinSector: 5
+    MaxSector: 5
+    Weight: 1
+  - Prefab: {fileID: 196558, guid: a3f48237e9de46c48b251c33dd9ca317, type: 3}
+    MinSector: 6
+    MaxSector: 999
+    Weight: 0.333
+  - Prefab: {fileID: 196558, guid: 8fa5c18b0777fde4c837e602321d987a, type: 3}
+    MinSector: 6
+    MaxSector: 999
+    Weight: 0.333
+  - Prefab: {fileID: 196558, guid: 1e0afe557d8186047ae89b8450107d64, type: 3}
+    MinSector: 6
+    MaxSector: 999
+    Weight: 0.333
+  Options:
+  - Type: 0
+    MinSector: 1
+    MaxSector: 1
+    Weight: 1
+  - Type: 0
+    MinSector: 2
+    MaxSector: 4
+    Weight: 0.5
+  - Type: 1
+    MinSector: 2
+    MaxSector: 4
+    Weight: 0.5
+  - Type: 2
+    MinSector: 5
+    MaxSector: 5
+    Weight: 1
+  - Type: 0
+    MinSector: 6
+    MaxSector: 999
+    Weight: 0.5
+  - Type: 1
+    MinSector: 6
+    MaxSector: 999
+    Weight: 0.5

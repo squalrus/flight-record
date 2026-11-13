@@ -1,0 +1,8 @@
+.pause-menu .panel {
+    width: 320px;
+    align-items: center;
+}
+
+.menu-buttons {
+    align-items: center;
+}

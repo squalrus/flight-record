@@ -13,10 +13,10 @@ The repo is in the **pre-prototype** phase. Right now the work is small, standal
 | Task type | Read |
 | --- | --- |
 | Anything | [docs/concept-and-design.md](docs/concept-and-design.md), [docs/decisions.md](docs/decisions.md) |
-| Audio, identification, side tracking | [docs/architecture.md](docs/architecture.md) (**message contract is authoritative**), [docs/experiments.md](docs/experiments.md) |
+| Audio, identification, side tracking | [docs/flightrec/architecture.md](docs/flightrec/architecture.md) (**message contract is authoritative**), [docs/flightrec/experiments.md](docs/flightrec/experiments.md) |
 | What to do next | [BACKLOG.md](BACKLOG.md) |
-| Unity work | [docs/unity-fork-plan.md](docs/unity-fork-plan.md) |
-| Hardware questions | [docs/hardware.md](docs/hardware.md) |
+| Unity work | [docs/unity/unity-fork-plan.md](docs/unity/unity-fork-plan.md) |
+| Hardware questions | [docs/flightrec/hardware.md](docs/flightrec/hardware.md) |
 | Legal/ToS, unresolved choices | [docs/risks-and-open-questions.md](docs/risks-and-open-questions.md) |
 
 ## Current state and what to do next
@@ -29,7 +29,7 @@ The repo is in the **pre-prototype** phase. Right now the work is small, standal
 
 - **The game must work without identification.** Fingerprinting and Discogs are enhancements. Every code path that consumes them needs a "no match / unknown / missing" fallback. Never block gameplay on a network call.
 - **The audible signal path never touches the computer** for live input (line-in, mic). Audio is split in hardware; do not route live audio out through the game. The only exception is audio **files**, which the computer plays itself (decisions D-011 for development, D-012 for the product); never extend that to live input.
-- **The message contract is versioned.** Messages carry `v` and `t`. Add fields freely (consumers must ignore unknown fields); changing or removing a field means bumping `v` and updating [docs/architecture.md](docs/architecture.md) in the same change. Build and parse messages with `flightrec.messages` (the reference implementation), never hand-written dicts, and update it with the doc.
+- **The message contract is versioned.** Messages carry `v` and `t`. Add fields freely (consumers must ignore unknown fields); changing or removing a field means bumping `v` and updating [docs/flightrec/architecture.md](docs/flightrec/architecture.md) in the same change. Build and parse messages with `flightrec.messages` (the reference implementation), never hand-written dicts, and update it with the doc.
 - **Multiplayer is local only.** One machine, one game instance, one shared screen, several controllers. Do not add networking, netcode libraries, or audio streaming (decision D-009). Every player hears the source through the room's speakers via the hardware split.
 - **Hardware must not be required to develop.** Everything downstream of capture must run from a recorded file (replay source) or a null source. Build the replay path early (see backlog item 0.2).
 - **Use real recordings for tests, never invented numbers.** Results docs report measured values with the recording set and conditions they came from.
@@ -50,12 +50,12 @@ The repo is in the **pre-prototype** phase. Right now the work is small, standal
 - Python 3.11+. One virtual environment per experiment, or the shared `experiments/requirements.txt`; document whichever you use.
 - Core libraries: `sounddevice`, `numpy`, `scipy`; `librosa` only for **offline** ground-truth comparison, not in the real-time path. Real-time code must not allocate in the audio callback; push samples into a ring buffer and do the analysis elsewhere.
 - Format with `ruff format`, lint with `ruff check`. Type hints on public functions.
-- Each experiment has a `README.md` with: how to install, how to run, what it measures, and the success criteria copied from [docs/experiments.md](docs/experiments.md).
+- Each experiment has a `README.md` with: how to install, how to run, what it measures, and the success criteria copied from [docs/flightrec/experiments.md](docs/flightrec/experiments.md).
 - Keep analysis code in importable modules (not only scripts) so it can be reused by the replay tool and ported to C# later. Shared code lives in the `flightrec` package at the repo root (installed in editable mode by `experiments/requirements.txt`). Audio input goes through `flightrec.audio` (`open_source` + `Capture`) so every experiment runs the same from live input or a WAV; see [tools/README.md](tools/README.md).
 - Time audio with `time.perf_counter()`, not `time.monotonic()`: before Python 3.13, `monotonic()` on Windows ticks only every ~15.6 ms, which breaks pacing and latency numbers. Block timestamps from `flightrec.audio` are `perf_counter()` values. Keep the module boundary from the architecture doc: capture/analysis, identification, side tracking, game.
 
 **Unity** (once the fork is in `unity/`)
-- Do the audit in [docs/unity-fork-plan.md](docs/unity-fork-plan.md) Step 0 and record findings **before** refactoring.
+- Do the audit in [docs/unity/unity-fork-plan.md](docs/unity/unity-fork-plan.md) Step 0 and record findings **before** refactoring.
 - Never commit `Library/`, `Temp/`, `Logs/`, or `UserSettings/` (see `.gitignore`). Commit `.meta` files. Large art/audio goes through Git LFS (see `.gitattributes`).
 - Keep audio-integration code behind an interface with at least three sources: live bridge, replay, and null.
 
@@ -67,13 +67,13 @@ The repo is in the **pre-prototype** phase. Right now the work is small, standal
 
 - Unit-test pure logic (onset detection on synthetic signals, Discogs position parsing, side-state machine transitions on recorded event logs).
 - Anything involving hardware or live services needs a documented manual check in the experiment's `README.md`, plus a recorded sample so others can reproduce without the hardware.
-- Before saying an experiment is done: the success criteria in `docs/experiments.md` are met **or** explicitly marked unmet in `RESULTS.md` with the reason.
+- Before saying an experiment is done: the success criteria in `docs/flightrec/experiments.md` are met **or** explicitly marked unmet in `RESULTS.md` with the reason.
 
 ## Things to ask the human about (do not guess)
 
 - Anything marked as an open decision in [docs/risks-and-open-questions.md](docs/risks-and-open-questions.md) that blocks the current task.
 - Choosing a recognition service or license.
-- Details of the existing Unity project (Unity version, render pipeline, input system, existing networking). These have **not been documented yet**; ask for them or inspect the fork, do not assume.
+- Gameplay or design choices in the Unity project that the audit in [docs/unity/unity-fork-plan.md](docs/unity/unity-fork-plan.md) (Step 0) and the backlog do not settle. The audit records the Unity version, render pipeline, input system, camera, entity authoring, and networking (none); check the code before assuming anything beyond it.
 - Buying or configuring hardware, or anything requiring the physical turntable.
 
 ## Glossary

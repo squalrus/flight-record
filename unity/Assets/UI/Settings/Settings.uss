@@ -1,0 +1,64 @@
+.settings-row {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.settings-row__label {
+    color: rgb(127, 233, 255);
+    letter-spacing: 1.5px;
+    font-size: 13px;
+}
+
+.settings-row__toggle-btn {
+    width: 80px;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+    border-width: 1px;
+    border-color: rgba(127, 233, 255, 0.55);
+    border-radius: 6px;
+    background-color: rgba(10, 20, 26, 0.7);
+    color: rgb(127, 233, 255);
+    font-size: 13px;
+    letter-spacing: 1px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+.settings-row__toggle-btn:hover {
+    background-color: rgba(127, 233, 255, 0.12);
+    border-color: rgb(127, 233, 255);
+}
+
+.settings-row__toggle-btn:focus {
+    background-color: rgba(127, 233, 255, 0.18);
+    border-color: rgb(127, 233, 255);
+}
+
+.settings-danger-btn {
+    height: 36px;
+    margin-top: 14px;
+    align-items: center;
+    justify-content: center;
+    border-width: 1px;
+    border-color: rgba(255, 90, 90, 0.55);
+    border-radius: 6px;
+    background-color: rgba(26, 10, 10, 0.7);
+    color: rgb(255, 120, 120);
+    font-size: 12px;
+    letter-spacing: 1px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+.settings-danger-btn:hover {
+    background-color: rgba(255, 90, 90, 0.12);
+    border-color: rgb(255, 120, 120);
+}
+
+.settings-danger-btn:focus {
+    background-color: rgba(255, 90, 90, 0.18);
+    border-color: rgb(255, 120, 120);
+}

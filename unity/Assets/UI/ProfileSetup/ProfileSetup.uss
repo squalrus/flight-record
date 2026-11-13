@@ -1,0 +1,67 @@
+.profile-setup {
+    -unity-font-definition: url("project://database/Assets/Art/Fonts/Orbitron/Orbitron-Regular%20SDF.ttf?fileID=12800000&guid=362601a4043a3254388ca3ba9b3358af&type=3#Orbitron-Regular SDF");
+}
+
+.profile-setup__panel {
+    width: 560px;
+    align-items: center;
+}
+
+.profile-setup__section-label {
+    align-self: flex-start;
+    margin-top: 14px;
+    margin-bottom: 8px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: rgba(127, 233, 255, 0.7);
+}
+
+.profile-setup__option-row {
+    flex-direction: row;
+    justify-content: center;
+}
+
+.option-btn {
+    width: 84px;
+    height: 84px;
+    margin: 0 8px 0 8px;
+    /* Infinity Icons HU glyphs sit high in their advance box, so middle-center alignment
+       renders them above the visual center. Extra top padding nudges them back down. */
+    padding: 25px 0 0 0;
+    align-items: center;
+    justify-content: center;
+    border-width: 1px;
+    border-color: rgba(127, 233, 255, 0.35);
+    border-radius: 8px;
+    background-color: rgba(10, 20, 26, 0.7);
+    color: rgb(127, 233, 255);
+    font-size: 72px;
+    -unity-text-align: middle-center;
+    -unity-font-definition: url("project://database/Assets/Art/Fonts/InfinityIconsHU/Infinity-Icons-HU.otf?fileID=12800000&guid=7ce3ec5a2b4c0374e809c27570342a60&type=3#Infinity-Icons-HU");
+}
+
+.option-btn:hover {
+    border-color: rgba(127, 233, 255, 0.7);
+    background-color: rgba(127, 233, 255, 0.12);
+}
+
+.option-btn:focus {
+    border-color: rgb(127, 233, 255);
+}
+
+.option-btn--selected {
+    border-color: rgb(54, 255, 158);
+    background-color: rgba(54, 255, 158, 0.12);
+    color: rgb(54, 255, 158);
+}
+
+.profile-setup__footer {
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 18px;
+}
+
+.profile-setup__footer .menu-btn {
+    width: 150px;
+    margin: 0 8px;
+}

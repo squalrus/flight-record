@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>InfinitySpace — Font Reference</title>
+<style>
+  @font-face { font-family: 'InfinityIcons'; src: url('../../Assets/Art/Fonts/InfinityIconsHU/Infinity-Icons-HU.otf') format('opentype'); }
+  @font-face { font-family: 'Orbitron'; src: url('../../Assets/Art/Fonts/Orbitron/Orbitron-Regular SDF.ttf') format('truetype'); font-weight: 700; }
+  @font-face { font-family: 'ShareTechMono'; src: url('../../Assets/Art/Fonts/ShareTechMono/ShareTechMono-Regular SDF.ttf') format('truetype'); }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #0c0e14;
+    color: #9aa0b0;
+    font-family: sans-serif;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 1.5;
+    padding: 48px 56px 80px;
+    max-width: 1500px;
+  }
+
+  /* ── Page header ── */
+  .page-header { margin-bottom: 56px; border-bottom: 1px solid #1a1e2a; padding-bottom: 24px; }
+  .page-title { font-family: 'Orbitron', sans-serif; font-size: 26px; color: #e8eaf2; letter-spacing: 0.04em; margin-bottom: 6px; }
+  .page-subtitle { font-size: 12px; color: #8d98b3; }
+  .page-note { font-size: 11px; color: #7c88a4; margin-top: 4px; }
+
+  /* ── Group headings ── */
+  .group-heading {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #7c88a4;
+    margin-bottom: 40px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #13161e;
+  }
+
+  .group { margin-bottom: 80px; }
+
+  /* ── Section ── */
+  .section { margin-bottom: 72px; }
+  .section-heading { display: flex; align-items: baseline; gap: 16px; margin-bottom: 4px; }
+  .section-name { font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #8d98b3; }
+  .section-file { font-size: 11px; color: #7c88a4; font-family: monospace; }
+  .section-desc { font-size: 11px; color: #8d98b3; margin-bottom: 28px; padding-bottom: 16px; border-bottom: 1px solid #13161e; }
+
+  /* ── Icon tile grid (Infinity Icons — large) ── */
+  .icon-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .icon-tile {
+    width: 152px;
+    height: 174px;
+    background: #10131c;
+    border: 1px solid #181b25;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 6px 6px;
+    transition: border-color 0.1s;
+    position: relative;
+  }
+  .icon-tile:hover { border-color: #2e3a55; background: #131720; }
+  .icon-tile .tile-glyph {
+    font-family: 'InfinityIcons';
+    font-size: 130px;
+    line-height: 1;
+    color: #d8dce8;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: all;
+  }
+  .icon-tile .tile-code { font-family: monospace; font-size: 11px; color: #7c88a4; letter-spacing: 0.04em; }
+
+  /* ── In-use glyph highlighting ── */
+  .icon-tile.in-use {
+    border-color: #3a6b4a;
+    background: #10181430;
+    background-color: #101a14;
+  }
+  .icon-tile.in-use:hover { border-color: #50a060; background-color: #121f17; }
+  .icon-tile.in-use .tile-glyph { color: #7be8a4; }
+  .icon-tile.in-use .tile-code { color: #5fa878; }
+  .icon-tile .tile-pills {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    display: flex;
+    gap: 4px;
+  }
+  .icon-tile .tile-pill {
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #0c0e14;
+    border-radius: 2px;
+    padding: 2px 5px;
+    white-space: nowrap;
+  }
+  .icon-tile .tile-usage { background: #50a060; }
+
+  /* ── Planned (design-stage, not yet baked into a prefab) glyph highlighting ── */
+  .icon-tile.planned {
+    border-color: #6b5a30;
+    background-color: #1a160f;
+  }
+  .icon-tile.planned:hover { border-color: #d49a4a; background-color: #211b10; }
+  .icon-tile.planned .tile-glyph { color: #e8c485; }
+  .icon-tile.planned .tile-code { color: #b3924f; }
+  .icon-tile .tile-planned { background: #d49a4a; }
+
+  /* ── Standard character cells ── */
+  .char-block { margin-bottom: 20px; }
+  .char-block-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #7c88a4; margin-bottom: 10px; }
+  .char-row { display: flex; flex-wrap: wrap; gap: 0; }
+  .char-cell {
+    width: 46px;
+    height: 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #10131c;
+    border: 1px solid #181b25;
+    margin: -1px 0 0 -1px;
+  }
+  .char-cell .ch { font-size: 20px; color: #c8ccd8; }
+  .char-cell .lbl { font-family: monospace; font-size: 8px; color: #7c88a4; margin-top: 3px; }
+
+  /* ── Sample tables ── */
+  .sample-table { border-collapse: collapse; width: 100%; margin-bottom: 28px; }
+  .sample-table td { padding: 10px 0; border-bottom: 1px solid #13161e; vertical-align: baseline; }
+  .sample-table td:first-child { width: 110px; font-size: 10px; color: #8d98b3; white-space: nowrap; padding-top: 12px; letter-spacing: 0.04em; }
+  .sample-text { color: #c8ccd8; }
+
+  .divider { border: none; border-top: 1px solid #13161e; margin: 32px 0; }
+
+  /* ── Usage summary table ── */
+  .usage-table { border-collapse: collapse; margin-bottom: 56px; }
+  .usage-table th {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7c88a4;
+    text-align: left;
+    padding: 0 24px 8px 0;
+    border-bottom: 1px solid #1a1e2a;
+  }
+  .usage-table td {
+    font-size: 12px;
+    padding: 9px 24px 9px 0;
+    border-bottom: 1px solid #13161e;
+    vertical-align: middle;
+  }
+  .usage-table .u-name { color: #c8ccd8; font-weight: 600; }
+  .usage-table .u-file { font-family: monospace; font-size: 11px; color: #8d98b3; }
+  .usage-table .u-where { color: #8d98b3; }
+  .usage-table .u-yes { color: #50a060; font-weight: 700; }
+  .usage-table .u-no { color: #7c88a4; }
+  .usage-table .u-license { color: #8d98b3; font-size: 11px; }
+  .usage-table .u-license.u-warn { color: #d49a4a; }
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <div class="page-title">InfinitySpace — Font Reference</div>
+  <div class="page-subtitle">Assets/Art/Fonts/ · Design asset reference sheet</div>
+  <div class="page-note">Tip: open in Firefox for local font loading. In Chrome, serve the folder with a local web server (e.g. npx serve .).</div>
+</header>
+
+<table class="usage-table">
+  <thead>
+    <tr>
+      <th>Font</th>
+      <th>File</th>
+      <th>License</th>
+      <th>Used in game?</th>
+      <th>Where</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="u-name">Infinity Icons HU</td>
+      <td class="u-file">Infinity-Icons-HU.otf</td>
+      <td class="u-license u-warn">Pending — source identified as <a href="https://www.behance.net/gallery/12721009/Infinity-Space-Icons">Infinity Space Icons (Behance)</a>; creator contacted to confirm license terms before shipping commercially.</td>
+      <td class="u-yes">Yes</td>
+      <td class="u-where">Legacy TextMesh glyphs on Player/Probe/Probe II/Asteroid prefabs</td>
+    </tr>
+    <tr>
+      <td class="u-name">Orbitron</td>
+      <td class="u-file">Orbitron-Regular SDF.ttf</td>
+      <td class="u-license">SIL Open Font License 1.1 — © 2018 The Orbitron Project Authors (Matt McInerney / The League of Moveable Type)</td>
+      <td class="u-yes">Yes</td>
+      <td class="u-where">UI Toolkit menus — Main Menu, Pause Menu, Statistics, Ship Management, Game Over, Player Profile Setup, Settings, Sector Achievements, Sector Complete (MainMenu.uss, ProfileSetup.uss, ShipManagement.uss, GameOver.uss, Common/Panel.uss — shared chrome inherited by Pause Menu, Statistics, Settings, Sector Achievements, Sector Complete) — plus Vector HUD dial values, SHIP button title, and sector name (HUD.uss)</td>
+    </tr>
+    <tr>
+      <td class="u-name">Share Tech Mono</td>
+      <td class="u-file">ShareTechMono-Regular SDF.ttf</td>
+      <td class="u-license">SIL Open Font License 1.1 — © 2012 Carrois Type Design, Ralph du Carrois</td>
+      <td class="u-yes">Yes</td>
+      <td class="u-where">Vector HUD — captions, sublabels, radar legend, upgrade labels (HUD.uss)</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ══════════════════════════════════════════════════════════ ICONS -->
+<div class="group">
+  <div class="group-heading">Icons</div>
+
+  <section class="section">
+    <div class="section-heading">
+      <span class="section-name">Infinity Icons HU</span>
+      <span class="section-file">Infinity-Icons-HU.otf</span>
+    </div>
+    <div class="section-desc">Custom game icon font · used for HUD icons and UI symbols. Showing U+0021–U+00E9, U+25AB, U+2606, U+2620, U+2690, U+2693, U+26D0–U+26EF, and U+26FF, excluding non-icon punctuation and gaps with no glyphs in the font. Tiles outlined in green and tagged <strong>IN USE</strong> are glyphs actually referenced by a scene, prefab, or script today; tiles outlined in amber and tagged <strong>PLANNED</strong> are allocated to a design stub in entity-reference.html but not yet baked into a prefab. Hover any highlighted tile for where/what.</div>
+    <div class="icon-grid" id="icons-grid"></div>
+
+    <div class="char-block-label" style="margin-top:32px;">Leftover glyphs (U+2013–U+2703, excluding individual codepoints already shown above) — not allocated to any design use yet</div>
+    <div class="char-block"><div class="char-block-label">General punctuation</div><div class="char-row" id="icons-extra-latin"></div></div>
+    <div class="char-block"><div class="char-block-label">Arrows (U+2190–U+21C3)</div><div class="char-row" id="icons-extra-arrows"></div></div>
+    <div class="char-block"><div class="char-block-label">Geometric shapes (U+25A0–U+2600)</div><div class="char-row" id="icons-extra-shapes"></div></div>
+    <div class="char-block"><div class="char-block-label">Dingbats &amp; misc symbols (U+2606+)</div><div class="char-row" id="icons-extra-dingbats"></div></div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════ FONTS -->
+<div class="group">
+  <div class="group-heading">Fonts</div>
+
+  <!-- Orbitron -->
+  <section class="section">
+    <div class="section-heading">
+      <span class="section-name">Orbitron</span>
+      <span class="section-file">Orbitron-Regular SDF.ttf</span>
+    </div>
+    <div class="section-desc">Display font (Google Fonts, OFL) · used for UI Toolkit menu screens (Main Menu, Pause Menu, Statistics, Ship Management, Game Over, Player Profile Setup, Settings, Sector Achievements, Sector Complete) and the Vector HUD's dial values, SHIP button title, and sector name (HUD.uss).</div>
+
+    <div class="char-block"><div class="char-block-label">Uppercase A – Z</div><div class="char-row" id="orb-upper"></div></div>
+    <div class="char-block"><div class="char-block-label">Lowercase a – z</div><div class="char-row" id="orb-lower"></div></div>
+    <div class="char-block"><div class="char-block-label">Numerals 0 – 9</div><div class="char-row" id="orb-nums"></div></div>
+    <div class="char-block"><div class="char-block-label">Punctuation &amp; symbols</div><div class="char-row" id="orb-punct"></div></div>
+
+    <hr class="divider">
+
+    <table class="sample-table">
+      <tr><td>9px</td>  <td class="sample-text" style="font-family:'Orbitron';font-size:9px;">The quick brown fox jumps over the lazy dog. 0123456789 !@#$%</td></tr>
+      <tr><td>11px</td> <td class="sample-text" style="font-family:'Orbitron';font-size:11px;">The quick brown fox jumps over the lazy dog. 0123456789 !@#$%</td></tr>
+      <tr><td>13px</td> <td class="sample-text" style="font-family:'Orbitron';font-size:13px;">The quick brown fox jumps over the lazy dog. 0123456789 !@#$%</td></tr>
+      <tr><td>16px</td> <td class="sample-text" style="font-family:'Orbitron';font-size:16px;">The quick brown fox jumps over the lazy dog. 0123456789 !@#$%</td></tr>
+      <tr><td>20px</td> <td class="sample-text" style="font-family:'Orbitron';font-size:20px;">The quick brown fox jumps over the lazy dog. 0123456789</td></tr>
+      <tr><td>22px</td> <td class="sample-text" style="font-family:'Orbitron';font-size:22px;font-weight:700;">83 98 68</td></tr>
+      <tr><td>28px</td> <td class="sample-text" style="font-family:'Orbitron';font-size:28px;">The quick brown fox jumps over the lazy dog.</td></tr>
+      <tr><td>56px</td> <td class="sample-text" style="font-family:'Orbitron';font-size:56px;">InfinitySpace</td></tr>
+    </table>
+  </section>
+
+  <!-- Share Tech Mono -->
+  <section class="section">
+    <div class="section-heading">
+      <span class="section-name">Share Tech Mono</span>
+      <span class="section-file">ShareTechMono-Regular SDF.ttf</span>
+    </div>
+    <div class="section-desc">Monospace UI font (Google Fonts, OFL) · used for the Vector HUD's captions, sublabels, radar legend, and upgrade labels (HUD.uss).</div>
+
+    <div class="char-block"><div class="char-block-label">Uppercase A – Z</div><div class="char-row" id="stm-upper"></div></div>
+    <div class="char-block"><div class="char-block-label">Lowercase a – z</div><div class="char-row" id="stm-lower"></div></div>
+    <div class="char-block"><div class="char-block-label">Numerals 0 – 9</div><div class="char-row" id="stm-nums"></div></div>
+    <div class="char-block"><div class="char-block-label">Punctuation &amp; symbols</div><div class="char-row" id="stm-punct"></div></div>
+
+    <hr class="divider">
+
+    <table class="sample-table">
+      <tr><td>9px</td>  <td class="sample-text" style="font-family:'ShareTechMono';font-size:9px;">The quick brown fox jumps over the lazy dog. 0123456789 !@#$%</td></tr>
+      <tr><td>11px</td> <td class="sample-text" style="font-family:'ShareTechMono';font-size:11px;">SHIP · MANAGE · PAUSE · SECTOR VII · KESPRA</td></tr>
+      <tr><td>13px</td> <td class="sample-text" style="font-family:'ShareTechMono';font-size:13px;">The quick brown fox jumps over the lazy dog. 0123456789 !@#$%</td></tr>
+      <tr><td>16px</td> <td class="sample-text" style="font-family:'ShareTechMono';font-size:16px;">The quick brown fox jumps over the lazy dog. 0123456789 !@#$%</td></tr>
+      <tr><td>20px</td> <td class="sample-text" style="font-family:'ShareTechMono';font-size:20px;">The quick brown fox jumps over the lazy dog. 0123456789</td></tr>
+      <tr><td>28px</td> <td class="sample-text" style="font-family:'ShareTechMono';font-size:28px;">The quick brown fox jumps over the lazy dog.</td></tr>
+      <tr><td>56px</td> <td class="sample-text" style="font-family:'ShareTechMono';font-size:56px;">InfinitySpace</td></tr>
+    </table>
+  </section>
+
+
+</div><!-- /group fonts -->
+
+<script>
+  // ── Excluded code points for Infinity Icons ─────────────────────────
+  function isExcluded(cp) {
+    return (cp >= 0x0023 && cp <= 0x0026) ||  // # $ % &
+           (cp === 0x002B)               ||  // + — not in the font, falls back to a non-icon glyph
+           (cp >= 0x003C && cp <= 0x003E) ||  // < = >
+           (cp === 0x0040)               ||  // @
+           (cp >= 0x005B && cp <= 0x005E) ||  // [ \ ] ^
+           (cp === 0x0060)               ||  // `
+           (cp >= 0x007B && cp <= 0x00A0) ||  // { | } ~ + non-printable
+           (cp >= 0x00A2 && cp <= 0x00BE) ||  // gap — not in the font between ¡ and ¿
+           (cp >= 0x00C0 && cp <= 0x00E8) ||  // gap — not in the font between ¿ and é
+           (cp >= 0x26D1 && cp <= 0x26EC);   // gap — not in the font between U+26D0 and U+26ED
+  }
+
+  // ── Glyphs referenced in-game (confirmed) or allocated in design (planned) ──
+  // R/N/J/X: ProfileSetupController ShipGlyphs (baked onto Player.prefab's TextMesh by default as "R")
+  // v/w/s/t: ProfileSetupController AvatarGlyphs (HUD manage-btn, Main Menu continue card)
+  // z: Asteroid.prefab / BoundaryMarker.prefab TextMesh
+  // C: Probe I (ProbeI.prefab, Probe.cs) TextMesh   e: Probe II (ProbeII.prefab, Probe.cs) TextMesh
+  // ?: Portal child TextMeshPro exit glyph (U+003F)
+  // b/Z/Y/a: planned enemy glyphs from entity-reference.html, not yet baked into any prefab
+  //
+  // Type colors reuse entity-reference.html's .section-accent palette
+  // (Player #3d9fd8, Enemies #d05050, Asteroid #788ea0, Missile #c08030,
+  // Power-Ups #50a060). Structures (k/l/m/n) are an Enemies subcategory in
+  // entity-reference.html, so they're tagged Enemy/red here too. Glyphs that
+  // aren't baked onto a DestroyableObject entity (avatar icons, the portal
+  // glyph) are tagged "UI" using the page's existing muted text color
+  // instead of borrowing an entity color that would misidentify them.
+  // "Planned" entries are design-stage allocations from entity-reference.html
+  // stubs — call out status: 'confirmed' once a glyph is wired into a prefab.
+  const inUseGlyphs = {
+    'R': { usage: 'Ship glyph — Profile Setup, Player.prefab default', type: 'Player',   color: '#3d9fd8', status: 'confirmed' },
+    'N': { usage: 'Ship glyph — Profile Setup',                        type: 'Player',   color: '#3d9fd8', status: 'confirmed' },
+    'J': { usage: 'Ship glyph — Profile Setup',                        type: 'Player',   color: '#3d9fd8', status: 'confirmed' },
+    'X': { usage: 'Ship glyph — Profile Setup',                        type: 'Player',   color: '#3d9fd8', status: 'confirmed' },
+    'v': { usage: 'Avatar glyph — Profile Setup, HUD manage-btn, Main Menu', type: 'UI', color: '#7c88a4', status: 'confirmed' },
+    'w': { usage: 'Avatar glyph — Profile Setup, HUD manage-btn, Main Menu', type: 'UI', color: '#7c88a4', status: 'confirmed' },
+    's': { usage: 'Avatar glyph — Profile Setup, HUD manage-btn, Main Menu', type: 'UI', color: '#7c88a4', status: 'confirmed' },
+    't': { usage: 'Avatar glyph — Profile Setup, HUD manage-btn, Main Menu', type: 'UI', color: '#7c88a4', status: 'confirmed' },
+    'z': { usage: 'Asteroid.prefab / BoundaryMarker.prefab', type: 'Asteroid', color: '#788ea0', status: 'confirmed' },
+    'C': { usage: 'Probe I (ProbeI.prefab)',                 type: 'Enemy',    color: '#d05050', status: 'confirmed' },
+    '?': { usage: 'Portal exit glyph',                       type: 'UI',       color: '#7c88a4', status: 'confirmed' },
+    'e': { usage: 'Probe II (ProbeII.prefab)',                type: 'Enemy',   color: '#d05050', status: 'confirmed' },
+    'b': { usage: 'Planned — Satellite I',                   type: 'Enemy',   color: '#d05050', status: 'planned' },
+    'Z': { usage: 'Planned — Satellite II',                  type: 'Enemy',   color: '#d05050', status: 'planned' },
+    'Y': { usage: 'Planned — Satellite III',                 type: 'Enemy',   color: '#d05050', status: 'planned' },
+    'a': { usage: 'Planned — Satellite IV',                  type: 'Enemy',   color: '#d05050', status: 'planned' },
+    'f': { usage: 'Triceptor (Triceptor.prefab)',             type: 'Enemy',   color: '#d05050', status: 'confirmed' },
+    'h': { usage: 'Planned — Laser VI (working name)',        type: 'Enemy',   color: '#d05050', status: 'planned' },
+    'M': { usage: 'Planned — Laser III (working name), lower-tier laser', type: 'Enemy', color: '#d05050', status: 'planned' },
+    'j': { usage: 'Planned — Laser I (working name), another laser', type: 'Enemy', color: '#d05050', status: 'planned' },
+    'c': { usage: 'Planned — Space Station I (working name), role TBD (attack or defend)', type: 'Enemy', color: '#d05050', status: 'planned' },
+    'd': { usage: 'Planned — Space Station II (working name), role TBD (attack or defend)', type: 'Enemy', color: '#d05050', status: 'planned' },
+    'V': { usage: 'Planned — Space Station III (working name), role TBD (attack or defend)', type: 'Enemy', color: '#d05050', status: 'planned' },
+    'O': { usage: 'Planned — Fighter I (working name)',  type: 'Enemy', color: '#d05050', status: 'planned' },
+    'T': { usage: 'Planned — Fighter II (working name)', type: 'Enemy', color: '#d05050', status: 'planned' },
+    'W': { usage: 'Planned — Fighter III (working name)', type: 'Enemy', color: '#d05050', status: 'planned' },
+    'k': { usage: 'Planned — Structure I (working name), established on large asteroids',  type: 'Enemy', color: '#d05050', status: 'planned' },
+    'l': { usage: 'Planned — Structure II (working name), established on large asteroids', type: 'Enemy', color: '#d05050', status: 'planned' },
+    'm': { usage: 'Planned — Structure III (working name), established on large asteroids', type: 'Enemy', color: '#d05050', status: 'planned' },
+    'n': { usage: 'Planned — Structure IV (working name), established on large asteroids', type: 'Enemy', color: '#d05050', status: 'planned' },
+    '*': { usage: 'Relic pickup (Relic.prefab)',              type: 'Pickup',  color: '#50a060', status: 'confirmed' },
+    '(': { usage: 'Homing Rocket (HomingRocket.prefab)',     type: 'Missile', color: '#c08030', status: 'confirmed' },
+    '▫': { usage: 'Missile (Missile.prefab) — child TextMesh glyph, mesh quad disabled', type: 'Missile', color: '#c08030', status: 'confirmed' },
+    '⛯': { usage: 'Part (Part.prefab) — child TextMesh glyph, SpriteRenderer removed', type: 'Pickup', color: '#50a060', status: 'confirmed' },
+  };
+
+  // ── Icon tile grid ──────────────────────────────────────────────────
+  function fillIconGrid(id, start, end) {
+    const grid = document.getElementById(id);
+    if (!grid) return;
+    const frag = document.createDocumentFragment();
+    for (let cp = start; cp <= end; cp++) {
+      if (isExcluded(cp)) continue;
+      const ch = String.fromCodePoint(cp);
+      const usage = inUseGlyphs[ch];
+
+      const planned = usage && usage.status === 'planned';
+
+      const tile = document.createElement('div');
+      tile.className = 'icon-tile' + (usage ? (planned ? ' planned' : ' in-use') : '');
+      tile.title = 'U+' + cp.toString(16).toUpperCase().padStart(4, '0') + (usage ? ' — ' + usage.usage : '');
+
+      if (usage) {
+        const pills = document.createElement('div');
+        pills.className = 'tile-pills';
+
+        const usageBadge = document.createElement('div');
+        usageBadge.className = 'tile-pill ' + (planned ? 'tile-planned' : 'tile-usage');
+        usageBadge.textContent = planned ? 'Planned' : 'In use';
+        pills.appendChild(usageBadge);
+
+        const typeBadge = document.createElement('div');
+        typeBadge.className = 'tile-pill tile-type';
+        typeBadge.style.background = usage.color;
+        typeBadge.textContent = usage.type;
+        pills.appendChild(typeBadge);
+
+        tile.appendChild(pills);
+      }
+
+      const glyph = document.createElement('div');
+      glyph.className = 'tile-glyph';
+      glyph.textContent = ch;
+
+      const code = document.createElement('div');
+      code.className = 'tile-code';
+      code.textContent = 'U+' + cp.toString(16).toUpperCase().padStart(4, '0');
+
+      tile.appendChild(glyph);
+      tile.appendChild(code);
+      frag.appendChild(tile);
+    }
+    grid.appendChild(frag);
+  }
+
+  // ── Standard character cells ────────────────────────────────────────
+  function fillCharRow(id, chars, fontFamily, fontWeight) {
+    const row = document.getElementById(id);
+    if (!row) return;
+    const frag = document.createDocumentFragment();
+    for (const ch of chars) {
+      const cell = document.createElement('div');
+      cell.className = 'char-cell';
+
+      const top = document.createElement('div');
+      top.className = 'ch';
+      top.style.fontFamily = "'" + fontFamily + "', sans-serif";
+      if (fontWeight) top.style.fontWeight = fontWeight;
+      top.textContent = ch;
+
+      const lbl = document.createElement('div');
+      lbl.className = 'lbl';
+      const cp = ch.codePointAt(0);
+      lbl.textContent = cp < 128 ? ch : 'U+' + cp.toString(16).toUpperCase().padStart(4, '0');
+
+      cell.appendChild(top);
+      cell.appendChild(lbl);
+      frag.appendChild(cell);
+    }
+    row.appendChild(frag);
+  }
+
+  // ── Character sets ──────────────────────────────────────────────────
+  const upper  = Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+  const lower  = Array.from('abcdefghijklmnopqrstuvwxyz');
+  const nums   = Array.from('0123456789');
+  const punct  = Array.from('!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~©®™€£¥°…–—');
+
+  // Infinity Icons
+  fillIconGrid('icons-grid', 0x0021, 0x00E9);
+  fillIconGrid('icons-grid', 0x25AB, 0x25AB);
+  fillIconGrid('icons-grid', 0x2606, 0x2606);
+  fillIconGrid('icons-grid', 0x2620, 0x2620);
+  fillIconGrid('icons-grid', 0x2690, 0x2690);
+  fillIconGrid('icons-grid', 0x2693, 0x2693);
+  fillIconGrid('icons-grid', 0x26D0, 0x26EF);
+  fillIconGrid('icons-grid', 0x26FF, 0x26FF);
+
+  // Infinity Icons — leftover glyphs outside the U+0021–U+00E9 range shown above.
+  // Codepoints sourced directly from the font's cmap (fontTools), grouped by Unicode block.
+  const iconsExtraLatin    = [0x2013, 0x2026].map(cp => String.fromCodePoint(cp));
+  const iconsExtraArrows   = [
+    0x2190, 0x2191, 0x2192, 0x2193, 0x2194, 0x2195, 0x2196, 0x2197, 0x2198, 0x2199,
+    0x219A, 0x219B, 0x219E, 0x219F, 0x21A0, 0x21A1, 0x21A2, 0x21A3, 0x21A4, 0x21A5,
+    0x21A6, 0x21A7, 0x21A8, 0x21A9, 0x21AA, 0x21AB, 0x21AC, 0x21AE, 0x21AF, 0x21B0,
+    0x21B1, 0x21B2, 0x21B3, 0x21B4, 0x21B5, 0x21B6, 0x21B7, 0x21BC, 0x21BD, 0x21BE,
+    0x21BF, 0x21C0, 0x21C1, 0x21C2, 0x21C3,
+  ].map(cp => String.fromCodePoint(cp));
+  const iconsExtraShapes   = [
+    0x25A1, 0x25A4, 0x25A5, 0x25A6, 0x25A7, 0x25A8, 0x25A9, 0x25AD, 0x25AF,
+    0x25B1, 0x25B3, 0x25B5, 0x25B7, 0x25B9, 0x25BB, 0x25BD, 0x25BF, 0x25C1, 0x25C3,
+    0x25C5, 0x25C7, 0x25CA, 0x25CB, 0x25CD, 0x25CE, 0x25DC, 0x25DD, 0x25DE, 0x25DF,
+    0x25E0, 0x25E1, 0x25EB, 0x25EC, 0x25EF, 0x25F0, 0x25F1, 0x25F2, 0x25F3, 0x25F4,
+    0x25F5, 0x25F6, 0x25F7, 0x25F8, 0x25F9, 0x25FA, 0x25FB, 0x25FD, 0x25FF, 0x2600,
+  ].map(cp => String.fromCodePoint(cp));
+  const iconsExtraDingbats = [
+    0x2701, 0x2702, 0x2703,
+  ].map(cp => String.fromCodePoint(cp));
+
+  fillCharRow('icons-extra-latin',    iconsExtraLatin,    'InfinityIcons');
+  fillCharRow('icons-extra-arrows',   iconsExtraArrows,   'InfinityIcons');
+  fillCharRow('icons-extra-shapes',   iconsExtraShapes,   'InfinityIcons');
+  fillCharRow('icons-extra-dingbats', iconsExtraDingbats, 'InfinityIcons');
+
+  // Orbitron
+  fillCharRow('orb-upper',  upper,  'Orbitron');
+  fillCharRow('orb-lower',  lower,  'Orbitron');
+  fillCharRow('orb-nums',   nums,   'Orbitron');
+  fillCharRow('orb-punct',  punct,  'Orbitron');
+
+  // Share Tech Mono
+  fillCharRow('stm-upper',  upper,  'ShareTechMono');
+  fillCharRow('stm-lower',  lower,  'ShareTechMono');
+  fillCharRow('stm-nums',   nums,   'ShareTechMono');
+  fillCharRow('stm-punct',  punct,  'ShareTechMono');
+</script>
+</body>
+</html>

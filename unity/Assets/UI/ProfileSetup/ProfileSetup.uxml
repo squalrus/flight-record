@@ -1,0 +1,34 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Common/Panel.uss"/>
+    <Style src="project://database/Assets/UI/Common/MenuButton.uss"/>
+    <Style src="project://database/Assets/UI/ProfileSetup/ProfileSetup.uss"/>
+    <ui:VisualElement name="profile-setup" class="modal-overlay profile-setup">
+        <ui:VisualElement name="panel" class="panel profile-setup__panel">
+            <ui:VisualElement class="panel__header">
+                <ui:Label text="PILOT PROFILE" class="panel__title"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="panel__rule"/>
+
+            <ui:Label text="SHIP" class="profile-setup__section-label"/>
+            <ui:VisualElement class="profile-setup__option-row">
+                <ui:Button name="ship-option-0" text="R" class="option-btn"/>
+                <ui:Button name="ship-option-1" text="N" class="option-btn"/>
+                <ui:Button name="ship-option-2" text="J" class="option-btn"/>
+                <ui:Button name="ship-option-3" text="X" class="option-btn"/>
+            </ui:VisualElement>
+
+            <ui:Label text="AVATAR" class="profile-setup__section-label"/>
+            <ui:VisualElement class="profile-setup__option-row">
+                <ui:Button name="avatar-option-0" text="v" class="option-btn"/>
+                <ui:Button name="avatar-option-1" text="w" class="option-btn"/>
+                <ui:Button name="avatar-option-2" text="s" class="option-btn"/>
+                <ui:Button name="avatar-option-3" text="t" class="option-btn"/>
+            </ui:VisualElement>
+
+            <ui:VisualElement class="profile-setup__footer">
+                <ui:Button name="back-btn" text="BACK" class="menu-btn"/>
+                <ui:Button name="begin-btn" text="BEGIN" class="menu-btn"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

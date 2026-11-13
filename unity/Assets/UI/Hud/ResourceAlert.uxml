@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Hud/ResourceAlert.uss"/>
+    <ui:VisualElement name="resource-alert" class="resource-alert" picking-mode="Ignore">
+        <ui:Label name="resource-alert-text" text="" class="resource-alert__text"/>
+    </ui:VisualElement>
+</ui:UXML>

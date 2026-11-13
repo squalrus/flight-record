@@ -1,0 +1,21 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Common/Panel.uss"/>
+    <Style src="project://database/Assets/UI/Common/MenuButton.uss"/>
+    <Style src="project://database/Assets/UI/PauseMenu/PauseMenu.uss"/>
+    <ui:VisualElement name="pause-menu" class="modal-overlay pause-menu" style="display: none;">
+        <ui:VisualElement name="panel" class="panel">
+            <ui:VisualElement class="panel__header">
+                <ui:Label text="PAUSED" class="panel__title"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="panel__rule"/>
+            <ui:VisualElement name="menu-buttons" class="menu-buttons">
+                <ui:Button name="resume-btn" text="RESUME" class="menu-btn"/>
+                <ui:Button name="mission-btn" text="MISSION" class="menu-btn"/>
+                <ui:Button name="statistics-btn" text="STATISTICS" class="menu-btn"/>
+                <ui:Button name="settings-btn" text="SETTINGS" class="menu-btn"/>
+                <ui:Button name="quit-btn" text="QUIT" class="menu-btn"/>
+            </ui:VisualElement>
+            <ui:Label name="version-label" text="" class="close-btn__label" style="margin-top: 12px; -unity-text-align: middle-center; color: rgba(127, 233, 255, 0.4);"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,18 @@
+.credits-section {
+    margin-bottom: 16px;
+}
+
+.credits-section__heading {
+    color: rgba(127, 233, 255, 0.7);
+    font-size: 12px;
+    letter-spacing: 2px;
+    -unity-font-style: bold;
+    margin-bottom: 4px;
+}
+
+.credits-section__name {
+    color: rgb(255, 255, 255);
+    font-size: 14px;
+    letter-spacing: 1px;
+    white-space: normal;
+}

@@ -1,0 +1,30 @@
+{
+  // Unity's generated folders churn constantly while the editor imports. Watching or
+  // indexing them makes VS Code hold files open, which can break Unity's package
+  // installs on Windows ("EPERM: operation not permitted, rename ... PackageCache").
+  "files.watcherExclude": {
+    "**/unity/Library/**": true,
+    "**/unity/Temp/**": true,
+    "**/unity/Logs/**": true,
+    "**/unity/obj/**": true,
+    "**/unity/UserSettings/**": true,
+    "**/.venv/**": true
+  },
+  "search.exclude": {
+    "**/unity/Library": true,
+    "**/unity/Temp": true,
+    "**/unity/Logs": true,
+    "**/unity/obj": true,
+    "**/unity/UserSettings": true
+  },
+  "files.exclude": {
+    "**/unity/Library": true,
+    "**/unity/Temp": true,
+    "**/unity/obj": true
+  },
+  "python.analysis.exclude": [
+    "**/unity/**",
+    "**/.venv/**",
+    "**/samples/**"
+  ]
+}

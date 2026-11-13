@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/MissionBriefing/MissionBriefing.uss"/>
+    <ui:VisualElement name="mission-briefing" class="mission-briefing" picking-mode="Ignore">
+        <ui:Label text="MISSION" class="mission-briefing__tag"/>
+        <ui:Label name="mission-briefing-text" text="CLEAR THE HOSTILES" class="mission-briefing__text"/>
+        <ui:Label name="mission-briefing-description" text="Clear the threats and find the portal." class="mission-briefing__description"/>
+    </ui:VisualElement>
+</ui:UXML>

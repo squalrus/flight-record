@@ -1,0 +1,20 @@
+.panel {
+    width: 640px;
+}
+
+.categories {
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+.category-column {
+    flex-grow: 1;
+    flex-basis: 0;
+    padding-right: 16px;
+}
+
+.category-column--divided {
+    padding-left: 16px;
+    border-left-width: 1px;
+    border-left-color: rgba(127, 233, 255, 0.25);
+}

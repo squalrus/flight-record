@@ -1,6 +1,6 @@
 # 03 · Fingerprint a clip
 
-**Status:** in progress. The harness and live identification work against ACRCloud and AudD; real-vinyl results still need the clips from 1.2. · **Plan:** [docs/experiments.md](../../docs/experiments.md#03--fingerprint-a-clip) · **Depends on:** 1.2 (vinyl clips) for results, API keys in `.env.local` or `.env`
+**Status:** in progress. The harness and live identification work against ACRCloud and AudD; real-vinyl results still need the clips from 1.2. · **Plan:** [docs/flightrec/experiments.md](../../docs/flightrec/experiments.md#03--fingerprint-a-clip) · **Depends on:** 1.2 (vinyl clips) for results, API keys in `.env.local` or `.env`
 
 ## Goal
 

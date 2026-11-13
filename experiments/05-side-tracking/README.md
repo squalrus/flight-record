@@ -1,6 +1,6 @@
 # 05 · Side tracking and level over
 
-**Status:** not started · **Plan:** [docs/experiments.md](../../docs/experiments.md#05--side-tracking-and-level-over) · **Depends on:** 1.3, 2.1, 2.2
+**Status:** not started · **Plan:** [docs/flightrec/experiments.md](../../docs/flightrec/experiments.md#05--side-tracking-and-level-over) · **Depends on:** 1.3, 2.1, 2.2
 
 ## Goal
 

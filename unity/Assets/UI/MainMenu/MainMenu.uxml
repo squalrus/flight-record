@@ -1,0 +1,44 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/MainMenu/MainMenu.uss"/>
+    <Style src="project://database/Assets/UI/Common/Panel.uss"/>
+    <Style src="project://database/Assets/UI/Common/MenuButton.uss"/>
+    <ui:VisualElement name="main-menu" class="main-menu" picking-mode="Ignore">
+        <ui:VisualElement class="title-block" picking-mode="Ignore">
+            <ui:Label text="INFINITY SPACE" class="title"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="menu-buttons" class="menu-buttons">
+            <ui:Button name="continue-btn" class="continue-card">
+                <ui:VisualElement class="continue-card__glyphs">
+                    <ui:Label name="continue-ship-glyph" text="R" class="continue-card__glyph"/>
+                    <ui:Label name="continue-avatar-glyph" text="v" class="continue-card__glyph continue-card__glyph--avatar"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="continue-card__info">
+                    <ui:Label text="CONTINUE" class="continue-card__label"/>
+                    <ui:Label name="continue-sector-val" text="SECTOR I" class="continue-card__sector"/>
+                    <ui:VisualElement class="continue-card__stats-row">
+                        <ui:Label name="continue-playtime-val" text="0:00" class="continue-card__stat"/>
+                        <ui:Label name="continue-parts-val" text="0 PARTS" class="continue-card__stat"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:Button>
+            <ui:Button name="new-game-btn" text="NEW GAME" class="menu-btn"/>
+            <ui:Button name="settings-btn" text="SETTINGS" class="menu-btn"/>
+            <ui:Button name="statistics-btn" text="LIFETIME STATS" class="menu-btn"/>
+            <ui:Button name="credits-btn" text="CREDITS" class="menu-btn"/>
+        </ui:VisualElement>
+        <ui:Label name="version-label" text="" class="version-label" picking-mode="Ignore"/>
+    </ui:VisualElement>
+    <ui:VisualElement name="new-game-confirm" class="modal-overlay new-game-confirm">
+        <ui:VisualElement name="panel" class="panel">
+            <ui:VisualElement class="panel__header">
+                <ui:Label text="START NEW GAME?" class="panel__title"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="panel__rule"/>
+            <ui:Label text="A game is in progress. Starting a new game will end this run, but its stats have already been saved to your lifetime totals." class="confirm-dialog__message"/>
+            <ui:VisualElement class="nav-row nav-row--split">
+                <ui:Button name="new-game-cancel-btn" text="CANCEL" class="menu-btn"/>
+                <ui:Button name="new-game-confirm-btn" text="CONFIRM" class="menu-btn"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

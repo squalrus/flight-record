@@ -23,6 +23,8 @@ env/
 /samples/_local/
 /samples/_songs/
 *.log
+# Message logs written to the repo root by tool runs (fixtures in subfolders stay trackable)
+/*.jsonl
 
 # Unity
 /unity/[Ll]ibrary/
@@ -46,6 +48,22 @@ env/
 /unity/*.aab
 /unity/*.unitypackage
 /unity/crashlytics-build.properties
+/unity/[Rr]ecordings/
+/unity/ExportedObj/
+/unity/.consulo/
+/unity/.gradle/
+/unity/.utmp/
+/unity/*.tmp
+/unity/*.userprefs
+/unity/*.svd
+/unity/*.pdb
+/unity/*.mdb
+/unity/*.opendb
+/unity/*.VC.db
+/unity/sysinfo.txt
+/unity/*.app
+/unity/**/*BurstDebugInformation_DoNotShip/
+/unity/**/*_BackUpThisFolder_ButDontShipItWithYourGame/
 
 # Editors and OS
 .vscode/*

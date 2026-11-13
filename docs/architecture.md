@@ -26,6 +26,8 @@ Four loosely coupled modules, so the experiments can be built in Python first an
                            local co-op (one machine)
 ```
 
+**Audio files** (D-012) skip the splitter and interface: the computer decodes the file, plays it, and feeds the same samples to module 1, so everything downstream is unchanged. Because the samples exist before they are heard, analysis can run ahead of playback, and tags and file length stand in for identification and side tracking. Live input (line-in, mic) never plays through the computer.
+
 ## Message contract
 
 Modules talk over a small, versioned message format (JSON over UDP, or OSC). Keep it boring so Unity can consume it directly.

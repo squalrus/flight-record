@@ -17,8 +17,8 @@ Legend: 🔌 needs the physical hardware (turntable, interface) · 🌐 needs an
   *Done when:* `experiments/01-capture-visualizer/RESULTS.md` records stability over 30+ minutes and measured latency.
 - [ ] **1.2 🖥️ Build a small test corpus.** Short clips (10-30 s) across rock, funk, electronic, jazz, quiet acoustic, recorded from your own records with `record_clip.py`. Describe them in `samples/README.md`.
   *Done when:* at least 10 clips exist with source/genre/notes, and none are full tracks.
-- [ ] **1.3 🖥️ Experiment 02: onset and features.** Develop against the corpus (no hardware needed after 1.2); confirm live on hardware. Depends on 0.3, 1.2.
-  *Done when:* `RESULTS.md` has onset recall/false-positive numbers per clip, tempo convergence times, and CPU use.
+- [ ] **1.3 🖥️ Experiment 02: onset and features.** Per-band triggers, energies, loudness, brightness, tempo, and chroma/key, with a live explorer window (`experiments/02-onset-features/explore.py`, in progress). Exploring needs nothing else; the measured results need the corpus (1.2), and a message-log replay needs 0.3. Confirm live on hardware.
+  *Done when:* `RESULTS.md` has onset recall/false-positive numbers per clip, tempo convergence times, key accuracy against known keys, and CPU use.
 - [ ] **1.4 🖥️ Feature stream recorder.** Save the real-time feature stream to a message log so the Unity generator can be developed from recordings. Depends on 0.3, 1.3.
   *Done when:* a recorded log replays identically through `replay.py`.
 
@@ -39,7 +39,7 @@ Legend: 🔌 needs the physical hardware (turntable, interface) · 🌐 needs an
 - [ ] **4.1 🖥️ Experiment 06: message bridge.** Depends on 0.3, 0.4. Python sends messages over UDP/OSC to a minimal Unity scene; measure latency and jitter. Include the Unity-native capture latency test.
   *Done when:* the sidecar-vs-C# decision is recorded in [decisions.md](docs/decisions.md).
 - [ ] **4.2 🖥️ Game: vertical scrolling conversion.** See [unity-fork-plan.md](docs/unity-fork-plan.md) Step 2. Hand-authored waves first.
-- [ ] **4.3 🖥️ Game: audio source abstraction.** Live bridge, replay, and null sources behind one interface. Depends on 4.1.
+- [ ] **4.3 🖥️ Game: audio source abstraction.** Live bridge, replay, null, and **file** sources behind one interface. The file source plays the file in-game and feeds analysis a little ahead of playback (D-012). Depends on 4.1.
 - [ ] **4.4 🖥️ Game: audio-driven level generator.** See Step 3. Deterministic given a feature stream and seed; unit-tested against recorded logs from 1.4.
 - [ ] **4.5 🖥️ Game: side-aware flow.** Boss and level-complete driven by `side_state` and `side_end`. Depends on 3.1.
 

@@ -4,7 +4,7 @@
 
 Put a record on. Your ship launches. The music is the level: bass hits spawn heavy enemies, hi-hats spawn swarms and pickups, loud choruses ramp the intensity, quiet verses give you room to breathe. When the side runs out, a boss arrives and the level ends.
 
-Works with any source that can produce a line-level signal: vinyl, CD, MP3 player, cassette. Vinyl is the flagship because a side has a natural beginning and end.
+Works with any source that can produce a line-level signal: vinyl, CD, MP3 player, cassette. Vinyl is the flagship because a side has a natural beginning and end. Audio files you own (MP3, FLAC, OGG, WAV) are also an input; the game plays them itself and can read slightly ahead of what you hear (decision D-012).
 
 ## Core loop
 

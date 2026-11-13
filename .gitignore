@@ -21,6 +21,7 @@ env/
 /experiments/**/data/
 /experiments/**/out/
 /samples/_local/
+/samples/_songs/
 *.log
 
 # Unity

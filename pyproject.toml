@@ -10,7 +10,7 @@ name = "flightrec"
 description = "Shared modules for the Flight Record experiments and tools"
 requires-python = ">=3.11"
 dynamic = ["version"]
-dependencies = ["sounddevice>=0.5", "numpy>=2.1", "scipy>=1.14"]
+dependencies = ["sounddevice>=0.5", "numpy>=2.1", "scipy>=1.14", "soundfile>=0.12"]
 
 [tool.setuptools.dynamic]
 version = { file = "VERSION" }

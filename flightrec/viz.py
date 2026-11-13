@@ -9,6 +9,7 @@ labels) are rendered once into a cached background surface.
 
 from __future__ import annotations
 
+import io
 import os
 import time
 from collections import deque
@@ -450,6 +451,15 @@ class TempoPanel(Panel):
         pygame.draw.circle(self.win.screen, (shade, int(shade * 0.82), 90), center, radius)
 
 
+def fit(font: Any, text: str, width: int) -> str:
+    """``text`` cut (with an ellipsis) to fit ``width`` pixels in ``font``."""
+    if font.size(text)[0] <= width:
+        return text
+    while text and font.size(text + "...")[0] > width:
+        text = text[:-1]
+    return text + "..."
+
+
 def status_lines(win: Window, lines: Sequence[str], top: float) -> None:
     for i, line in enumerate(lines):
         win.text(line, (16, top + i * 20))
@@ -480,21 +490,32 @@ class IdentificationPanel(Panel):
         counts = f"requests {identifier.requests}/{identifier.max_requests}"
         if next_s is not None:
             counts += f"   next in {next_s:4.1f} s"
-        win.text(counts, (r.left + 300, r.top + 4), DIM)
+        win.text(counts, (r.right - 8 - win.font.size(counts)[0], r.top + 4), DIM)
 
         current = identifier.current
         if current is None:
             win.text("no match yet", (r.left + 8, r.top + 28), DIM, big=True)
         else:
             res = current.result
-            win.text(f"{res.artist} - {res.title}"[:56], (r.left + 8, r.top + 28), HOLD, big=True)
+            win.text(
+                fit(win.big, f"{res.artist} - {res.title}", r.width - 16),
+                (r.left + 8, r.top + 28),
+                HOLD,
+                big=True,
+            )
             detail = f"{res.album or '(no album)'}"
             conf = "n/a" if res.score is None else f"{res.score:.2f}"
             detail += f"   confidence {conf}   {res.latency_s:.2f} s   at {current.t:5.1f} s"
-            win.text(detail[:110], (r.left + 8, r.top + 66), TEXT)
+            win.text(fit(win.font, detail, r.width - 16), (r.left + 8, r.top + 66), TEXT)
+            about = [x for x in (res.label, ", ".join(res.genres), res.release_date) if x]
+            if about:
+                win.text(
+                    fit(win.font, "   ".join(about), r.width - 16), (r.left + 8, r.top + 84), DIM
+                )
 
-        y = r.top + 90
-        for attempt in reversed(identifier.history[-3:]):
+        y = r.top + 106
+        rows = max(0, (r.bottom - y - 2) // 16)
+        for attempt in reversed(identifier.history[-rows:] if rows else []):
             res = attempt.result
             if res.matched:
                 line, color = f"match     {res.artist} - {res.title}", GOOD
@@ -502,5 +523,145 @@ class IdentificationPanel(Panel):
                 line, color = f"error     {res.error}", BAD
             else:
                 line, color = "no match", DIM
-            win.text(f"{attempt.t:7.1f} s  {line}"[:120], (r.left + 8, y), color)
+            win.text(
+                fit(win.font, f"{attempt.t:7.1f} s  {line}", r.width - 16), (r.left + 8, y), color
+            )
+            y += 16
+
+
+def mmss(seconds: float | None) -> str:
+    if seconds is None:
+        return "-:--"
+    seconds = max(0.0, seconds)
+    return f"{int(seconds // 60)}:{int(seconds % 60):02d}"
+
+
+COMMON_FORMATS = {"Vinyl", "LP", "Album", '12"', "33 ⅓ RPM", "Stereo"}
+
+
+def pressing(candidate: Any) -> str:
+    """A compact line that tells pressings apart: year, country, catalog number (to check
+    against the sleeve), the distinguishing format details (e.g. Limited Edition,
+    Repress, a color), and the Discogs id."""
+    details = [f for f in candidate.formats if f not in COMMON_FORMATS]
+    parts = [candidate.year or "????", candidate.country or "?", candidate.catno or "no cat. no."]
+    if details:
+        parts.append(", ".join(details))
+    return "  ".join(parts) + f"  #{candidate.id}"
+
+
+class ReleasePanel(Panel):
+    """Where on the record playback is, from a ``flightrec.discogs.ReleaseTracker``:
+    release, side and track position, time left on the track and the side, and the side's
+    tracklist. When the pressing is ambiguous it lists candidates to pick with keys 1-5.
+    The release's cover (``Lookup.cover``) is shown as a thumbnail in the top right."""
+
+    COVER = 88
+    _cover_key: Any = None
+    _cover: Any = None
+
+    def cover_surface(self, lookup: Any) -> Any:
+        """The lookup's cover scaled to fit ``COVER`` px, decoded once per release."""
+        if lookup.cover is None:
+            return None
+        key = ((lookup.release or {}).get("id"), len(lookup.cover))
+        if key != self._cover_key:
+            try:
+                image = pygame.image.load(io.BytesIO(lookup.cover))
+                scale = self.COVER / max(image.get_width(), image.get_height())
+                size = (round(image.get_width() * scale), round(image.get_height() * scale))
+                self._cover = pygame.transform.smoothscale(image, size)
+            except (pygame.error, ValueError, ZeroDivisionError):
+                self._cover = None  # an unreadable image just means no cover
+            self._cover_key = key
+        return self._cover
+
+    def draw(self, tracker: Any, prog: Any, checks: Sequence[Any] = ()) -> None:
+        self.frame()
+        r = self.rect
+        win = self.win
+        lookup = tracker.current
+        if tracker.busy:
+            status, color = "looking up...", WARN
+        elif lookup is None:
+            status, color = "waiting for an identification", DIM
+        else:
+            status = lookup.how
+            color = {"auto": GOOD, "confirmed": GOOD, "remembered": GOOD,
+                     "unconfirmed": WARN}.get(lookup.how, BAD)  # fmt: skip
+        win.text(f"discogs: {status}", (r.left + 6, r.top + 4), color)
+        if lookup is not None:
+            hint = "F: forget & look up again"
+            cover_room = self.COVER + 10 if lookup.cover else 0
+            hx = r.right - 8 - cover_room - win.font.size(hint)[0]
+            win.text(hint, (hx, r.top + 4), DIM)
+        if lookup is None or lookup.release is None:
+            if lookup is not None and lookup.error:
+                win.text(fit(win.font, lookup.error, r.width - 16), (r.left + 8, r.top + 28), BAD)
+            return
+        rel = lookup.release
+        cover = self.cover_surface(lookup)
+        width = r.width - 16  # text beside the cover is narrower
+        if cover is not None:
+            x = r.right - 6 - self.COVER + (self.COVER - cover.get_width()) // 2
+            win.screen.blit(cover, (x, r.top + 6))
+            width -= self.COVER + 8
+        formats = ", ".join(f.get("name", "") for f in rel.get("formats") or [])
+        label = (rel.get("labels") or [{}])[0]
+        head = (f"{rel.get('title')} ({rel.get('year') or '?'}, {rel.get('country') or '?'}) "
+                f"{formats}  {label.get('catno', '')}  #{rel.get('id')}")  # fmt: skip
+        win.text(fit(win.font, head, width), (r.left + 8, r.top + 24), HOLD)
+
+        if prog is not None and prog.track is not None:
+            where = f"side {prog.side}, {prog.track.position}" if prog.side else prog.track.position
+            if prog.part:
+                where += f" (part {prog.part} of this track)"
+            line = f"{where}   track left {mmss(prog.track_left)} of {mmss(prog.track_length)}"
+            if prog.side_left is not None:
+                est = " (est.)" if prog.side_estimated else ""
+                line += f"   side left {mmss(prog.side_left)} of {mmss(prog.side_length)}{est}"
+            win.text(fit(win.font, line, width), (r.left + 8, r.top + 44), TEXT)
+        elif lookup.track:
+            win.text(
+                "identified track not on this release's vinyl sides", (r.left + 8, r.top + 44), DIM
+            )
+
+        about = " > ".join(x for x in (", ".join(lookup.genres), ", ".join(lookup.styles)) if x)
+        extras = [about, str(lookup.year) if lookup.year else ""]
+        if lookup.have is not None:
+            extras.append(f"have {lookup.have} / want {lookup.want}")
+        win.text(fit(win.font, "   ".join(e for e in extras if e), width),
+                 (r.left + 8, r.top + 62), ACCENT)  # fmt: skip
+        if checks:
+            x = r.left + 8
+            win.text("agrees:", (x, r.top + 80), DIM)
+            x += win.font.size("agrees: ")[0]
+            for check in checks:
+                mark, color = (
+                    ("ok", GOOD) if check.ok else ("no", BAD) if check.ok is False else ("-", DIM)
+                )
+                text = f"{check.name} {mark}  "
+                win.text(text, (x, r.top + 80), color)
+                x += win.font.size(text)[0]
+
+        y = r.top + 100
+        if lookup.how == "unconfirmed":
+            win.text("which pressing? press 1-5", (r.left + 8, y), WARN)
+            for i, c in enumerate(lookup.candidates[:5], 1):
+                y += 16
+                win.text(fit(win.font, f"{i}. {pressing(c)}", r.width - 16), (r.left + 8, y), TEXT)
+            return
+        side = prog.side if prog is not None and prog.side else lookup.track_side
+        tracks = [t for t in lookup.tracks if t.side == side] if side else []
+        rows = (r.bottom - y - 4) // 16
+        current = prog.track if prog is not None else None
+        start = 0
+        if current in tracks and len(tracks) > rows:
+            start = min(max(0, tracks.index(current) - rows // 2), len(tracks) - rows)
+        for t in tracks[start : start + rows]:
+            mark = ">" if t == current else " "
+            text = f"{mark} {t.position:<5} {mmss(t.seconds):>5}  {t.title}"
+            win.text(
+                fit(win.font, text, r.width - 16), (r.left + 8, y), HOLD if t == current else DIM
+            )
             y += 16

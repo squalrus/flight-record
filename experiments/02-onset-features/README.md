@@ -16,7 +16,7 @@ Turn audio into the signals the game could use, and see what the music actually 
 
 ## Install and run
 
-From the repo root, with the venv active (see [../README.md](../README.md#setup)):
+From the repo root, with the venv active (see [../README.md](../README.md#setup)). The quickest way in is the `run.py` shortcut: `python run.py list`, `python run.py kalax` (a song by short name, with sound, identification, and Discogs), `python run.py mic`. The full commands:
 
 ```sh
 python -m pip install -r experiments/02-onset-features/requirements.txt   # adds pygame
@@ -32,6 +32,7 @@ python experiments/02-onset-features/evaluate.py                                
 - **Files:** `--wav` takes WAV, MP3, FLAC, or OGG. Quote paths with spaces.
 - **`--listen`** also plays the file through the speakers, in sync: the speakers' output stream drives replay, and the display waits out the reported output latency (about 90 ms here). It works for files only, never live input (D-011).
 - **`--identify acrcloud|audd`** adds an identification panel (experiment 03): what is playing, with confidence, response time, and recent attempts. The service is asked on a background thread, so the window never waits; requests are capped by `--max-identify`. See [../03-fingerprint/README.md](../03-fingerprint/README.md#run). The window grows to 1280 x 960 to make room.
+- **`--discogs`** (with `--identify`) adds a release panel (experiment 04): the release, side and position, time left on the track and the side, and the side's tracklist. Press **1-5** to pick the pressing when it is ambiguous (the choice is remembered), and **F** to forget the remembered choice for the current record and look it up again. See [../04-discogs-lookup/README.md](../04-discogs-lookup/README.md#run). The window grows to 1280 x 1010.
 - **Window controls:** Esc or Q closes it. `[` and `]` lower and raise the trigger level gate by 3 dB; below -90 dBFS it turns off.
 - **Analysis depends only on the audio,** so `--offline` gives exactly the same features as a live replay of the same WAV, just faster. Use it to compare clips or settings.
 - **Logging:** every hop is written as one contract `features` message (via `flightrec.messages`) per line to `out/features-*.jsonl` (untracked). Use `--log PATH` to choose the file, or `--no-log` to skip it. Play a log back at original timing with `python tools/play_log.py out/features-....jsonl` (add `--speed 4` to go faster).

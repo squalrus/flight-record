@@ -24,6 +24,8 @@ import argparse
 import sys
 import time
 from collections import Counter, deque
+from collections.abc import Sequence
+from dataclasses import replace
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -43,11 +45,24 @@ from flightrec.audio import (
     read_audio,
     to_db,
 )
+from flightrec.console import safe_output
+from flightrec.discogs import (
+    Check,
+    Discogs,
+    Lookup,
+    Progress,
+    ReleaseTracker,
+    Selections,
+    agreement,
+    find_track,
+    progress,
+)
 from flightrec.env import load_env
 from flightrec.identification import SERVICES, Attempt, Identifier
 from flightrec.messages import LogWriter
 
 HERE = Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
 LANES = (*BAND_NAMES, "all", "beat")
 
 
@@ -106,16 +121,26 @@ class Explorer:
     W, H = 1280, 800
 
     def __init__(
-        self, title: str, channels: int, freqs: np.ndarray, identify: bool = False
+        self,
+        title: str,
+        channels: int,
+        freqs: np.ndarray,
+        identify: bool = False,
+        discogs: bool = False,
     ) -> None:
         from flightrec import viz
 
         self.viz = viz
-        self.H = 960 if identify else 800  # room for the identification panel
+        # Taller window for the identification (and release) panels along the bottom.
+        self.H = 1010 if discogs else (960 if identify else 800)
         self.win = viz.Window(title, (self.W, self.H))
-        self.identification = (
-            viz.IdentificationPanel(self.win, (16, 746, self.W - 32, 150)) if identify else None
-        )
+        self.identification = None
+        self.release = None
+        if discogs:
+            self.identification = viz.IdentificationPanel(self.win, (16, 746, 560, 200))
+            self.release = viz.ReleasePanel(self.win, (592, 746, self.W - 608, 200))
+        elif identify:
+            self.identification = viz.IdentificationPanel(self.win, (16, 746, self.W - 32, 150))
         left_w, right_x = 860, 892
         right_w = self.W - right_x - 16
         self.bands = LogBands(freqs, 160, 30.0, 16_000.0)
@@ -165,6 +190,9 @@ class Explorer:
         status: list[str],
         identifier: Identifier | None = None,
         audio_t: float = 0.0,
+        tracker: ReleaseTracker | None = None,
+        prog: Progress | None = None,
+        checks: Sequence[Check] = (),
     ) -> None:
         win = self.win
         win.begin()
@@ -182,6 +210,8 @@ class Explorer:
             win.text(line, (self.stats_x, 420 + i * 20))
         if self.identification is not None and identifier is not None:
             self.identification.draw(identifier, audio_t)
+        if self.release is not None and tracker is not None:
+            self.release.draw(tracker, prog, checks)
         self.viz.status_lines(win, status, self.H - 56)
         win.end()
 
@@ -257,12 +287,20 @@ def run_live(args: argparse.Namespace) -> int:
             recheck_s=args.identify_recheck,
             max_requests=args.max_identify,
         )
+    tracker = None
+    if args.discogs:
+        data = ROOT / "samples" / "_local" / "discogs"
+        tracker = ReleaseTracker(args.discogs_client, Selections(data / "selections.json"))
     desc = f"replay {args.wav.name}" if args.wav else f"live device {source.device!r}"  # type: ignore[attr-defined]
     view = (
         None
         if args.headless
         else Explorer(
-            f"Flight Record · 02 · {desc}", source.channels, fx.freqs, identifier is not None
+            f"Flight Record · 02 · {desc}",
+            source.channels,
+            fx.freqs,
+            identifier is not None,
+            tracker is not None,
         )
     )
     print(f"{desc}: {sr} Hz, hop {fx.hop} ({hop_s * 1000:.1f} ms), window {fx.window}")
@@ -287,6 +325,13 @@ def run_live(args: argparse.Namespace) -> int:
                     if view.win.closed():
                         break
                     adjust_gate(fx, view.win.keys, view.viz.pygame)
+                    if tracker is not None:
+                        pg = view.viz.pygame
+                        for key in view.win.keys:  # 1-5 confirm an ambiguous pressing
+                            if pg.K_1 <= key <= pg.K_5:
+                                tracker.confirm(key - pg.K_1)
+                            elif key == pg.K_f:  # forget a wrong pick and look up again
+                                tracker.forget()
                 if source.finished or (limit and time.perf_counter() - started >= limit):
                     break
                 for window, end in reader.pending():
@@ -311,6 +356,29 @@ def run_live(args: argparse.Namespace) -> int:
                         if log is not None:
                             log.write(attempt.to_message())
                         print(describe_attempt(attempt))
+                        r = attempt.result
+                        if tracker is not None and r.matched and r.artist:
+                            tracker.request(
+                                r.artist, r.album, r.title,
+                                alt_albums=r.alt_albums, label=r.label, barcode=r.upc,
+                                year=release_year(r.release_date),
+                            )  # fmt: skip
+                prog = None
+                checks: list[Check] = []
+                if tracker is not None:
+                    found = tracker.poll()
+                    if found is not None:
+                        if log is not None and found.message is not None:
+                            log.write(replace(found.message, t=round(audio_t, 4)))
+                        print(describe_lookup(found))
+                    match = identifier.current if identifier is not None else None
+                    if match is not None:
+                        res = match.result
+                        prog = progress(
+                            tracker.current, res.title, res.offset_s, match.clip_end_t,
+                            audio_t, res.duration_s,
+                        )  # fmt: skip
+                        checks = agreement(tracker.current, res)
                 if view is not None and latest is not None:
                     per_hop = summary.process_s / max(summary.hops, 1)
                     stats = [
@@ -331,7 +399,18 @@ def run_live(args: argparse.Namespace) -> int:
                         f"audio {latest.t:7.1f} s"
                     ]
                     frames, _ = capture.latest(fx.n_fft)
-                    view.draw(latest, frames, beat_seen, stats, status, identifier, audio_t)
+                    view.draw(
+                        latest,
+                        frames,
+                        beat_seen,
+                        stats,
+                        status,
+                        identifier,
+                        audio_t,
+                        tracker,
+                        prog,
+                        checks,
+                    )
                     beat_seen = False
                 next_frame += period
                 if next_frame < time.perf_counter() - period:
@@ -360,6 +439,23 @@ def run_live(args: argparse.Namespace) -> int:
         )
         print(f"identification: {identifier.requests} requests, {dict(outcomes)}")
     return 0
+
+
+def release_year(date: str | None) -> int | None:
+    """'2013-05-28' -> 2013."""
+    return int(date[:4]) if date and date[:4].isdigit() else None
+
+
+def describe_lookup(lookup: Lookup) -> str:
+    if lookup.release is None:
+        return f"  discogs: {lookup.how}" + (f" ({lookup.error})" if lookup.error else "")
+    rel = lookup.release
+    track = find_track(lookup.tracks, lookup.track)
+    where = f", {track.position}" if track else ""
+    return (
+        f"  discogs: {lookup.how} #{rel.get('id')} {rel.get('title')} ({rel.get('year') or '?'})"
+        f"{where}"
+    )
 
 
 def describe_attempt(attempt: Attempt) -> str:
@@ -409,14 +505,25 @@ def main(argv: list[str] | None = None) -> int:
         "--identify-recheck", type=float, default=30.0, help="seconds between checks after a match"
     )
     ident.add_argument("--max-identify", type=int, default=20, help="requests per session")
+    ident.add_argument(
+        "--discogs", action="store_true", help="look up each match on Discogs (experiment 04)"
+    )
     args = parser.parse_args(argv)
+    load_env()  # .env.local / .env: API keys and FR_AUDIO_DEVICE
+    safe_output()
+    if args.discogs and not args.identify:
+        parser.error("--discogs needs --identify")
     if args.identify:
         if args.offline:
             parser.error("--identify works with live input or real-time replay, not --offline")
-        load_env()
         args.service = SERVICES[args.identify].from_env()
         if args.service is None:
             parser.error(f"no {args.identify} keys found in .env.local or .env")
+        if args.discogs:
+            cache = ROOT / "samples" / "_local" / "discogs" / "http"
+            args.discogs_client = Discogs.from_env(cache_dir=cache)
+            if args.discogs_client is None:
+                parser.error("DISCOGS_TOKEN is not set in .env.local or .env")
     if (args.loop or args.offline) and args.wav is None:
         parser.error("--loop and --offline need --wav")
     if args.listen and (args.wav is None or args.offline):

@@ -51,6 +51,23 @@ class Result:
     album: str | None = None
     score: float | None = None
     """Service confidence on a 0..1 scale, if it reports one."""
+    duration_s: float | None = None
+    """Length of the identified track (ACRCloud ``duration_ms``)."""
+    offset_s: float | None = None
+    """Where in the track the clip ended (ACRCloud ``play_offset_ms``, AudD ``timecode``)."""
+    recording_id: str | None = None
+    """The service's stable id for the recording (ACRCloud ``acrid``): a track change shows
+    up as a different id, with no fuzzy title matching."""
+    label: str | None = None
+    genres: list[str] = field(default_factory=list)
+    release_date: str | None = None
+    isrc: str | None = None
+    upc: str | None = None
+    """Barcode of the release the service matched, when its project has external ids on."""
+    alt_albums: list[str] = field(default_factory=list)
+    """Albums of the service's other (lower-ranked) matches: more names to try on Discogs."""
+    link: str | None = None
+    """A shareable "listen on..." link (AudD ``song_link``)."""
     latency_s: float = 0.0
     error: str | None = None
     raw: dict[str, Any] = field(default_factory=dict, repr=False)
@@ -155,8 +172,23 @@ class AudD(Service):
             artist=found.get("artist"),
             title=found.get("title"),
             album=found.get("album"),
+            offset_s=_timecode(found.get("timecode")),
+            label=found.get("label") or None,
+            release_date=found.get("release_date") or None,
+            link=found.get("song_link") or None,
             raw=raw,
         )
+
+
+def _timecode(text: str | None) -> float | None:
+    """AudD's position in the track, "mm:ss" or "hh:mm:ss", in seconds."""
+    parts = (text or "").split(":")
+    if not text or not all(p.isdigit() for p in parts) or len(parts) > 3:
+        return None
+    seconds = 0
+    for part in parts:
+        seconds = seconds * 60 + int(part)
+    return float(seconds)
 
 
 class ACRCloud(Service):
@@ -213,15 +245,39 @@ class ACRCloud(Service):
         top = music[0]
         artists = ", ".join(a.get("name", "") for a in top.get("artists") or []) or None
         score = top.get("score")
+        duration_ms, offset_ms = top.get("duration_ms"), top.get("play_offset_ms")
+        album = (top.get("album") or {}).get("name")
+        ids = top.get("external_ids") or {}
+        alt_albums = []
+        for other in music[1:]:
+            name = (other.get("album") or {}).get("name")
+            if name and name != album and name not in alt_albums:
+                alt_albums.append(name)
         return Result(
             self.name,
             True,
             artist=artists,
             title=top.get("title"),
-            album=(top.get("album") or {}).get("name"),
+            album=album,
             score=None if score is None else float(score) / 100.0,
+            duration_s=float(duration_ms) / 1000.0 if duration_ms else None,
+            offset_s=float(offset_ms) / 1000.0 if offset_ms is not None else None,
+            recording_id=top.get("acrid") or None,
+            label=top.get("label") or None,
+            genres=[g["name"] for g in top.get("genres") or [] if g.get("name")],
+            release_date=top.get("release_date") or None,
+            isrc=_first(ids.get("isrc")),
+            upc=_first(ids.get("upc")),
+            alt_albums=alt_albums,
             raw=raw,
         )
+
+
+def _first(value: Any) -> str | None:
+    """ACRCloud external ids are a string or a list of strings."""
+    if isinstance(value, list):
+        value = value[0] if value else None
+    return str(value) if value else None
 
 
 SERVICES: dict[str, type[Service]] = {"audd": AudD, "acrcloud": ACRCloud}
@@ -263,9 +319,14 @@ class Attempt:
         if r.matched:
             # AudD reports no score; its matches are logged at confidence 1.0.
             confidence = 1.0 if r.score is None else min(1.0, max(0.0, r.score))
+            if r.link:
+                extra["link"] = r.link
             return TrackIdentified(
                 t=self.t, artist=r.artist or "", title=r.title or "", album=r.album,
-                confidence=confidence, extra=extra,
+                confidence=confidence, track_seconds=r.duration_s, offset_seconds=r.offset_s,
+                recording_id=r.recording_id, label=r.label, genres=r.genres or None,
+                release_date=r.release_date, isrc=r.isrc, upc=r.upc,
+                alt_albums=r.alt_albums or None, extra=extra,
             )  # fmt: skip
         if r.error:
             return IdentificationFailed(t=self.t, reason="error", extra={**extra, "error": r.error})

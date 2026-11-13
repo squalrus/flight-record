@@ -35,6 +35,7 @@ from flightrec.audio import (
     read_audio,
     write_wav,
 )
+from flightrec.env import load_env
 from flightrec.messages import LogWriter
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -130,6 +131,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--hop", type=int, default=512)
     parser.add_argument("--gate", type=float, default=DEFAULT_GATE_DB, help="trigger gate, dBFS")
     args = parser.parse_args(argv)
+    load_env()  # .env.local / .env: API keys and FR_AUDIO_DEVICE
     if args.offline and args.wav is None:
         parser.error("--offline needs --wav")
 

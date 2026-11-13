@@ -17,6 +17,7 @@ import sys
 from collections import Counter
 from pathlib import Path
 
+from flightrec.console import safe_output
 from flightrec.messages import FeaturesMessage, Message, read_log, replay
 
 
@@ -46,6 +47,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--summary", action="store_true", help="count only, no playback")
     args = parser.parse_args(argv)
+    safe_output()
 
     messages = [m for m in read_log(args.log) if not args.types or m.TYPE in args.types]
     if not messages:

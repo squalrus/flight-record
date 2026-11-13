@@ -36,6 +36,13 @@ python experiments/02-onset-features/explore.py --device 9 --identify audd   # m
 - **Caching and limits:** every answer is cached in `out/cache/` (git-ignored), so re-runs and re-scoring are free. Only uncached requests count toward `--max-requests`, and errors are not cached. Results go to `out/fingerprint-*.csv`, and `--save-clips DIR` writes the clips so you can listen to them.
 - **Live** (`explore.py --identify`) sends the last `--identify-clip` seconds (default 10) on a background thread, so the window never waits. Until something matches it retries every `--identify-retry` seconds (default 8); after a match it re-checks every `--identify-recheck` seconds (default 30), to notice track changes. It stops after `--max-identify` requests (default 20). Intervals count from when the previous answer arrived. Each attempt is logged as a contract `track_identified` or `identification_failed` message in the session log. AudD reports no score, so its matches are logged at confidence 1.0.
 
+**Captured from each match** (and logged in `track_identified`):
+
+- From ACRCloud: track length and position, the recording id (`acrid`, for detecting track changes), label, genres, release date, ISRC and UPC (turn on "isrc" and "upc" under 3rd Party ID Integration in the ACRCloud project; the other options are not needed), and the albums of its other matches.
+- From AudD: position (`timecode`), label, release date, and a `song_link`.
+
+ACRCloud's genres are sparse (none for 3 of 7 songs), so Discogs styles are the better source for theming (see experiment 04).
+
 Code: clients and the background `Identifier` are in [flightrec/identification.py](../../flightrec/identification.py), the `.env` loader in [flightrec/env.py](../../flightrec/env.py), and the tag reader in [flightrec/tags.py](../../flightrec/tags.py).
 
 ## Findings so far (clean digital clips; not results)

@@ -38,6 +38,7 @@ from flightrec.audio import (
     channel_levels,
     open_source,
 )
+from flightrec.env import load_env
 
 HERE = Path(__file__).resolve().parent
 CLIP_DBFS = -0.1
@@ -293,6 +294,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--log", type=Path, help="CSV path (default out/run-*.csv)")
     parser.add_argument("--no-log", action="store_true", help="do not write a CSV")
     args = parser.parse_args(argv)
+    load_env()  # .env.local / .env: API keys and FR_AUDIO_DEVICE
     if args.loop and args.wav is None:
         parser.error("--loop needs --wav")
     return run(args)

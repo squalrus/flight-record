@@ -17,6 +17,7 @@ from pathlib import Path
 import numpy as np
 
 from flightrec.audio import Capture, LiveSource, env_device, write_wav
+from flightrec.env import load_env
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 CLIP_LIMIT_SECONDS = 30.0
@@ -40,6 +41,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--out", type=Path, help="output WAV (default samples/_local/clip-*.wav)")
     parser.add_argument("--float", action="store_true", help="write 32-bit float instead of 16-bit")
     args = parser.parse_args(argv)
+    load_env()  # .env.local / .env: API keys and FR_AUDIO_DEVICE
 
     if args.seconds <= 0:
         parser.error("--seconds must be positive")

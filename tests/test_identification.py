@@ -289,3 +289,96 @@ def test_attempts_become_contract_messages() -> None:
     assert isinstance(none, IdentificationFailed) and none.reason == "no_match"
     err = Attempt(10.0, 11.0, Result("audd", False, error="HTTP 503")).to_message()
     assert err.reason == "error" and err.extra["error"] == "HTTP 503"
+
+
+def test_track_length_and_position_reach_the_contract() -> None:
+    from flightrec.messages import loads
+
+    raw = {
+        "status": {"code": 0, "msg": "Success"},
+        "metadata": {"music": [{"title": "stream of silllver", "artists": [{"name": "the olllam"}],
+                                "score": 100, "duration_ms": 403000, "play_offset_ms": 206200}]},
+    }  # fmt: skip
+    r = ACRCloud("h", "k", "s").parse(raw)
+    assert (r.duration_s, r.offset_s) == (403.0, 206.2)
+    msg = Attempt(206.0, 207.1, r).to_message()
+    assert msg.track_seconds == 403.0 and msg.offset_seconds == 206.2
+    assert loads(msg.to_json()) == msg
+
+    audd = AudD("t").parse(
+        {"status": "success", "result": {"artist": "a", "title": "b", "timecode": "01:02"}}
+    )
+    assert audd.offset_s == 62.0 and audd.duration_s is None
+    assert (
+        AudD("t")
+        .parse({"status": "success", "result": {"artist": "a", "title": "b", "timecode": "x"}})
+        .offset_s
+        is None
+    )
+
+
+def test_acrcloud_extra_fields_and_alternates() -> None:
+    from flightrec.messages import loads
+
+    raw = {
+        "status": {"code": 0, "msg": "Success"},
+        "metadata": {
+            "music": [
+                {
+                    "title": "Special Berry",
+                    "artists": [{"name": "standards"}],
+                    "album": {"name": "Starfish"},
+                    "score": 100,
+                    "acrid": "abc123",
+                    "label": "Topshelf Records",
+                    "genres": [{"name": "Rock"}],
+                    "release_date": "2020-08-07",
+                    "external_ids": {"isrc": "USXXX2000001", "upc": ["0123456789012"]},
+                },
+                {
+                    "title": "Special Berry",
+                    "artists": [{"name": "Standards"}],
+                    "album": {"name": "Special Berry"},
+                    "score": 85,
+                },
+                {
+                    "title": "Special Berry",
+                    "artists": [{"name": "standards"}],
+                    "album": {"name": "Starfish"},
+                    "score": 80,
+                },
+            ]
+        },
+    }
+    r = ACRCloud("h", "k", "s").parse(raw)
+    assert (r.recording_id, r.label, r.genres, r.release_date) == (
+        "abc123",
+        "Topshelf Records",
+        ["Rock"],
+        "2020-08-07",
+    )
+    assert (r.isrc, r.upc) == ("USXXX2000001", "0123456789012")
+    assert r.alt_albums == ["Special Berry"]  # deduplicated, excluding the top album
+    msg = Attempt(10.0, 11.0, r).to_message()
+    assert (
+        msg.recording_id == "abc123"
+        and msg.upc == "0123456789012"
+        and msg.alt_albums == ["Special Berry"]
+    )
+    assert loads(msg.to_json()) == msg
+
+
+def test_audd_extra_fields() -> None:
+    raw = {
+        "status": "success",
+        "result": {
+            "artist": "a",
+            "title": "b",
+            "label": "L",
+            "release_date": "2020-01-01",
+            "song_link": "https://lis.tn/x",
+        },
+    }
+    r = AudD("t").parse(raw)
+    assert (r.label, r.release_date, r.link) == ("L", "2020-01-01", "https://lis.tn/x")
+    assert Attempt(1.0, 2.0, r).to_message().extra["link"] == "https://lis.tn/x"

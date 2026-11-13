@@ -124,6 +124,21 @@ class TrackIdentified(Message):
     title: str
     album: str | None = None
     confidence: float = field(default=0.0, metadata=_range(0, 1))
+    track_seconds: float | None = field(default=None, metadata=_range(0, None))
+    """Length of the identified track, when the service reports it."""
+    offset_seconds: float | None = field(default=None, metadata=_range(0, None))
+    """Where in the track the identified clip ended: with ``track_seconds``, the time
+    left on the current track at the moment the clip was captured."""
+    recording_id: str | None = None
+    """The service's stable id for the recording; a different id means a track change."""
+    label: str | None = None
+    genres: list[str] | None = None
+    release_date: str | None = None
+    isrc: str | None = None
+    upc: str | None = None
+    """Barcode of the matched release: a Discogs barcode search can find it exactly."""
+    alt_albums: list[str] | None = None
+    """Albums of the service's other matches, for release lookup fallbacks."""
 
 
 @dataclass(frozen=True)
@@ -135,6 +150,13 @@ class ReleaseSelected(Message):
     discogs_id: int = field(metadata=_range(0, None))
     side: str
     tracks: list[Track] = field(default_factory=list)
+    album: str | None = None
+    year: int | None = field(default=None, metadata=_range(0, None))
+    """Original release year (the master's, when known)."""
+    genres: list[str] | None = None
+    """Broad genres, e.g. "Electronic", "Rock"."""
+    styles: list[str] | None = None
+    """Fine-grained styles, e.g. "Synthwave", "Math Rock": useful for level theming."""
 
 
 @dataclass(frozen=True)

@@ -64,8 +64,8 @@ Every message carries `v` (schema version) and `t` (seconds on the sender's mono
 | Message | Required | Optional (default) | Notes |
 | --- | --- | --- | --- |
 | `features` | `onset` (bool), `onset_strength`, `bass`, `mid`, `treble`, `rms` (0..1) | `tempo` (BPM > 0, or null), `tempo_confidence` (0..1, 0); `onset_low` / `onset_mid` / `onset_high`, `beat` (bool); `centroid_hz` (>= 0); `key` (e.g. "F# minor"), `key_confidence` (0..1); `chroma` (12 values 0..1, C..B) | Energies map -60..0 dBFS onto 0..1. Onset flags lag one hop (10.7 ms at 512 / 48 kHz). The optional fields were added by experiment 02. |
-| `track_identified` | `artist`, `title` | `album` (null), `confidence` (0..1, 0) | |
-| `release_selected` | `discogs_id` (int >= 0), `side` | `tracks` (empty) | Each track is `pos`, `title`, and `seconds` (>= 0, or null when Discogs has no duration). |
+| `track_identified` | `artist`, `title` | `album` (null), `confidence` (0..1, 0); `track_seconds` (track length, s >= 0), `offset_seconds` (where in the track the clip ended, s >= 0); `recording_id` (the service's id for the recording), `label`, `genres` (list), `release_date`, `isrc`, `upc` (release barcode), `alt_albums` (albums of the service's other matches) | `track_seconds` and `offset_seconds` give the time left on the current track even when Discogs lacks durations; a changed `recording_id` means a track change; `upc` and `alt_albums` help the release lookup. Added in experiments 03-04. |
+| `release_selected` | `discogs_id` (int >= 0), `side` | `tracks` (empty); `album`, `year` (original year), `genres`, `styles` (lists) | Each track is `pos`, `title`, and `seconds` (>= 0, or null when Discogs has no duration). `styles` are Discogs' fine-grained ones (e.g. "Synthwave", "Math Rock"), useful for level theming. |
 | `identification_failed` | `reason` | | E.g. `no_match`, `timeout`, `network`, `no_api_key`. |
 | `side_state` | `side`, `track_index` (int >= 0, 0-based into the side's tracks), `side_elapsed` (s >= 0) | `side_expected` (s, or null when unknown), `side_confidence` (0..1, 0) | |
 | `side_end` | `cause` | | E.g. `run_out_groove`, `needle_lift`, `timer`, `file_end`. |

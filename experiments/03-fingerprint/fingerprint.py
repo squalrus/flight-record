@@ -26,7 +26,7 @@ import re
 import sys
 import zlib
 from collections import defaultdict
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from datetime import datetime
 from difflib import SequenceMatcher
 from pathlib import Path
@@ -35,6 +35,7 @@ import numpy as np
 import soundfile
 from scipy.signal import butter, sosfilt
 
+from flightrec.console import safe_output
 from flightrec.env import load_env
 from flightrec.identification import SERVICES, Result, Service
 from flightrec.tags import read_tags
@@ -190,6 +191,9 @@ def run(
         for service in services:
             result = cache.get(service.name, wav)
             cached = result is not None
+            if result is not None and result.raw:
+                # Re-parse the cached raw response, so parser improvements reach old answers.
+                result = replace(service.parse(result.raw), latency_s=result.latency_s)
             if result is None:
                 if sent >= max_requests:
                     skipped += 1
@@ -211,6 +215,8 @@ def run(
                     "title": result.title,
                     "album": result.album,
                     "score": result.score,
+                    "duration_s": result.duration_s,
+                    "offset_s": result.offset_s,
                     "latency_s": round(result.latency_s, 3),
                     "cached": cached,
                     "error": result.error,
@@ -261,6 +267,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--dry-run", action="store_true", help="plan and count; send nothing")
     parser.add_argument("--save-clips", type=Path, help="also write each clip WAV here (to listen)")
     args = parser.parse_args(argv)
+    safe_output()
 
     load_env()
     songs = sorted(p for p in args.songs.iterdir() if p.suffix.lower() in AUDIO_SUFFIXES)

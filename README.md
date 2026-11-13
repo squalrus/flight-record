@@ -29,6 +29,16 @@ Pre-prototype. The plan is to prove the risky parts with small standalone experi
 
 Humans and coding agents: read [AGENTS.md](AGENTS.md), then start at the top of [BACKLOG.md](BACKLOG.md).
 
+To try the explorer (setup in [experiments/README.md](experiments/README.md#setup); API keys in `.env.local`):
+
+```sh
+python run.py list       # songs in samples/_songs and their short names
+python run.py kalax      # replay one: speakers, identification, Discogs release panel
+python run.py mic        # listen on the mic / line in (FR_AUDIO_DEVICE)
+```
+
+`--plain` skips identification and Discogs, `--audd` uses AudD, `--quiet` replays without sound, and anything after `--` goes to `explore.py`.
+
 ## Repo layout
 
 ```

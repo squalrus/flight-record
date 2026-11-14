@@ -29,8 +29,6 @@ Legend: 🔌 needs the physical hardware (turntable, interface) · 🌐 needs an
 
 Game items are one change each, so each one can be played and tested on its own. The audit in [unity-fork-plan.md](docs/unity/unity-fork-plan.md) Step 0 names the classes involved. The direction is arcade over resource management (D-013).
 
-- [ ] **4.9 🖥️ Game: ammo skeleton and power-ups.** Ammo is infinite by default, behind a setting that can turn the limit back on, so the rule can be decided by play (D-014). Power-up pickups change the weapon for a while (spread, rapid fire, homing) and are the main way to get stronger.
-  *Done when:* the default run never runs out of shots, the limited mode still works, and at least two power-ups can be picked up, show on the HUD, and expire.
 - [ ] **4.12 🖥️ Game: enemy entry paths and formations.** Replace orbit and patrol AI with paths (enter from the right, top, or bottom, sweep, exit) and formations that move as a group; turrets track the nearest player. Despawn past the left edge and above and below the screen. Depends on 4.11.
   *Done when:* each existing enemy prefab can fly at least two paths and one formation, set up as data (a path or formation asset), not code.
 - [ ] **4.13 🖥️ Game: bullet-pattern emitters.** Generalize Triceptor's volley into emitters: aimed, spread, ring, and sweeping stream, each with rate and speed settings and a trigger call the generator can drive from beats later.

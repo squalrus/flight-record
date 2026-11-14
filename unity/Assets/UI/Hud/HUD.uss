@@ -182,6 +182,30 @@
     color: rgb(255, 255, 255);
 }
 
+/* Active power-ups (backlog 4.9): one label per running power-up, under PARTS. */
+.powerups {
+    position: absolute;
+    top: 246px;
+    left: 28px;
+    flex-direction: column;
+    -unity-font-definition: url("project://database/Assets/Art/Fonts/ShareTechMono/ShareTechMono-Regular%20SDF.ttf?fileID=12800000&guid=7fee49d8fbac016489f46f913649c73b&type=3#ShareTechMono-Regular SDF");
+}
+
+.powerup {
+    font-size: 15px;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+    display: none;
+}
+
+.powerup--active {
+    display: flex;
+}
+
+.powerup--expiring {
+    opacity: 0.35;
+}
+
 .topright {
     position: absolute;
     top: 26px;

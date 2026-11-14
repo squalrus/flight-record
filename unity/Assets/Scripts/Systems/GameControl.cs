@@ -21,6 +21,9 @@ namespace FlightRecord
 
         public int Experience;
         public bool RumbleEnabled = true;
+        // Off by default: primary fire is unlimited (D-014). The Settings screen turns the
+        // old ammunition limit back on for playtesting.
+        public bool LimitedAmmo;
         public int CurrentSector = 1;
         public bool HasActiveRun = true;
         public float Parts;
@@ -306,6 +309,7 @@ namespace FlightRecord
                 DamageDealt = DamageDealt,
                 DamageTaken = DamageTaken,
                 RumbleEnabled = RumbleEnabled,
+                LimitedAmmo = LimitedAmmo,
                 CurrentSector = CurrentSector,
                 HasActiveRun = HasActiveRun,
                 Parts = Parts,
@@ -412,6 +416,9 @@ namespace FlightRecord
                 HighestSectorReached = existing.HighestSectorReached,
                 LifetimeRunsStarted = existing.LifetimeRunsStarted + 1,
                 LifetimeSectorsCleared = existing.LifetimeSectorsCleared,
+                // Settings, not run state -- New Game keeps them.
+                RumbleEnabled = existing.RumbleEnabled,
+                LimitedAmmo = existing.LimitedAmmo,
                 ShipId = shipId,
                 AvatarGlyph = avatarGlyph,
                 HasActiveRun = true,
@@ -458,6 +465,24 @@ namespace FlightRecord
             File.WriteAllText(saveFile, JsonUtility.ToJson(stats));
         }
 
+        // Same static pair as Rumble above, for the Settings screen's Limited Ammo toggle.
+        public static bool GetLimitedAmmo()
+        {
+            var saveFile = Application.persistentDataPath + "/stats.json";
+            if (!File.Exists(saveFile)) return false;
+            return JsonUtility.FromJson<PlayerStatistics>(File.ReadAllText(saveFile)).LimitedAmmo;
+        }
+
+        public static void SetLimitedAmmo(bool limited)
+        {
+            var saveFile = Application.persistentDataPath + "/stats.json";
+            var stats = File.Exists(saveFile)
+                ? JsonUtility.FromJson<PlayerStatistics>(File.ReadAllText(saveFile))
+                : new PlayerStatistics();
+            stats.LimitedAmmo = limited;
+            File.WriteAllText(saveFile, JsonUtility.ToJson(stats));
+        }
+
         public void Load()
         {
             var saveFile = Application.persistentDataPath + "/stats.json";
@@ -473,6 +498,7 @@ namespace FlightRecord
                 _damageTaken = stats.DamageTaken;
                 Experience = stats.Experience;
                 RumbleEnabled = stats.RumbleEnabled;
+                LimitedAmmo = stats.LimitedAmmo;
                 CurrentSector = stats.CurrentSector;
                 HasActiveRun = stats.HasActiveRun;
                 Parts = stats.Parts;

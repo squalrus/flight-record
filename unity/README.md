@@ -1,6 +1,6 @@
 # Unity project
 
-The game: a copy of **InfinitySpace** (a top-down space shooter, from the private `squalrus/infinity-space` repo at **v0.35.3, commit `899a07e`**), brought in on 2026-11-12 to be reworked into Flight Record: vertical scrolling, local co-op, and audio-driven levels (see [../docs/unity/unity-fork-plan.md](../docs/unity/unity-fork-plan.md)). It is a copy rather than a submodule because the gameplay changes are large; the original game continues separately.
+The game: a copy of **InfinitySpace** (a top-down space shooter, from the private `squalrus/infinity-space` repo at **v0.35.3, commit `899a07e`**), brought in on 2026-11-12 to be reworked into Flight Record: horizontal scrolling (D-016), local co-op, and audio-driven levels (see [../docs/unity/unity-fork-plan.md](../docs/unity/unity-fork-plan.md)). It is a copy rather than a submodule because the gameplay changes are large; the original game continues separately.
 
 ## Open it
 

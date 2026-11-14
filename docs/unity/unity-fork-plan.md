@@ -1,6 +1,6 @@
 # Unity Fork Plan
 
-The starting point is an existing Unity **top-down space shooter**. This repo's Unity project is a fork of it, reworked into a **vertically scrolling shoot 'em up** with **local (same-machine) multiplayer** and **audio-driven level generation**.
+The starting point is an existing Unity **top-down space shooter**. This repo's Unity project is a fork of it, reworked into a **horizontally scrolling (left to right) shoot 'em up** (D-016) with **local (same-machine) multiplayer** and **audio-driven level generation**.
 
 The existing project is **InfinitySpace** (v0.35.3), copied into `unity/` on 2026-11-12. Step 0 below records what it is; Steps 2 onward are the plan for changing it.
 
@@ -23,12 +23,12 @@ The findings come from reading the code, settings, scenes, and prefabs of Infini
 | Unity | **6000.3.17f1** (Unity 6) |
 | Render pipeline | **Built-in.** No URP or HDRP asset in Graphics or Quality settings. 2D Sprite and Tilemap packages. |
 | Input | **New Input System only** (1.11.0, `activeInputHandler: 1`). One asset, `InfinitySpace.inputactions` (now `FlightRecord.inputactions`, backlog 4.6), with one map "Player": Move (value), Fire (value), Pause, ShipManagement. Control schemes: Keyboard&Mouse and Gamepad. A single `PlayerInput` component (message callbacks such as `OnMove` and `OnFire`) is on the player. There is **no `PlayerInputManager`** and no generated C# input class. |
-| Camera | Orthographic, size 20. Default window 1024x768 landscape, with all orientations allowed (a holdover from mobile). |
+| Camera | Orthographic, size 20. Default window 1024x768 landscape, with all orientations allowed (a holdover from mobile). Since 4.7: fixed landscape, 1280x720 windowed default (fullscreen window at native resolution), no autorotation. |
 | UI | **UI Toolkit** (UXML / USS) for every screen and the HUD (`VectorHudController`), plus TextMesh Pro fonts. Ship health bars are uGUI `Image`s. Gamepad UI navigation (`GamepadUiNavigation`) and a rumble setting exist. |
 | Audio | **None.** No `AudioSource`, `AudioClip`, or mixer anywhere. That suits Flight Record: the music plays in the room and is never routed through the game (D-001). |
 | Scenes | `Start` (menus) → `Main` (one sector; reloaded for each new sector) → `GameOver`. |
 | Persistence | `GameControl` singleton (`DontDestroyOnLoad`). Profile, lifetime stats, and settings go to `stats.json` in `persistentDataPath` (JSON). |
-| Platforms | Desktop plus an Android heritage: `FloatingJoystick`, `TouchControls`, autorotation, and InfinitySpace's Android build workflow (not brought over). |
+| Platforms | Desktop plus an Android heritage: `FloatingJoystick`, `TouchControls`, autorotation, and InfinitySpace's Android build workflow (not brought over). Removed in 4.7, along with the on-screen `OnScreenStick` / `OnScreenButton` canvas (which also created a virtual gamepad), the `ControlsFlipped` setting, the Android vibration fallback, and the stale Standard Assets defines. Unity's default per-platform Android fields stay in `ProjectSettings.asset`; they do nothing for desktop builds. |
 
 ### Camera and what "top-down" assumes
 
@@ -64,13 +64,13 @@ The findings come from reading the code, settings, scenes, and prefabs of Infini
 
 | As-is or nearly | Needs rework for Flight Record |
 | --- | --- |
-| `DestroyableObject` / `ICanTakeDamage` (health, damage), `DamageNumber`, `ExplosionEffect`, `BeamEffect` | `PlayerController`: free flight becomes screen-bounded movement with a fixed upward facing |
-| `Ship` weapons (cannon, cooldown, ammunition, fire power), `Missile` including homing (aimed "up" instead of along the ship's facing) | `CameraFollow` and `BackgroundTiler`: a camera that scrolls on its own, frames all players, and vertical parallax |
+| `DestroyableObject` / `ICanTakeDamage` (health, damage), `DamageNumber`, `ExplosionEffect`, `BeamEffect` | `PlayerController`: free flight becomes screen-bounded movement with a fixed rightward facing |
+| `Ship` weapons (cannon, cooldown, ammunition, fire power), `Missile` including homing (aimed right instead of along the ship's facing) | `CameraFollow` and `BackgroundTiler`: a camera that scrolls on its own, frames all players, and horizontal parallax |
 | Enemy prefabs and art; Triceptor's volley as the start of pattern emitters | `Enemy` AI: orbit and patrol become entry paths, formations, and turrets |
 | `Collectible` / `Part` pickups with attraction (the base for power-ups and drops); the parts economy and upgrade screens are undecided (D-112) | `Sector`, `SectorSpawner`, `SectorTypeTable`: random arena spawning becomes a spawn schedule from the `LevelGenerator` (Step 3) |
 | UI Toolkit screens (menus, pause, settings, game over, statistics, credits) and gamepad navigation | Portal, timeout, and sector flow become side flow (boss, side end; Step 6) |
 | `GameControl` JSON persistence pattern, the profile and lifetime-stats screens | Fuel: removed, since levels last as long as a record side (D-013); ammunition infinite by default (D-014) |
-| Nebula backgrounds, fonts, VFX | Touch controls, autorotation, and Android settings (desktop first) |
+| Nebula backgrounds, fonts, VFX | ~~Touch controls, autorotation, and Android settings~~ (removed in 4.7, desktop first) |
 
 ## Step 1: Bring the project in (done 2026-11-12)
 
@@ -80,16 +80,16 @@ The findings come from reading the code, settings, scenes, and prefabs of Infini
 - Unity entries in `.gitignore`; Git LFS for images and fonts (`.gitattributes`); `.vscode/settings.json` keeps VS Code out of Unity's generated folders. See [../../unity/README.md](../../unity/README.md).
 - Opened and run in Unity 6000.3.17f1 on the development machine.
 
-## Step 2: Convert to vertical scrolling
+## Step 2: Convert to horizontal scrolling
 
-The direction is an arcade shooter (D-013): points, wave-clear combos, power-ups, and drops replace fuel and resource management. Each change below is its own backlog item (Phase 4 in [../../BACKLOG.md](../../BACKLOG.md)). The general shape:
+The direction is an arcade shooter (D-013) that scrolls left to right (D-016): points, wave-clear combos, power-ups, and drops replace fuel and resource management. Each change below is its own backlog item (Phase 4 in [../../BACKLOG.md](../../BACKLOG.md)). The general shape:
 
-- **Camera and playfield:** fixed portrait-oriented playfield (or a fixed-width column in a landscape window). Scroll by moving the world (or camera) along Y at a controllable speed, driven by the speed parameter from the audio features.
-- **Player ship:** movement mostly constrained to the playfield rectangle; fixed facing (up). Decide whether the ship can move vertically within the screen or only horizontally.
-- **Enemy movement:** replace top-down chasing and orbiting behaviors with patterns suited to vertical shooters: enter from the top, sweeping paths, formations, turrets that track the player, side entries.
+- **Camera and playfield:** the full 16:9 landscape window is the playfield. Scroll by moving the camera (or world) along X at a controllable speed, driven by the speed parameter from the audio features.
+- **Player ship:** movement constrained to the playfield rectangle; fixed facing (right). Ships can move anywhere on screen, with the left part as their home ground; whether to cap how far right they can go is a tuning question for 4.10.
+- **Enemy movement:** replace top-down chasing and orbiting behaviors with patterns suited to side-scrolling shooters: enter from the right, sweeping paths, formations, turrets that track the player, entries from the top and bottom.
 - **Bullets and patterns:** keep bullet logic; rework pattern emitters toward spreads, aimed shots, rings, and sweeping streams that can be triggered from a beat grid.
-- **Backgrounds:** parallax scrolling layers; speed linked to scroll speed.
-- **Bounds and despawning:** enemies and bullets despawn past the bottom edge (and sides); spawn above the top edge.
+- **Backgrounds:** horizontal parallax scrolling layers; speed linked to scroll speed.
+- **Bounds and despawning:** enemies and bullets despawn past the left edge (and the top and bottom); spawn beyond the right edge.
 
 ## Step 3: Audio-driven level generator
 
@@ -134,7 +134,7 @@ Either way, keep the module boundary and message contract. The game should run w
 ## Milestones
 
 1. Audit complete; fork builds and runs. **Done** (2026-11-13).
-2. Vertical scrolling playable with hand-authored waves.
+2. Horizontal scrolling playable with hand-authored waves.
 3. Replay-driven generator playing from recorded feature streams.
 4. Live bridge (experiment 06) driving the generator.
 5. Local co-op (experiment 07).

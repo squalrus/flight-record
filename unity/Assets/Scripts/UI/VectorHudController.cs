@@ -55,8 +55,7 @@ namespace FlightRecord
             var root = GetComponent<UIDocument>().rootVisualElement;
 
             // The HUD overlay otherwise covers the whole screen and silently absorbs
-            // touch input meant for the on-screen joystick/fire button canvases beneath
-            // it. Only the ship/pause button should actually intercept clicks.
+            // pointer input. Only the ship/pause button should actually intercept clicks.
             SetPickingModeRecursive(root, PickingMode.Ignore);
 
             _healthGauge = root.Q<VisualElement>("health-gauge");

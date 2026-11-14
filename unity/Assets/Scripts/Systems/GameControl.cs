@@ -20,7 +20,6 @@ namespace FlightRecord
         public string PlayerName = "Player";
 
         public int Experience;
-        public bool ControlsFlipped;
         public bool RumbleEnabled = true;
         public int CurrentSector = 1;
         public bool HasActiveRun = true;
@@ -326,7 +325,6 @@ namespace FlightRecord
                 DamageDealt = DamageDealt,
                 DamageTaken = DamageTaken,
                 FuelConsumed = FuelConsumed,
-                ControlsFlipped = ControlsFlipped,
                 RumbleEnabled = RumbleEnabled,
                 CurrentSector = CurrentSector,
                 HasActiveRun = HasActiveRun,
@@ -502,7 +500,6 @@ namespace FlightRecord
                 _damageTaken = stats.DamageTaken;
                 _fuelConsumed = stats.FuelConsumed;
                 Experience = stats.Experience;
-                ControlsFlipped = stats.ControlsFlipped;
                 RumbleEnabled = stats.RumbleEnabled;
                 CurrentSector = stats.CurrentSector;
                 HasActiveRun = stats.HasActiveRun;

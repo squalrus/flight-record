@@ -25,8 +25,8 @@ namespace FlightRecord
 
         public float FuelConsumed;
 
-        public bool ControlsFlipped;
-
+        // ControlsFlipped (the touch layout swap) was removed with the touch controls;
+        // JsonUtility ignores the field in older saves.
         public bool RumbleEnabled = true;
 
         public int CurrentSector = 1;

@@ -33,7 +33,7 @@
 2. Sidecar vs native port of the audio modules (decided by experiment 06).
 3. Maximum player count and supported input devices: gamepads only, or a shared keyboard too (experiment 07).
 4. How difficulty and screen layout scale with player count (experiment 07 and playtesting).
-5. Playfield: true portrait, or a fixed-width column in landscape?
+5. ~~Playfield: true portrait, or a fixed-width column in landscape?~~ Resolved: horizontal scrolling in a 16:9 landscape playfield (D-016).
 6. Co-op rules: shared vs individual lives, friendly fire, revives.
 7. Is a standalone Pi "console" version a goal, or a nice-to-have?
 8. What does a non-vinyl source (CD, MP3) use as its "level"? Per track, per N minutes, or per album?

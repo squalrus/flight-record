@@ -13,7 +13,6 @@ namespace FlightRecord
         private PauseMenu _pauseMenu;
         private float _speed;
         private Vector2 _moveInput;
-        private Vector2 _joystickInput;
         private bool _firing;
 
         private const float ROTATION_THRESHOLD = .2f;
@@ -36,7 +35,7 @@ namespace FlightRecord
         // True while Ship Management is open. That screen deliberately doesn't pause the
         // game (Time.timeScale stays > 0 and PlayerInput stays enabled, so Start/Select keep
         // working to close it), so piloting/firing input is blocked here instead -- otherwise
-        // the joystick still flies the ship and Fire both shoots and clicks the menu's
+        // the stick still flies the ship and Fire both shoots and clicks the menu's
         // gamepad-Submit-focused button at the same time.
         private bool IsShipManagementOpen => _pauseMenu != null && _pauseMenu.IsShipManagementOpen;
 
@@ -61,13 +60,11 @@ namespace FlightRecord
                 _ship.FirePrimaryWeapon();
         }
 
-        public void SetJoystickInput(Vector2 input) { _joystickInput = input; }
-
         private void FixedUpdate()
         {
             if (IsShipManagementOpen) return;
 
-            var input = _joystickInput.sqrMagnitude > 0f ? _joystickInput : _moveInput;
+            var input = _moveInput;
             if (input.sqrMagnitude > ROTATION_THRESHOLD * ROTATION_THRESHOLD)
             {
                 _player.freezeRotation = false;

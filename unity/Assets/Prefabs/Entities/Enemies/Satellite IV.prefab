@@ -175,18 +175,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3aac47c1b46ab545b61b98b2aed14a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FlightRecord.Satellite
-  RadarDistance: 25
-  FiringRange: 20
-  OrbitRadius: 22
-  OrbitSpeed: 1
-  PatrolResumeDelay: 1
-  PatrolMoveDistance: 5
-  PatrolSpeed: 2
-  PatrolScanDurationRange: {x: 2, y: 5}
-  PatrolRotationRange: {x: 45, y: 180}
-  _radarGizmoColor: {r: 0, g: 1, b: 1, a: 1}
-  _firingRangeGizmoColor: {r: 1, g: 0, b: 0, a: 1}
-  _orbitGizmoColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  Aim: 1
+  DespawnMargin: 2
+  _pathGizmoColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   BeamInterval: 4
   BeamDuration: 1.5
   BeamLength: 40

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,6 +8,28 @@ namespace FlightRecord
     public class PlayerController : MonoBehaviour
     {
         public static Transform PlayerTransform { get; private set; }
+
+        // Every live player ship, for enemies that target the nearest one (4.12). There is
+        // one player until 5.3 adds joining; enemies already go through NearestTo so they
+        // need no change then.
+        private static readonly List<PlayerController> Active = new List<PlayerController>();
+
+        public static Transform NearestTo(Vector2 position)
+        {
+            Transform nearest = null;
+            var best = float.MaxValue;
+            foreach (var player in Active)
+            {
+                var distance = ((Vector2)player.transform.position - position).sqrMagnitude;
+                if (distance >= best) continue;
+                best = distance;
+                nearest = player.transform;
+            }
+            return nearest;
+        }
+
+        private void OnEnable() => Active.Add(this);
+        private void OnDisable() => Active.Remove(this);
 
         // Horizontal scrolling (D-016): the ship always faces right and moves straight from
         // the stick, with no rotation and no momentum, inside the camera's visible rect.

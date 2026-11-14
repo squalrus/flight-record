@@ -28,8 +28,12 @@ namespace FlightRecord
             // Applied here, before the new Sector's own Start() runs (all Awake()s finish
             // before any Start() does), so type-dependent spawning -- e.g. seeding a relic
             // carrier -- sees the chosen type from the start.
-            var type = _sectorTypeTable != null ? _sectorTypeTable.Pick(currentSector) : SectorType.ClearHostiles;
-            instance.GetComponent<Sector>()?.ApplyType(type);
+            //
+            // Until waves (4.2) replace sectors, every sector is ClearHostiles: Sector no longer
+            // spawns enemies (4.12), so Relic (needs a carrier) and LargeThreat (needs its
+            // threats) could never be completed. With no enemies counted, ClearHostiles opens
+            // the portal at once.
+            instance.GetComponent<Sector>()?.ApplyType(SectorType.ClearHostiles);
         }
     }
 }

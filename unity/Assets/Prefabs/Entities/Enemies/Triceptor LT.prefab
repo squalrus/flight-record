@@ -193,18 +193,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da6993811ff14433b38fc949e6ac3e54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RadarDistance: 100
-  FiringRange: 60
-  OrbitRadius: 50
-  OrbitSpeed: 1
-  PatrolResumeDelay: 1
-  PatrolMoveDistance: 5
-  PatrolSpeed: 2
-  PatrolScanDurationRange: {x: 2, y: 5}
-  PatrolRotationRange: {x: 45, y: 180}
-  _radarGizmoColor: {r: 0, g: 1, b: 1, a: 1}
-  _firingRangeGizmoColor: {r: 1, g: 0, b: 0, a: 1}
-  _orbitGizmoColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  Aim: 0
+  DespawnMargin: 2
+  _pathGizmoColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   _cannons:
   - {fileID: 427250}
   - {fileID: 2084045746434535848}
@@ -216,9 +207,7 @@ MonoBehaviour:
   HomingDelay: 0.1
   HomingRange: 8
   LaunchSpeed: 12
-  PatrolSpinRate: 8
-  AttackSpinRate: 10
-  PatrolDriftSpeed: 15
+  SpinRate: 10
 --- !u!1 &101112
 GameObject:
   m_ObjectHideFlags: 0

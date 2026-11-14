@@ -10,7 +10,7 @@ Works with any source that can produce a line-level signal: vinyl, CD, MP3 playe
 
 1. Player drops the needle (or presses play).
 2. Game detects audio and starts a run.
-3. Live audio features drive spawns. The game scrolls vertically; the player pilots a ship in the lower part of the screen.
+3. Live audio features drive spawns. The game scrolls left to right (D-016); the player pilots a ship on the left side of the screen.
 4. Game identifies the track and the release; it learns the side's tracklist and expected length.
 5. Track changes act as stage transitions or checkpoints.
 6. Near the end of the side (or on run-out groove detection) the boss appears. Defeating it, or reaching the run-out, completes the level.

@@ -2,6 +2,15 @@
 
 User-visible changes, newest first. Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format and [semver](https://semver.org/) versioning.
 
+## [0.10.2] — 2026-11-14
+### Removed
+- **Touch and mobile controls (backlog 4.7).** The game is desktop first. The on-screen touch canvas is gone (the `FloatingJoystick`, the `OnScreenStick` and `OnScreenButton` controls, and `TouchControls`), along with the `ControlsFlipped` setting and the Android vibration fallback for rumble. The on-screen controls also created a virtual gamepad, so rumble now always reaches the real controller. Older saves still load; the dropped setting is ignored. Tested with the keyboard; the gamepad has not been tested yet. (`unity/Assets/Scenes/Main.unity`, `unity/Assets/Scripts/Player/`, `unity/Assets/Scripts/Systems/`)
+- **Stale mobile build settings.** The Standard Assets defines (`CROSS_PLATFORM_INPUT`, `MOBILE_INPUT`), which no code used, are removed. (`unity/ProjectSettings/ProjectSettings.asset`)
+
+### Changed
+- **Fixed landscape window.** Autorotation is off and only landscape is allowed. The default window is 1280x720 (16:9); fullscreen still runs at the native resolution. (`unity/ProjectSettings/ProjectSettings.asset`)
+- **Horizontal scrolling (D-016).** The game will scroll left to right instead of top to bottom. A computer screen or TV is 16:9, so the long side of the screen goes ahead of the players, and left to right reads like the music going by. This settles the open playfield question (D-106). The backlog items for movement, camera, enemy paths, and new enemies (4.10, 4.11, 4.12, 4.17) and the docs now describe a side-scroller. No game code changes yet. (`docs/decisions.md`, `BACKLOG.md`, `docs/unity/unity-fork-plan.md`, `docs/concept-and-design.md`, `docs/risks-and-open-questions.md`, `README.md`, `AGENTS.md`, `unity/README.md`)
+
 ## [0.10.1] — 2026-11-13
 ### Changed
 - **Game renamed in code (backlog 4.6).** The Unity game's C# namespace changes from `InfinitySpace` to `FlightRecord`, the input actions asset is now `FlightRecord.inputactions` (same GUID, so the player's `PlayerInput` keeps its reference), the editor menus sit under "Flight Record", and the title screen reads FLIGHT RECORD. The credits gain a "Based on InfinitySpace (Squalrus Games)" line. No behavior change; saves are unaffected. (`unity/Assets/Scripts/`, `unity/Assets/Input/`, `unity/Assets/UI/`, `unity/Assets/Scenes/`, `unity/Assets/Prefabs/`, `unity/README.md`, `docs/unity/unity-fork-plan.md`)

@@ -353,23 +353,14 @@ namespace FlightRecord
             }
         }
 
-        // Haptic feedback -- prefers the gamepad's motors; falls back to the Android
-        // vibration API when no gamepad is connected (the common case for touch-screen play).
+        // Haptic feedback on the gamepad's motors; does nothing on keyboard.
         private void Rumble(float intensity, float duration)
         {
             if (GameControl.control == null || !GameControl.control.RumbleEnabled) return;
+            if (Gamepad.current == null) return;
 
-            if (Gamepad.current != null)
-            {
-                if (_rumbleCoroutine != null) StopCoroutine(_rumbleCoroutine);
-                _rumbleCoroutine = StartCoroutine(RumbleGamepad(intensity, duration));
-            }
-#if UNITY_ANDROID && !UNITY_EDITOR
-            else
-            {
-                Handheld.Vibrate();
-            }
-#endif
+            if (_rumbleCoroutine != null) StopCoroutine(_rumbleCoroutine);
+            _rumbleCoroutine = StartCoroutine(RumbleGamepad(intensity, duration));
         }
 
         private IEnumerator RumbleGamepad(float intensity, float duration)

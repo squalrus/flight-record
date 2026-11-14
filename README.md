@@ -1,6 +1,6 @@
 # Flight Record (working title)
 
-A local-multiplayer (same machine, shared screen), vertically scrolling shoot 'em up whose levels are generated live from whatever is playing on a real turntable (or CD player, MP3 player, or any line-level source). One side of a vinyl record is one level.
+A local-multiplayer (same machine, shared screen), horizontally scrolling shoot 'em up whose levels are generated live from whatever is playing on a real turntable (or CD player, MP3 player, or any line-level source). One side of a vinyl record is one level.
 
 ## The idea in one paragraph
 
@@ -8,7 +8,7 @@ Audio from any source is split in hardware: one leg goes to your speakers with z
 
 ## Status
 
-Pre-prototype. The plan is to prove the risky parts with small standalone experiments (Python), then merge into a fork of an existing Unity top-down space shooter that is being reworked into a vertical scroller with local co-op.
+Pre-prototype. The plan is to prove the risky parts with small standalone experiments (Python), then merge into a fork of an existing Unity top-down space shooter that is being reworked into a side-scroller (left to right) with local co-op.
 
 ## Docs
 
@@ -18,7 +18,7 @@ Pre-prototype. The plan is to prove the risky parts with small standalone experi
 | [docs/flightrec/architecture.md](docs/flightrec/architecture.md) | Modules, message contract, latency model, local co-op notes |
 | [docs/flightrec/hardware.md](docs/flightrec/hardware.md) | Signal chain, splitter options, interface requirements |
 | [docs/flightrec/experiments.md](docs/flightrec/experiments.md) | **The proof-out plan**: numbered experiments with goals and success criteria |
-| [docs/unity/unity-fork-plan.md](docs/unity/unity-fork-plan.md) | Converting the top-down shooter to vertical scrolling, local co-op, integration approach |
+| [docs/unity/unity-fork-plan.md](docs/unity/unity-fork-plan.md) | Converting the top-down shooter to horizontal scrolling, local co-op, integration approach |
 | [docs/risks-and-open-questions.md](docs/risks-and-open-questions.md) | Known risks, legal/ToS notes, decisions still to make |
 | [docs/naming.md](docs/naming.md) | Name candidates and notes |
 | [docs/decisions.md](docs/decisions.md) | Decisions made and still open |

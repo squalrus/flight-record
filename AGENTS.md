@@ -4,9 +4,9 @@ Instructions for coding agents (and humans) working in this repo. Read this firs
 
 ## What this project is
 
-**Flight Record** (working title): a local-multiplayer (same machine, shared screen), vertically scrolling shoot 'em up whose levels are generated live from audio playing on a real turntable or any line-level source. One side of a vinyl record is one level. See [README.md](README.md) for the one-paragraph pitch.
+**Flight Record** (working title): a local-multiplayer (same machine, shared screen), horizontally scrolling (left to right) shoot 'em up whose levels are generated live from audio playing on a real turntable or any line-level source. One side of a vinyl record is one level. See [README.md](README.md) for the one-paragraph pitch.
 
-The repo is in the **pre-prototype** phase. Right now the work is small, standalone **Python experiments** that retire risk, followed by a merge into a **fork of an existing Unity top-down space shooter** that gets converted to vertical scrolling with local multiplayer.
+The repo is in the **pre-prototype** phase. Right now the work is small, standalone **Python experiments** that retire risk, followed by a merge into a **fork of an existing Unity top-down space shooter** that gets converted to horizontal scrolling with local multiplayer.
 
 ## Read these before coding
 

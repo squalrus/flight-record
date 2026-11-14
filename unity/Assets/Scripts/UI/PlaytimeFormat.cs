@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     public static class PlaytimeFormat
     {

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     // Attach to a GameObject in Main.unity. Instantiates the Sector prefab matching
     // GameControl.CurrentSector by weighted-picking from _sectorTypeTable.Tiers (see

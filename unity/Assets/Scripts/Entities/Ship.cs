@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     public class Ship : DestroyableObject, ICanTakeDamage
     {

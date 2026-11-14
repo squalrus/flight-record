@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace InfinitySpace.Editor
+namespace FlightRecord.Editor
 {
     public static class BackgroundVariantLinker
     {
@@ -13,7 +13,7 @@ namespace InfinitySpace.Editor
             ("Assets/Prefabs/World/GalaxyDecal.prefab","Assets/Art/Backgrounds/Galaxy"),
         };
 
-        [MenuItem("InfinitySpace/Refresh Background Variants")]
+        [MenuItem("Flight Record/Refresh Background Variants")]
         static void RefreshVariants()
         {
             int total = 0;

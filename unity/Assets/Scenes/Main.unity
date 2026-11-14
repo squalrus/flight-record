@@ -238,7 +238,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6a749362f09ae005da1fdaf4d7a38b66, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InfinitySpace.PortalTransitionController
+  m_EditorClassIdentifier: Assembly-CSharp::FlightRecord.PortalTransitionController
   _starCount: 140
   _minSpeed: 60
   _maxSpeed: 420
@@ -272,7 +272,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7d211940bbf3e7f4282e8c561ce84d9f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InfinitySpace.ShipUpgradesController
+  m_EditorClassIdentifier: Assembly-CSharp::FlightRecord.ShipUpgradesController
   _ship: {fileID: 587917368}
   _sectorTransition: {fileID: 1713991449}
 --- !u!114 &240419902
@@ -343,7 +343,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 28bc28255f24fa147b2a9ab03a523a77, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InfinitySpace.ResourceAlertController
+  m_EditorClassIdentifier: Assembly-CSharp::FlightRecord.ResourceAlertController
   _holdSeconds: 1.2
   _fadeSeconds: 0.4
 --- !u!114 &240419912
@@ -684,7 +684,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 466d105f70d1aa24db5534aa6f0b7710, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InfinitySpace.FloatingJoystick
+  m_EditorClassIdentifier: Assembly-CSharp::FlightRecord.FloatingJoystick
   _visual: {fileID: 243197449}
   _knob: {fileID: 318828632}
   _movementRange: 50
@@ -756,7 +756,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 97b960e31de64361ba1b33f731bb80a0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InfinitySpace.MissionBriefingController
+  m_EditorClassIdentifier: Assembly-CSharp::FlightRecord.MissionBriefingController
   _holdSeconds: 2.5
   _fadeSeconds: 0.6
 --- !u!4 &587917366 stripped
@@ -776,7 +776,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 004053ea65c7ff44da55b6e548f6ab36, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InfinitySpace.Player
+  m_EditorClassIdentifier: Assembly-CSharp::FlightRecord.Player
 --- !u!4 &637000099
 Transform:
   m_ObjectHideFlags: 0
@@ -860,7 +860,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c9dd3208a95e4e8da0fa6660c1845b11, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InfinitySpace.MissionScreenController
+  m_EditorClassIdentifier: Assembly-CSharp::FlightRecord.MissionScreenController
   _pauseMenu: {fileID: 1022218671}
 --- !u!1 &721328136
 GameObject:
@@ -1068,7 +1068,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a829931acaa1d7144b80b53baee7684f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InfinitySpace.VectorHudController
+  m_EditorClassIdentifier: Assembly-CSharp::FlightRecord.VectorHudController
   _ship: {fileID: 587917368}
   _pauseMenu: {fileID: 1022218671}
   _sector: {fileID: 0}
@@ -1267,7 +1267,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 806ea9975eb641a0797130662f25f319, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InfinitySpace.SectorAchievementsController
+  m_EditorClassIdentifier: Assembly-CSharp::FlightRecord.SectorAchievementsController
   _sectorTransition: {fileID: 1713991449}
 --- !u!114 &920000004
 MonoBehaviour:
@@ -1436,7 +1436,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e638341dee9f44dc93a94a4dc9c7600e, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InfinitySpace.SettingsController
+  m_EditorClassIdentifier: Assembly-CSharp::FlightRecord.SettingsController
   _pauseMenu: {fileID: 1022218671}
   _mainMenu: {fileID: 0}
 --- !u!4 &930000004
@@ -1498,7 +1498,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 293f50fffcf5263408deabdb57e52e54, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InfinitySpace.PauseMenu
+  m_EditorClassIdentifier: Assembly-CSharp::FlightRecord.PauseMenu
   StatisticsScreen: {fileID: 1184944572}
   ShipManagementScreen: {fileID: 880000021}
   SettingsScreen: {fileID: 930000001}
@@ -1556,7 +1556,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 496b865775568214391079aadcb3123a, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InfinitySpace.SectorCompleteController
+  m_EditorClassIdentifier: Assembly-CSharp::FlightRecord.SectorCompleteController
   _sectorTransition: {fileID: 1713991449}
 --- !u!114 &1119881586
 MonoBehaviour:
@@ -1626,7 +1626,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a0eb2858f556c554a85e8727cf17622a, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InfinitySpace.StatisticsController
+  m_EditorClassIdentifier: Assembly-CSharp::FlightRecord.StatisticsController
   _pauseMenu: {fileID: 1022218671}
   _sector: {fileID: 0}
 --- !u!114 &1184944574
@@ -1920,7 +1920,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7f6cbf5e64dab1149a2726b5d0e484ac, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InfinitySpace.TouchControls
+  m_EditorClassIdentifier: Assembly-CSharp::FlightRecord.TouchControls
   _movePanel: {fileID: 365612917}
   _firePanel: {fileID: 143866080}
 --- !u!114 &1639654930
@@ -2036,7 +2036,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ef21a898cdf62ca479ebdcd6eeee58a4, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InfinitySpace.SectorTransitionController
+  m_EditorClassIdentifier: Assembly-CSharp::FlightRecord.SectorTransitionController
   SectorAchievementsScreen: {fileID: 920000001}
   SectorCompleteScreen: {fileID: 1119881584}
   ShipUpgradesScreen: {fileID: 240419900}
@@ -2351,7 +2351,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a912a0a895fd431428ee9b70a9f08a48, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InfinitySpace.ProjectileContainer
+  m_EditorClassIdentifier: Assembly-CSharp::FlightRecord.ProjectileContainer
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

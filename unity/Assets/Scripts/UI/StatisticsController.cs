@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     // Attach to a GameObject with a UIDocument (Source Asset = Statistics.uxml) in Main.unity.
     // Shows stats for the current sector only (Sector's start-of-sector snapshots), not

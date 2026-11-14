@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     // Non-tiling sprite (e.g. a 1024x1024 galaxy PNG) anchored to a random world
     // position (±100 on x/y) each time the sector loads, so it doesn't appear in

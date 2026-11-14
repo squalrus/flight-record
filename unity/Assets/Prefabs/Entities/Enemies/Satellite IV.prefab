@@ -176,7 +176,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a3aac47c1b46ab545b61b98b2aed14a3, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InfinitySpace.Satellite
+  m_EditorClassIdentifier: Assembly-CSharp::FlightRecord.Satellite
   RadarDistance: 25
   FiringRange: 20
   OrbitRadius: 22

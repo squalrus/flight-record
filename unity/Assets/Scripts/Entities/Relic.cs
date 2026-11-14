@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     // Dropped by Sector.SpawnRelicPickup() where the seeded RelicCarrier dies. Shares
     // bloom-delay, pulse glow, and magnet-reel behavior with Part via Collectible, but has

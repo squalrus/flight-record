@@ -271,7 +271,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 004053ea65c7ff44da55b6e548f6ab36, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InfinitySpace.Player
+  m_EditorClassIdentifier: Assembly-CSharp::FlightRecord.Player
   MaxHealth: 90
   _missileContainer: {fileID: 0}
   _missilePrefab: {fileID: 100000, guid: c52ed365ccab137489363452dc45d004, type: 3}

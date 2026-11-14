@@ -9,6 +9,10 @@
             </ui:VisualElement>
             <ui:VisualElement class="panel__rule"/>
             <ui:VisualElement class="credits-section">
+                <ui:Label text="BASED ON" class="credits-section__heading"/>
+                <ui:Label text="InfinitySpace (Squalrus Games)" class="credits-section__name"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="credits-section">
                 <ui:Label text="PROGRAMMING &amp; DESIGN" class="credits-section__heading"/>
                 <ui:Label text="Chad Schulz" class="credits-section__name"/>
             </ui:VisualElement>

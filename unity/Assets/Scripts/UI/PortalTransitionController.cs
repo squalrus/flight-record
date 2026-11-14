@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     // Attach to a GameObject with a UIDocument (Source Asset = PortalTransition.uxml) in
     // Main.unity, sorted behind the Sector Complete / Ship Management modal panels but above

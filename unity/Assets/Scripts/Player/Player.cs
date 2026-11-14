@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     // Player-only extensions on top of the shared Ship component: economy (Parts,
     // upgrades, conversions), Fuel, Portal/Sector scanning, Pickup Attraction/Homing

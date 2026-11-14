@@ -4,7 +4,7 @@
     <Style src="project://database/Assets/UI/Common/MenuButton.uss"/>
     <ui:VisualElement name="main-menu" class="main-menu" picking-mode="Ignore">
         <ui:VisualElement class="title-block" picking-mode="Ignore">
-            <ui:Label text="INFINITY SPACE" class="title"/>
+            <ui:Label text="FLIGHT RECORD" class="title"/>
         </ui:VisualElement>
         <ui:VisualElement name="menu-buttons" class="menu-buttons">
             <ui:Button name="continue-btn" class="continue-card">

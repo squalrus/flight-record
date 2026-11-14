@@ -2,7 +2,7 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     // More negative than SectorSpawner's DefaultExecutionOrder(-100) so that on a fresh
     // app session (Continue from the Main Menu, where this singleton doesn't exist yet),

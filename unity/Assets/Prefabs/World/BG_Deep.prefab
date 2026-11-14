@@ -103,7 +103,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ef9956e392bf7bd428efd2c13800939b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InfinitySpace.ParallaxBackground
+  m_EditorClassIdentifier: Assembly-CSharp::FlightRecord.ParallaxBackground
   _parallaxFactor: 0.15
   _variants:
   - {fileID: 21300000, guid: eb0fbadd31ceb9d40afd963ff89c2605, type: 3}

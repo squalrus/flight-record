@@ -22,7 +22,7 @@ The findings come from reading the code, settings, scenes, and prefabs of Infini
 | --- | --- |
 | Unity | **6000.3.17f1** (Unity 6) |
 | Render pipeline | **Built-in.** No URP or HDRP asset in Graphics or Quality settings. 2D Sprite and Tilemap packages. |
-| Input | **New Input System only** (1.11.0, `activeInputHandler: 1`). One asset, `InfinitySpace.inputactions`, with one map "Player": Move (value), Fire (value), Pause, ShipManagement. Control schemes: Keyboard&Mouse and Gamepad. A single `PlayerInput` component (message callbacks such as `OnMove` and `OnFire`) is on the player. There is **no `PlayerInputManager`** and no generated C# input class. |
+| Input | **New Input System only** (1.11.0, `activeInputHandler: 1`). One asset, `InfinitySpace.inputactions` (now `FlightRecord.inputactions`, backlog 4.6), with one map "Player": Move (value), Fire (value), Pause, ShipManagement. Control schemes: Keyboard&Mouse and Gamepad. A single `PlayerInput` component (message callbacks such as `OnMove` and `OnFire`) is on the player. There is **no `PlayerInputManager`** and no generated C# input class. |
 | Camera | Orthographic, size 20. Default window 1024x768 landscape, with all orientations allowed (a holdover from mobile). |
 | UI | **UI Toolkit** (UXML / USS) for every screen and the HUD (`VectorHudController`), plus TextMesh Pro fonts. Ship health bars are uGUI `Image`s. Gamepad UI navigation (`GamepadUiNavigation`) and a rumble setting exist. |
 | Audio | **None.** No `AudioSource`, `AudioClip`, or mixer anywhere. That suits Flight Record: the music plays in the room and is never routed through the game (D-001). |
@@ -76,6 +76,7 @@ The findings come from reading the code, settings, scenes, and prefabs of Infini
 
 - Copied into `unity/`: `Assets/`, `Packages/`, and `ProjectSettings/` from `squalrus/infinity-space` at v0.35.3 (`899a07e`). It is a copy rather than a submodule because the gameplay changes are large; the original continues separately.
 - Renamed: product name "Flight Record", application id `com.SqualrusGames.FlightRecord`, a new product GUID, and the version kept equal to the repo's `VERSION`. Saves no longer collide with InfinitySpace's.
+- Renamed in code (backlog 4.6): C# namespace `InfinitySpace` → `FlightRecord` (the game code and the `FlightRecord.Audio` bridge now share a root), the input actions asset → `FlightRecord.inputactions` (same GUID), editor menus, and the title screen. The credits name InfinitySpace as the original.
 - Unity entries in `.gitignore`; Git LFS for images and fonts (`.gitattributes`); `.vscode/settings.json` keeps VS Code out of Unity's generated folders. See [../../unity/README.md](../../unity/README.md).
 - Opened and run in Unity 6000.3.17f1 on the development machine.
 

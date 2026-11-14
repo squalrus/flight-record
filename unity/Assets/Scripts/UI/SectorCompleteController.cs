@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     // Attach to a GameObject with a UIDocument (Source Asset = SectorComplete.uxml) in Main.unity.
     // Shown by SectorTransitionController when the player enters the portal; page 1 of 3 in the

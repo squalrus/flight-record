@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     public class FloatingJoystick : MonoBehaviour, IPointerDownHandler, IPointerMoveHandler, IDragHandler, IPointerUpHandler
     {

@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     // The Input System package's bundled DefaultInputActions (assigned to each scene's
     // EventSystem) binds UI Submit via the "*/{Submit}" usage tag, which doesn't resolve to

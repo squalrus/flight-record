@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     // Attach to a GameObject with a UIDocument (Source Asset = HUD.uxml) in Main.unity.
     // Draws the radial dials and radar with Painter2D (USS can't do conic gradients /

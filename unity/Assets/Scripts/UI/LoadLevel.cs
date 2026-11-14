@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     public class LoadLevel : MonoBehaviour
     {

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     [System.Serializable]
     public class EntitySpawn

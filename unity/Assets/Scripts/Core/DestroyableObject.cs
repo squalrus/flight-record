@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     public abstract class DestroyableObject : MonoBehaviour, ICanTakeDamage
     {

@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     // Spawned by Sector once enemies are in place. Stays closed/greyed until the
     // sector's completion threshold is met, then opens (green, glowing, warbling)

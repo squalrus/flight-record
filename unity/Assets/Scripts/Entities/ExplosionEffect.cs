@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     [RequireComponent(typeof(ParticleSystem))]
     public class ExplosionEffect : MonoBehaviour

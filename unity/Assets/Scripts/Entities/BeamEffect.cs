@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     // A stationary beam that lives as its own scene GameObject for a fixed duration.
     // Visual: LineRenderer in local space (no world-space drift as parent moves).

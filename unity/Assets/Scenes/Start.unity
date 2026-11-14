@@ -248,7 +248,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aedf4fdf0ca124d43b6ca6a000a7ba15, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InfinitySpace.CreditsController
+  m_EditorClassIdentifier: Assembly-CSharp::FlightRecord.CreditsController
   _mainMenu: {fileID: 1616627748}
 --- !u!114 &508479671
 MonoBehaviour:
@@ -455,7 +455,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3ea8cd93f2088df4788ccd62fc2d77d0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InfinitySpace.MainMenuController
+  m_EditorClassIdentifier: Assembly-CSharp::FlightRecord.MainMenuController
   _lifetimeStatsScreen: {fileID: 2000000001}
   _profileSetupScreen: {fileID: 2000000011}
   _settingsScreen: {fileID: 2000000021}
@@ -471,7 +471,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b9f09a374f6d08b429a8acfac5a9ba1e, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InfinitySpace.LoadLevel
+  m_EditorClassIdentifier: Assembly-CSharp::FlightRecord.LoadLevel
 --- !u!114 &1616627750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -766,7 +766,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ab6a44463c7715c9643bc04a2e1f8d55, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InfinitySpace.LifetimeStatsController
+  m_EditorClassIdentifier: Assembly-CSharp::FlightRecord.LifetimeStatsController
   _mainMenu: {fileID: 1616627748}
 --- !u!114 &2000000003
 MonoBehaviour:
@@ -836,7 +836,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 18bf5044a947cfec653eff709a1f437d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InfinitySpace.ProfileSetupController
+  m_EditorClassIdentifier: Assembly-CSharp::FlightRecord.ProfileSetupController
   _mainMenu: {fileID: 1616627748}
   _loadLevel: {fileID: 1616627749}
 --- !u!114 &2000000013
@@ -907,7 +907,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e638341dee9f44dc93a94a4dc9c7600e, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InfinitySpace.SettingsController
+  m_EditorClassIdentifier: Assembly-CSharp::FlightRecord.SettingsController
   _pauseMenu: {fileID: 0}
   _mainMenu: {fileID: 1616627748}
 --- !u!114 &2000000023

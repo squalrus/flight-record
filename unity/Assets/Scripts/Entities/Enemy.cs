@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     public class Enemy : MonoBehaviour
     {

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     // Added at runtime by Sector.SeedRelicCarrier() to whichever spawned enemy or asteroid
     // is chosen to carry the relic -- not its own prefab, since any spawned entity can host it.

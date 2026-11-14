@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     // Attach to a GameObject with a UIDocument (Source Asset = ShipManagement.uxml) in Main.unity.
     // Mid-sector-only resource-refill + exploration screen: parts count, parts-to-resource

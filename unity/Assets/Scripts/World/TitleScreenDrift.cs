@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     // Attach to the Start scene's Main Camera. Drifting the camera is enough to animate
     // every ParallaxBackground layer at once, since each layer follows the camera and

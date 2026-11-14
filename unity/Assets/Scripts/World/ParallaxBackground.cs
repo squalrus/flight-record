@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     // Attach to a full-screen sprite whose texture Wrap Mode is set to Repeat.
     // The sprite follows the camera and shifts its texture offset at a fraction

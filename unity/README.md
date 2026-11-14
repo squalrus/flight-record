@@ -10,7 +10,7 @@ The game: a copy of **InfinitySpace** (a top-down space shooter, from the privat
 
 ## Identity
 
-Renamed from InfinitySpace in `ProjectSettings/ProjectSettings.asset`, so the two games do not collide: product name **Flight Record** (window title, and the save folder `AppData/LocalLow/Squalrus Games/Flight Record/`), application id **com.SqualrusGames.FlightRecord**, a new product GUID, and version **0.10.1**, kept equal to the repo's `VERSION`. The code was renamed too (backlog 4.6): the C# namespace is `FlightRecord`, the input actions asset is `Assets/Input/FlightRecord.inputactions` (same GUID, so references hold), the editor menus are under **Flight Record**, and the title screen reads FLIGHT RECORD. The credits name InfinitySpace as the game this one is based on.
+Renamed from InfinitySpace in `ProjectSettings/ProjectSettings.asset`, so the two games do not collide: product name **Flight Record** (window title, and the save folder `AppData/LocalLow/Squalrus Games/Flight Record/`), application id **com.SqualrusGames.FlightRecord**, a new product GUID, and version **0.12.0**, kept equal to the repo's `VERSION`. The code was renamed too (backlog 4.6): the C# namespace is `FlightRecord`, the input actions asset is `Assets/Input/FlightRecord.inputactions` (same GUID, so references hold), the editor menus are under **Flight Record**, and the title screen reads FLIGHT RECORD. The credits name InfinitySpace as the game this one is based on.
 
 ## What came over
 
@@ -20,7 +20,7 @@ Renamed from InfinitySpace in `ProjectSettings/ProjectSettings.asset`, so the tw
 | `Assets/Art/Backgrounds/` | Nebula backgrounds (about 445 MB of PNGs), made by the project owner |
 | `Assets/Art/Fonts/` | Orbitron and Share Tech Mono (each with its `License!.txt`, redistribution allowed), and the project's icon font |
 | `Packages/`, `ProjectSettings/` | Package manifest and lock file; project settings |
-| [`../docs/unity/infinityspace/`](../docs/unity/infinityspace/) | Reference from InfinitySpace, kept with the repo's other docs: `AUDIT.md` (its modernization audit), `DESIGN_DOCUMENT.md`, `infinityspace-conventions.md` (its coding-agent notes), and `design/` (reference images and screenshots) |
+| [`../docs/unity/flight-record/`](../docs/unity/flight-record/) | Reference from InfinitySpace, kept with the repo's other docs: `AUDIT.md` (its modernization audit), `DESIGN_DOCUMENT.md`, `conventions.md` (its coding-agent notes), and `design/` (reference images and screenshots) |
 
 ## Added for Flight Record
 
@@ -36,6 +36,6 @@ Renamed from InfinitySpace in `ProjectSettings/ProjectSettings.asset`, so the tw
 
 - Never commit `Library/`, `Temp/`, `Logs/`, `UserSettings/`, `obj/`, builds, or IDE project files; `../.gitignore` covers them.
 - New large binaries (textures, audio, models) go through LFS. Check `../.gitattributes` covers the file type before committing.
-- Read the audit in [../docs/unity/unity-fork-plan.md](../docs/unity/unity-fork-plan.md) Step 0 before refactoring; [../docs/unity/infinityspace/AUDIT.md](../docs/unity/infinityspace/AUDIT.md) covers code health and the file inventory.
+- Read the audit in [../docs/unity/unity-fork-plan.md](../docs/unity/unity-fork-plan.md) Step 0 before refactoring; [../docs/unity/flight-record/AUDIT.md](../docs/unity/flight-record/AUDIT.md) covers code health and the file inventory.
 - Gameplay changes are one backlog item each (Phase 4 in [../BACKLOG.md](../BACKLOG.md)), so each can be played and tested on its own.
 - Keep audio integration behind an interface with live, replay, null, and file sources (backlog 4.3).

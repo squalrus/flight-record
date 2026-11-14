@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using FlightRecord.Gameplay;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -38,7 +39,12 @@ namespace FlightRecord
         private Label _hpVal, _dmgVal, _ammoCapVal;
         private Label _pilotAvatar;
         private VisualElement _rofPips;
+        private readonly Label[] _powerUpLabels = new Label[PowerUpTimers.AllTypes.Length];
         private float _sweepAngle;
+
+        // The last few seconds of a power-up blink so its end isn't a surprise.
+        private const float POWERUP_EXPIRING_SECONDS = 3f;
+        private const float POWERUP_BLINK_INTERVAL = 0.2f;
         private Portal _portal;
 
         private float _ellipsisTimer;
@@ -75,6 +81,13 @@ namespace FlightRecord
             _ammoCapVal = root.Q<Label>("ammo-cap-val");
             _rofPips = root.Q<VisualElement>("rof-pips");
             _pilotAvatar = root.Q<Label>("pilot-avatar");
+
+            foreach (var type in PowerUpTimers.AllTypes)
+            {
+                var label = root.Q<Label>($"powerup-{type.ToString().ToLowerInvariant()}");
+                if (label != null) label.style.color = PowerUp.ColorOf(type);
+                _powerUpLabels[(int)type] = label;
+            }
 
             if (_healthGauge != null) _healthGauge.generateVisualContent += ctx => DrawDial(ctx, HealthFraction(), Green);
             if (_ammoGauge != null) _ammoGauge.generateVisualContent += ctx => DrawDial(ctx, AmmoFraction(), Cyan);
@@ -113,6 +126,7 @@ namespace FlightRecord
 
             RefreshGauges();
             RefreshUpgrades();
+            RefreshPowerUps();
             RefreshBlips();
             RefreshSectorProgress();
             RefreshSectorTime();
@@ -132,7 +146,8 @@ namespace FlightRecord
         private void RefreshGauges()
         {
             if (_healthVal != null) _healthVal.text = $"{_ship.GetCurrentHealth()}/{_ship.MaxHealth}";
-            if (_ammoVal != null) _ammoVal.text = $"{Mathf.RoundToInt(_ship.GetAmmunition())}/{_ship.MaxPrimaryAmmunition}";
+            if (_ammoVal != null)
+                _ammoVal.text = _ship.IsAmmoLimited ? $"{Mathf.RoundToInt(_ship.GetAmmunition())}/{_ship.MaxPrimaryAmmunition}" : "INF";
             if (_partsVal != null) _partsVal.text = Mathf.RoundToInt(_ship.GetParts()).ToString("00");
 
             _healthGauge?.MarkDirtyRepaint();
@@ -152,6 +167,25 @@ namespace FlightRecord
             if (_ammoCapVal != null) _ammoCapVal.text = $"Lv {_ship.GetAmmoUpgradeLevel()}";
 
             SetPipRow(_rofPips, _ship.GetFireRateUpgradeLevel());
+        }
+
+        private void RefreshPowerUps()
+        {
+            bool blinkOff = Mathf.FloorToInt(Time.time / POWERUP_BLINK_INTERVAL) % 2 == 1;
+
+            foreach (var type in PowerUpTimers.AllTypes)
+            {
+                var label = _powerUpLabels[(int)type];
+                if (label == null) continue;
+
+                bool active = _ship.IsPowerUpActive(type);
+                label.EnableInClassList("powerup--active", active);
+                if (!active) continue;
+
+                float remaining = _ship.GetPowerUpRemaining(type);
+                label.text = $"{PowerUp.DisplayName(type)} {Mathf.CeilToInt(remaining)}";
+                label.EnableInClassList("powerup--expiring", remaining <= POWERUP_EXPIRING_SECONDS && blinkOff);
+            }
         }
 
         private void RefreshBlips()
@@ -263,7 +297,11 @@ namespace FlightRecord
         }
 
         private float HealthFraction() => _ship.MaxHealth <= 0 ? 0f : (float)_ship.GetCurrentHealth() / _ship.MaxHealth;
-        private float AmmoFraction() => _ship.MaxPrimaryAmmunition <= 0 ? 0f : _ship.GetAmmunition() / _ship.MaxPrimaryAmmunition;
+        private float AmmoFraction()
+        {
+            if (!_ship.IsAmmoLimited) return 1f;
+            return _ship.MaxPrimaryAmmunition <= 0 ? 0f : _ship.GetAmmunition() / _ship.MaxPrimaryAmmunition;
+        }
 
         private static void SetPickingModeRecursive(VisualElement element, PickingMode mode)
         {

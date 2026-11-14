@@ -11,6 +11,7 @@ namespace FlightRecord
         protected Rigidbody2D _rigidbody;
 
         [SerializeField] private GameObject _missilePrefab;
+        protected GameObject MissilePrefab => _missilePrefab;
         [SerializeField] private GameObject _partPrefab;
         [SerializeField] private GameObject _damageNumberPrefab;
 
@@ -114,28 +115,44 @@ namespace FlightRecord
 
         private IEnumerator FireWeapon()
         {
-            GameObject instance = Instantiate(_missilePrefab, Cannon.position, Cannon.rotation) as GameObject;
-            if (ProjectileContainer.Instance != null)
-                instance.transform.SetParent(ProjectileContainer.Instance);
-            instance.GetComponent<Missile>().SetHealth(RollFirePower());
-            instance.GetComponent<Rigidbody2D>().linearVelocity = (Vector2)(Cannon.up * 12f) + InheritedShotVelocity();
+            GameObject instance = SpawnShot(_missilePrefab, Cannon.rotation, RollFirePower());
 
-            _currentAmmo--;
+            if (UsesAmmo) _currentAmmo--;
 
             OnWeaponFired(instance);
 
             _fireReady = false;
-            yield return new WaitForSeconds(PrimaryCoolDown);
+            yield return new WaitForSeconds(CurrentCoolDown);
             _fireReady = true;
+        }
+
+        // Spawns one projectile from the Cannon, flying along `rotation`. Shared by the
+        // primary shot and Player's extra shots (spread, homing rocket).
+        protected GameObject SpawnShot(GameObject prefab, Quaternion rotation, int damage)
+        {
+            GameObject instance = Instantiate(prefab, Cannon.position, rotation);
+            if (ProjectileContainer.Instance != null)
+                instance.transform.SetParent(ProjectileContainer.Instance);
+            instance.GetComponent<Missile>().SetHealth(damage);
+            var direction = (Vector2)(rotation * Vector3.up);
+            instance.GetComponent<Rigidbody2D>().linearVelocity = direction * 12f + InheritedShotVelocity(direction);
+            return instance;
         }
 
         // Velocity added to each shot on top of its muzzle speed. Enemy Ships still push
         // shots along their facing at their current speed; Player overrides this so shots
-        // go straight right at a constant speed (D-016).
-        protected virtual Vector2 InheritedShotVelocity()
+        // fly along their own direction at a constant speed (D-016).
+        protected virtual Vector2 InheritedShotVelocity(Vector2 shotDirection)
         {
             return (Vector2)_rigidbody.transform.up * _rigidbody.linearVelocity.magnitude;
         }
+
+        // Whether firing spends ammunition. Enemy Ships keep the original limit; Player
+        // spends ammo only when the Limited Ammo setting is on (D-014).
+        protected virtual bool UsesAmmo => true;
+
+        // Seconds between primary shots. Player shortens it while Rapid Fire is active.
+        protected virtual float CurrentCoolDown => PrimaryCoolDown;
 
         // Player-only follow-up on a shared shot: HomingRocket proc, IsPlayerFired flag,
         // ShotsFired stat, fire rumble. No-op for enemy Ships.
@@ -143,12 +160,14 @@ namespace FlightRecord
 
         public void FirePrimaryWeapon()
         {
-            if (_fireReady && _currentAmmo > 0)
+            bool hasAmmo = !UsesAmmo || _currentAmmo > 0;
+
+            if (_fireReady && hasAmmo)
             {
                 StartCoroutine(FireWeapon());
-                OnAmmoLow();
+                if (UsesAmmo) OnAmmoLow();
             }
-            else if (_currentAmmo <= 0)
+            else if (!hasAmmo)
             {
                 OnAmmoEmpty();
             }
@@ -168,6 +187,10 @@ namespace FlightRecord
                 powerup.GetComponent<Rigidbody2D>().AddForce(new Vector2(UnityEngine.Random.Range(-25, 25), UnityEngine.Random.Range(-25, 25)));
                 powerup.GetComponent<Rigidbody2D>().AddTorque(UnityEngine.Random.Range(5, 5));
             }
+
+            // Only enemies drop power-ups; the player's own Ship (also a Ship) never does.
+            if (GetComponent<Enemy>() != null)
+                PowerUpDropTable.TryDrop(_collider.bounds.center);
 
             var explosion = new GameObject("ShipExplosion");
             explosion.transform.position = _collider.bounds.center;

@@ -28,6 +28,10 @@ namespace FlightRecord
         // (backlog 4.8, D-013); JsonUtility ignores those fields in older saves.
         public bool RumbleEnabled = true;
 
+        // Settings screen "Limited Ammo" toggle (backlog 4.9, D-014). Off by default, so
+        // primary fire is unlimited; older saves without the field load as off.
+        public bool LimitedAmmo;
+
         public int CurrentSector = 1;
 
         // False until a New Game starts a run, false again once that run ends in Game Over.

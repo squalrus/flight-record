@@ -155,7 +155,7 @@ namespace FlightRecord
                 _healthVal.text = $"{_ship.GetCurrentHealth()}/{_ship.MaxHealth}";
 
             if (_ammoVal != null)
-                _ammoVal.text = $"{Mathf.RoundToInt(_ship.GetAmmunition())}/{_ship.MaxPrimaryAmmunition}";
+                _ammoVal.text = _ship.IsAmmoLimited ? $"{Mathf.RoundToInt(_ship.GetAmmunition())}/{_ship.MaxPrimaryAmmunition}" : "INF";
 
             if (_topOffBtn != null)
                 _topOffBtn.text = $"TOP OFF ({_ship.GetTopOffCost()})";

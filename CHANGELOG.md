@@ -2,6 +2,18 @@
 
 User-visible changes, newest first. Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format and [semver](https://semver.org/) versioning.
 
+## [0.12.0] — 2026-11-14
+### Added
+- **Weapon power-ups (backlog 4.9, D-014).** Destroyed enemies have a 15% chance to drop a power-up: **Spread** (an extra shot on each side), **Rapid Fire** (0.4× the time between shots), or **Homing** (a homing rocket with every shot). Each lasts 10 s. Different power-ups stack with separate timers, and picking up one that is already running resets its timer. Active power-ups show under PARTS on the HUD with a countdown, blink for their last 3 s, and flash their name when picked up. Pickups can't be shot and disappear after 15 s. The drop chance and types live in `Resources/PowerUpDrops.asset` until the drop tables in 4.16; durations and weapon tuning are on the Player. In the Editor, F11 drops one ahead of the ship. Timers end when a sector reloads. (`unity/Assets/Scripts/Entities/PowerUp.cs`, `unity/Assets/Scripts/Entities/PowerUpDropTable.cs`, `unity/Assets/Scripts/Player/Player.cs`, `unity/Assets/Prefabs/Entities/Collectable/PowerUp.prefab`, `unity/Assets/Resources/PowerUpDrops.asset`, `unity/Assets/UI/Hud/`)
+- **Power-up timer tests.** The stacking and expiry rules are in a small engine-free `FlightRecord.Gameplay` assembly with EditMode tests. (`unity/Assets/Scripts/Gameplay/`, `unity/Assets/Tests/EditMode/Gameplay/`)
+
+### Changed
+- **Unlimited ammo by default (backlog 4.9, D-014).** The player's primary fire never runs out. A new **Limited Ammo** toggle on the Settings screen (off by default, saved like Rumble) turns the old ammunition rules back on for playtesting, and takes effect on the next shot. With the limit off, the ammo dial reads INF and the parts-to-ammo conversion and top-off are disabled. Enemies keep their own ammunition. (`unity/Assets/Scripts/Entities/Ship.cs`, `unity/Assets/Scripts/Player/Player.cs`, `unity/Assets/Scripts/UI/SettingsController.cs`, `unity/Assets/UI/Settings/Settings.uxml`, `unity/Assets/Scripts/UI/`)
+- **Unity reference docs renamed.** `docs/unity/infinityspace/` is now `docs/unity/flight-record/`, and its conventions file is `conventions.md`. The reference pages' font links work again (they still assumed the Unity project's layout), the entity reference uses fonts the project has, and the page titles read Flight Record. (`docs/unity/flight-record/`, `docs/unity/unity-fork-plan.md`, `unity/README.md`)
+
+### Fixed
+- **New Game kept the Rumble setting.** Starting a new game reset Rumble to on; it now keeps Rumble and Limited Ammo. (`unity/Assets/Scripts/Systems/GameControl.cs`)
+
 ## [0.11.0] — 2026-11-14
 ### Added
 - **Scrolling camera and horizontal parallax (backlog 4.11).** The camera now moves right on its own at one tunable speed, `ScrollSpeed` (default 4 units/s). Changing it eases smoothly toward the new value at `SpeedChangeRate`, so the audio-driven generator can call `SetScrollSpeed` later. The three background layers scroll at their own rates (0.15, 0.45 and 1.5 times the camera speed), and their textures wrap so they show no seams. The galaxy decal drifts off the left edge and comes back from the right. (`unity/Assets/Scripts/World/ScrollingCamera.cs`, `unity/Assets/Scripts/World/ParallaxBackground.cs`, `unity/Assets/Scripts/World/GalaxyDecal.cs`)

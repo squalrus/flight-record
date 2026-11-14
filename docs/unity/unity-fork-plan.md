@@ -14,7 +14,7 @@ The checklist was:
 - Whether any networking exists today (this project is local-only: remove or leave disabled any networking code, do not extend it)
 - What is reusable as-is: ship controller, weapons, health, pickups, UI, VFX, audio
 
-The findings come from reading the code, settings, scenes, and prefabs of InfinitySpace v0.35.3, about 6,700 lines of C# in 61 scripts. [infinityspace/AUDIT.md](infinityspace/AUDIT.md) is InfinitySpace's own earlier code-health audit, and complements this one; its design document and reference images are alongside it in [infinityspace/](infinityspace/).
+The findings come from reading the code, settings, scenes, and prefabs of InfinitySpace v0.35.3, about 6,700 lines of C# in 61 scripts. [flight-record/AUDIT.md](flight-record/AUDIT.md) is InfinitySpace's own earlier code-health audit, and complements this one; its design document and reference images are alongside it in [flight-record/](flight-record/).
 
 ### Engine and settings
 

@@ -12,6 +12,10 @@
                 <ui:Label text="RUMBLE" class="settings-row__label"/>
                 <ui:Button name="rumble-toggle-btn" text="ON" class="settings-row__toggle-btn"/>
             </ui:VisualElement>
+            <ui:VisualElement class="settings-row">
+                <ui:Label text="LIMITED AMMO" class="settings-row__label"/>
+                <ui:Button name="limited-ammo-toggle-btn" text="OFF" class="settings-row__toggle-btn"/>
+            </ui:VisualElement>
             <ui:VisualElement name="clear-data-rule" class="panel__rule"/>
             <ui:Button name="clear-data-btn" text="CLEAR SAVED DATA" class="settings-danger-btn"/>
         </ui:VisualElement>

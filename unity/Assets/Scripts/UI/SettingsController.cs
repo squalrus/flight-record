@@ -20,6 +20,7 @@ namespace FlightRecord
         private VisualElement _root;
         private Button _closeBtn;
         private Button _rumbleToggleBtn;
+        private Button _limitedAmmoToggleBtn;
         private Button _clearDataBtn;
         private bool _clearDataArmed;
         private IVisualElementScheduledItem _disarmSchedule;
@@ -37,6 +38,7 @@ namespace FlightRecord
             _root = GetComponent<UIDocument>().rootVisualElement;
 
             _rumbleToggleBtn = _root.Q<Button>("rumble-toggle-btn");
+            _limitedAmmoToggleBtn = _root.Q<Button>("limited-ammo-toggle-btn");
             _clearDataBtn = _root.Q<Button>("clear-data-btn");
             var clearDataRule = _root.Q<VisualElement>("clear-data-rule");
 
@@ -54,6 +56,7 @@ namespace FlightRecord
             _closeBtn = _root.Q<Button>("close-btn");
 
             _rumbleToggleBtn?.RegisterCallback<ClickEvent>(_ => ToggleRumble());
+            _limitedAmmoToggleBtn?.RegisterCallback<ClickEvent>(_ => ToggleLimitedAmmo());
             _clearDataBtn?.RegisterCallback<ClickEvent>(_ => OnClearDataClicked());
             _closeBtn?.RegisterCallback<ClickEvent>(_ => Close());
             _root.RegisterCallback<NavigationCancelEvent>(_ => Close());
@@ -67,6 +70,7 @@ namespace FlightRecord
             _root.style.display = DisplayStyle.Flex;
             GamepadUiNavigation.EnsureBound(_root);
             RefreshRumbleToggleLabel();
+            RefreshLimitedAmmoToggleLabel();
             if (_clearDataBtn != null) RefreshClearDataLabel();
             _closeBtn?.Focus();
         }
@@ -128,6 +132,32 @@ namespace FlightRecord
 
             bool enabled = GameControl.control != null ? GameControl.control.RumbleEnabled : GameControl.GetRumbleEnabled();
             _rumbleToggleBtn.text = enabled ? "ON" : "OFF";
+        }
+
+        // Playtest switch for D-014: off (the default) means unlimited primary fire. Takes
+        // effect on the next shot, so it can be flipped from the Pause Menu mid-run. Same
+        // GameControl-or-file fallback as Rumble above.
+        private void ToggleLimitedAmmo()
+        {
+            if (GameControl.control != null)
+            {
+                GameControl.control.LimitedAmmo = !GameControl.control.LimitedAmmo;
+                GameControl.control.Save();
+            }
+            else
+            {
+                GameControl.SetLimitedAmmo(!GameControl.GetLimitedAmmo());
+            }
+
+            RefreshLimitedAmmoToggleLabel();
+        }
+
+        private void RefreshLimitedAmmoToggleLabel()
+        {
+            if (_limitedAmmoToggleBtn == null) return;
+
+            bool limited = GameControl.control != null ? GameControl.control.LimitedAmmo : GameControl.GetLimitedAmmo();
+            _limitedAmmoToggleBtn.text = limited ? "ON" : "OFF";
         }
 
         // Two-click arm/confirm instead of a modal dialog -- this button is also reachable from

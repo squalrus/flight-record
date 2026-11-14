@@ -1,4 +1,5 @@
 using System.Collections;
+using FlightRecord.Gameplay;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -88,6 +89,27 @@ namespace FlightRecord
         public int HealthUpgradeDelta = 10;
         public int FirePowerUpgradeDelta = 1;
         public int AmmoUpgradeDelta = 10;
+
+        // Timed weapon power-ups (backlog 4.9, D-014), the main way to get stronger in a
+        // run. Different types stack with separate timers; picking up a running type again
+        // resets its timer (PowerUpTimers). Timers live on this instance, so like the
+        // Locator purchases below they end when the sector reloads.
+        [Header("Power-Ups")]
+        public float SpreadDuration = 10f;
+        public float RapidFireDuration = 10f;
+        public float HomingDuration = 10f;
+        [Tooltip("Extra shots on each side of the main shot while Spread is active.")]
+        [Range(1, 4)]
+        public int SpreadShotsPerSide = 1;
+        [Tooltip("Degrees between neighbouring Spread shots.")]
+        [Range(1f, 45f)]
+        public float SpreadAngle = 12f;
+        [Tooltip("Multiplier on PrimaryCoolDown while Rapid Fire is active.")]
+        [Range(0.1f, 1f)]
+        public float RapidFireCoolDownMultiplier = 0.4f;
+        public float MinRapidFireCoolDown = 0.04f;
+
+        private readonly PowerUpTimers _powerUps = new PowerUpTimers();
 
 #if UNITY_EDITOR
         [Header("Debug")]
@@ -197,8 +219,48 @@ namespace FlightRecord
         {
             if (Keyboard.current != null && Keyboard.current.f10Key.wasPressedThisFrame)
                 AddParts(DebugPartsGrant);
+
+            // F11 drops a random power-up just ahead of the ship.
+            if (Keyboard.current != null && Keyboard.current.f11Key.wasPressedThisFrame)
+                PowerUpDropTable.Spawn(PowerUpDropTable.RandomType(), transform.position + Vector3.right * 3f);
         }
 #endif
+
+        // ---- Ammunition (D-014) ----
+
+        // Off by default: primary fire never runs out. The Settings screen's Limited Ammo
+        // toggle turns the original ammunition rules back on for playtesting.
+        public bool IsAmmoLimited => GameControl.control != null && GameControl.control.LimitedAmmo;
+
+        protected override bool UsesAmmo => IsAmmoLimited;
+
+        // ---- Power-ups ----
+
+        public void ApplyPowerUp(PowerUpType type)
+        {
+            _powerUps.Activate(type, GetPowerUpDuration(type), Time.time);
+            ResourceAlertController.Instance?.Flash(PowerUp.DisplayName(type));
+            Rumble(0.4f, 0.1f);
+        }
+
+        public bool IsPowerUpActive(PowerUpType type) => _powerUps.IsActive(type, Time.time);
+
+        public float GetPowerUpRemaining(PowerUpType type) => _powerUps.Remaining(type, Time.time);
+
+        public float GetPowerUpDuration(PowerUpType type)
+        {
+            switch (type)
+            {
+                case PowerUpType.Spread: return SpreadDuration;
+                case PowerUpType.RapidFire: return RapidFireDuration;
+                case PowerUpType.Homing: return HomingDuration;
+                default: return 0f;
+            }
+        }
+
+        protected override float CurrentCoolDown => IsPowerUpActive(PowerUpType.RapidFire)
+            ? Mathf.Max(MinRapidFireCoolDown, PrimaryCoolDown * RapidFireCoolDownMultiplier)
+            : PrimaryCoolDown;
 
         private void FixedUpdate()
         {
@@ -238,26 +300,40 @@ namespace FlightRecord
         [Range(0f, 60f)]
         public float ShotSpeedBoost = 18f;
 
-        protected override Vector2 InheritedShotVelocity() => (Vector2)Cannon.up * ShotSpeedBoost;
+        protected override Vector2 InheritedShotVelocity(Vector2 shotDirection) => shotDirection * ShotSpeedBoost;
 
         protected override void OnWeaponFired(GameObject missileInstance)
         {
             missileInstance.GetComponent<Missile>().IsPlayerFired = true;
-            GameControl.control.ShotsFired += 1;
+            if (GameControl.control != null) GameControl.control.ShotsFired += 1;
             Rumble(0.1f, 0.05f);
 
-            // Homing is a player-only upgrade, like Pickup Attraction -- the rocket costs no
-            // ammo and isn't counted as its own shot, since it's a bonus on top of the Missile
-            // that was just fired.
-            if (HomingLevel > 0 && _homingRocketPrefab != null && Random.Range(0, 100) < HomingProcChances[HomingLevel - 1])
+            // Spread fans extra shots out evenly on both sides of the main shot. They cost
+            // no ammo, but each counts as a shot fired so hit percentage stays honest.
+            if (IsPowerUpActive(PowerUpType.Spread) && MissilePrefab != null)
             {
-                GameObject rocket = Instantiate(_homingRocketPrefab, Cannon.position, Cannon.rotation) as GameObject;
-                if (ProjectileContainer.Instance != null)
-                    rocket.transform.SetParent(ProjectileContainer.Instance);
-                rocket.GetComponent<Missile>().SetHealth(Mathf.RoundToInt(RollFirePower() * HomingRocketDamageMultiplier));
-                rocket.GetComponent<Rigidbody2D>().linearVelocity = (Vector2)(Cannon.up * 12f) + InheritedShotVelocity();
-                rocket.GetComponent<Missile>().SetHoming(HomingRocketTurnRate, HomingDelay, HomingRange);
-                rocket.GetComponent<Missile>().IsPlayerFired = true;
+                for (var i = 1; i <= SpreadShotsPerSide; i++)
+                {
+                    foreach (var side in new[] { 1f, -1f })
+                    {
+                        var rotation = Cannon.rotation * Quaternion.Euler(0f, 0f, side * i * SpreadAngle);
+                        SpawnShot(MissilePrefab, rotation, RollFirePower()).GetComponent<Missile>().IsPlayerFired = true;
+                        if (GameControl.control != null) GameControl.control.ShotsFired += 1;
+                    }
+                }
+            }
+
+            // The Homing power-up fires a rocket with every shot; outside it, the Homing
+            // upgrade gives each shot a chance. Either way the rocket costs no ammo and isn't
+            // counted as its own shot, since it's a bonus on top of the Missile just fired.
+            bool homingProc = IsPowerUpActive(PowerUpType.Homing)
+                || (HomingLevel > 0 && Random.Range(0, 100) < HomingProcChances[HomingLevel - 1]);
+            if (homingProc && _homingRocketPrefab != null)
+            {
+                var damage = Mathf.RoundToInt(RollFirePower() * HomingRocketDamageMultiplier);
+                var rocket = SpawnShot(_homingRocketPrefab, Cannon.rotation, damage).GetComponent<Missile>();
+                rocket.SetHoming(HomingRocketTurnRate, HomingDelay, HomingRange);
+                rocket.IsPlayerFired = true;
             }
         }
 
@@ -357,7 +433,7 @@ namespace FlightRecord
 
         public bool CanConvertPartsToAmmo()
         {
-            return Parts >= PartsConversionCost && _currentAmmo < MaxPrimaryAmmunition;
+            return IsAmmoLimited && Parts >= PartsConversionCost && _currentAmmo < MaxPrimaryAmmunition;
         }
 
         public void ConvertPartsToAmmo()
@@ -380,7 +456,7 @@ namespace FlightRecord
         public int GetTopOffCost()
         {
             int levels = GetTopOffLevels(_currentHealth, MaxHealth)
-                + GetTopOffLevels(_currentAmmo, MaxPrimaryAmmunition);
+                + (IsAmmoLimited ? GetTopOffLevels(_currentAmmo, MaxPrimaryAmmunition) : 0);
             return levels * PartsConversionCost;
         }
 
@@ -402,7 +478,7 @@ namespace FlightRecord
                 AddHealth(MaxHealth - _currentHealth);
             }
 
-            if (_currentAmmo < MaxPrimaryAmmunition)
+            if (IsAmmoLimited && _currentAmmo < MaxPrimaryAmmunition)
             {
                 Parts -= GetTopOffLevels(_currentAmmo, MaxPrimaryAmmunition) * PartsConversionCost;
                 AddAmmo(Mathf.CeilToInt(MaxPrimaryAmmunition - _currentAmmo));

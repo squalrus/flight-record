@@ -34,6 +34,11 @@
             <ui:Label text="PARTS" class="parts__label"/>
             <ui:Label name="parts-val" text="00" class="parts__val"/>
         </ui:VisualElement>
+        <ui:VisualElement name="powerups" class="powerups">
+            <ui:Label name="powerup-spread" text="SPREAD 10" class="powerup"/>
+            <ui:Label name="powerup-rapidfire" text="RAPID FIRE 10" class="powerup"/>
+            <ui:Label name="powerup-homing" text="HOMING 10" class="powerup"/>
+        </ui:VisualElement>
         <ui:VisualElement name="topright" class="topright">
             <ui:VisualElement name="pause-btn" class="ship-btn" style="position: relative; top: 0; left: 0; padding-top: 4px; padding-bottom: 4px; margin-bottom: 18px;">
                 <ui:VisualElement class="ship-btn__text">

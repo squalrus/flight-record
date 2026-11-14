@@ -20,7 +20,7 @@ Renamed from InfinitySpace in `ProjectSettings/ProjectSettings.asset`, so the tw
 | `Assets/Art/Backgrounds/` | Nebula backgrounds (about 445 MB of PNGs), made by the project owner |
 | `Assets/Art/Fonts/` | Orbitron and Share Tech Mono (each with its `License!.txt`, redistribution allowed), and the project's icon font |
 | `Packages/`, `ProjectSettings/` | Package manifest and lock file; project settings |
-| [`../docs/unity/infinityspace/`](../docs/unity/infinityspace/) | Reference from InfinitySpace, kept with the repo's other docs: `AUDIT.md` (its modernization audit), `DESIGN_DOCUMENT.md`, `infinityspace-conventions.md` (its coding-agent notes), and `design/` (reference images and screenshots) |
+| [`../docs/unity/flight-record/`](../docs/unity/flight-record/) | Reference from InfinitySpace, kept with the repo's other docs: `AUDIT.md` (its modernization audit), `DESIGN_DOCUMENT.md`, `conventions.md` (its coding-agent notes), and `design/` (reference images and screenshots) |
 
 ## Added for Flight Record
 
@@ -36,6 +36,6 @@ Renamed from InfinitySpace in `ProjectSettings/ProjectSettings.asset`, so the tw
 
 - Never commit `Library/`, `Temp/`, `Logs/`, `UserSettings/`, `obj/`, builds, or IDE project files; `../.gitignore` covers them.
 - New large binaries (textures, audio, models) go through LFS. Check `../.gitattributes` covers the file type before committing.
-- Read the audit in [../docs/unity/unity-fork-plan.md](../docs/unity/unity-fork-plan.md) Step 0 before refactoring; [../docs/unity/infinityspace/AUDIT.md](../docs/unity/infinityspace/AUDIT.md) covers code health and the file inventory.
+- Read the audit in [../docs/unity/unity-fork-plan.md](../docs/unity/unity-fork-plan.md) Step 0 before refactoring; [../docs/unity/flight-record/AUDIT.md](../docs/unity/flight-record/AUDIT.md) covers code health and the file inventory.
 - Gameplay changes are one backlog item each (Phase 4 in [../BACKLOG.md](../BACKLOG.md)), so each can be played and tested on its own.
 - Keep audio integration behind an interface with live, replay, null, and file sources (backlog 4.3).

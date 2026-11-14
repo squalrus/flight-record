@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6344529450119468238}
   - component: {fileID: 11400000}
   - component: {fileID: 1900000001}
+  - component: {fileID: 1900000002}
   m_Layer: 0
   m_Name: Triceptor
   m_TagString: Enemy
@@ -170,18 +171,22 @@ MonoBehaviour:
   Aim: 0
   DespawnMargin: 2
   _pathGizmoColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  _cannons:
-  - {fileID: 427250}
-  - {fileID: 2084045746434535848}
-  - {fileID: 8021386381048222916}
-  _homingRocketPrefab: {fileID: 100000, guid: 13dc4b92acc54d6aa5411c4b2ba495a9, type: 3}
-  _missileContainer: {fileID: 0}
-  VolleyInterval: 2
-  HomingTurnRate: 400
-  HomingDelay: 0.1
-  HomingRange: 15
-  LaunchSpeed: 12
   SpinRate: 120
+--- !u!114 &1900000002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc39e8ac345b479dabdd74ef8613509a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FlightRecord.PatternEmitter
+  Pattern: {fileID: 11400000, guid: 374e357b2e9e4f57882d3492399c5609, type: 2}
+  Origin: {fileID: 0}
+  AutoFire: 1
 --- !u!1 &101112
 GameObject:
   m_ObjectHideFlags: 0

@@ -14,16 +14,30 @@ namespace FlightRecord
         public static bool TryGetView(out Vector2 center, out Vector2 halfSize)
         {
             center = halfSize = Vector2.zero;
-            if (_camera == null)
-            {
-                _camera = Camera.main;
-                _scroller = _camera != null ? _camera.GetComponent<ScrollingCamera>() : null;
-            }
+            FindCamera();
             if (_camera == null || !_camera.orthographic) return false;
 
             center = _scroller != null ? _scroller.PhysicsCenter : (Vector2)_camera.transform.position;
             halfSize = new Vector2(_camera.orthographicSize * _camera.aspect, _camera.orthographicSize);
             return true;
+        }
+
+        // How fast the view is scrolling right now; zero without a ScrollingCamera. Enemy
+        // pattern shots add it so a pattern keeps its shape on screen.
+        public static Vector2 ScrollVelocity
+        {
+            get
+            {
+                FindCamera();
+                return _scroller != null ? _scroller.ScrollVelocity : Vector2.zero;
+            }
+        }
+
+        private static void FindCamera()
+        {
+            if (_camera != null) return;
+            _camera = Camera.main;
+            _scroller = _camera != null ? _camera.GetComponent<ScrollingCamera>() : null;
         }
 
         // View coordinates (0,0 bottom-left, 1,1 top-right) to an offset from the view's

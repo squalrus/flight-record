@@ -59,7 +59,10 @@ namespace FlightRecord
         private float _extent;
 
         // True while the enemy's center is inside the visible screen.
-        protected bool IsOnScreen { get; private set; }
+        public bool IsOnScreen { get; private set; }
+
+        // Has a PatternEmitter (4.13), which replaces the default single-cannon shot.
+        private bool _hasEmitter;
 
         // Set when the enemy left the screen alive (despawned rather than destroyed).
         public bool HasEscaped { get; private set; }
@@ -115,6 +118,7 @@ namespace FlightRecord
         {
             _rigidbody = GetComponent<Rigidbody2D>();
             _ship = GetComponent<Ship>();
+            _hasEmitter = GetComponent<PatternEmitter>() != null;
 
             // Position and rotation are set exactly each step; physics only handles contact.
             // Rotation isn't frozen (that constraint would also block MoveRotation); any spin
@@ -234,10 +238,12 @@ namespace FlightRecord
             TryFire();
         }
 
-        // Default: Ship's single-cannon primary weapon, along the enemy's facing. Triceptor
-        // and Satellite override this to a no-op and fire on their own timers instead.
+        // Default: Ship's single-cannon primary weapon, along the enemy's facing, unless the
+        // enemy has a PatternEmitter, which fires on its own (Triceptor). Satellite overrides
+        // this to a no-op and fires its beam instead.
         protected virtual void TryFire()
         {
+            if (_hasEmitter) return;
             _ship.FirePrimaryWeapon();
         }
 

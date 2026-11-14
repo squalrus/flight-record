@@ -29,14 +29,8 @@ Legend: 🔌 needs the physical hardware (turntable, interface) · 🌐 needs an
 
 Game items are one change each, so each one can be played and tested on its own. The audit in [unity-fork-plan.md](docs/unity/unity-fork-plan.md) Step 0 names the classes involved. The direction is arcade over resource management (D-013).
 
-- [ ] **4.8 🖥️ Game: remove fuel.** Thrust stops burning fuel; remove the fuel stat, HUD gauge, fuel pickups and upgrades, and the out-of-fuel failure (D-013).
-  *Done when:* a run cannot end for lack of fuel, and no fuel UI or save field remains (old saves still load).
 - [ ] **4.9 🖥️ Game: ammo skeleton and power-ups.** Ammo is infinite by default, behind a setting that can turn the limit back on, so the rule can be decided by play (D-014). Power-up pickups change the weapon for a while (spread, rapid fire, homing) and are the main way to get stronger.
   *Done when:* the default run never runs out of shots, the limited mode still works, and at least two power-ups can be picked up, show on the HUD, and expire.
-- [ ] **4.10 🖥️ Game: fixed facing and screen-bounded movement.** The ship always faces right and moves directly from the stick within the 16:9 playfield (no rotation, no momentum); shots go straight right (D-016).
-  *Done when:* the ship cannot leave the visible playfield and feels responsive on keyboard and gamepad.
-- [ ] **4.11 🖥️ Game: scrolling camera and horizontal parallax.** Replace `CameraFollow` and the 3x3 `BackgroundTiler` with a camera that scrolls right at a set speed (later driven by audio) and parallax layers that scroll at their own rates. Depends on 4.10.
-  *Done when:* scroll speed is one tunable value, the background never shows seams or gaps, and changing the speed mid-run is smooth.
 - [ ] **4.12 🖥️ Game: enemy entry paths and formations.** Replace orbit and patrol AI with paths (enter from the right, top, or bottom, sweep, exit) and formations that move as a group; turrets track the nearest player. Despawn past the left edge and above and below the screen. Depends on 4.11.
   *Done when:* each existing enemy prefab can fly at least two paths and one formation, set up as data (a path or formation asset), not code.
 - [ ] **4.13 🖥️ Game: bullet-pattern emitters.** Generalize Triceptor's volley into emitters: aimed, spread, ring, and sweeping stream, each with rate and speed settings and a trigger call the generator can drive from beats later.

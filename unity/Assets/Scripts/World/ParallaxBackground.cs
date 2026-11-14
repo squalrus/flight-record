@@ -9,7 +9,8 @@ namespace FlightRecord
     [DefaultExecutionOrder(100)]
     public class ParallaxBackground : MonoBehaviour
     {
-        // Design reference: deep=0.15, mid=0.45, fore=1.0, future foreground layer >1.0
+        // Each layer's scroll rate is this factor times the camera's scroll speed.
+        // Prefab values: deep=0.15, mid=0.45, fore=1.5 (closer than the play plane).
         // 0 = texture never shifts (deepest); 1 = world-aligned; >1 = closer than world plane
         [SerializeField, Range(0f, 2f)] float _parallaxFactor = 0.15f;
         [SerializeField] Sprite[] _variants;
@@ -38,10 +39,14 @@ namespace FlightRecord
 
             transform.position = new Vector3(camPos.x, camPos.y, transform.position.z);
 
+            // The scrolling camera (ScrollingCamera) only ever travels right, so over a
+            // whole side the raw offset would grow into the hundreds and lose float
+            // precision (visible as shimmer). The texture repeats every 1.0 of offset,
+            // so wrapping it is seamless.
             Vector2 travel = camPos - _startCameraPos;
             _renderer.material.mainTextureOffset = new Vector2(
-                travel.x * _parallaxFactor / _spriteSize.x,
-                travel.y * _parallaxFactor / _spriteSize.y
+                Mathf.Repeat(travel.x * _parallaxFactor / _spriteSize.x, 1f),
+                Mathf.Repeat(travel.y * _parallaxFactor / _spriteSize.y, 1f)
             );
         }
     }

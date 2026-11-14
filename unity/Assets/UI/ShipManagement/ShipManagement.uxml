@@ -25,11 +25,6 @@
                         <ui:Label name="health-val" text="0/0" class="stat-row__val"/>
                         <ui:Button name="convert-health-btn" text="+20% (5)" class="buy-btn"/>
                     </ui:VisualElement>
-                    <ui:VisualElement name="fuel-row" class="stat-row">
-                        <ui:Label text="FUEL" class="stat-row__label"/>
-                        <ui:Label name="fuel-val" text="0/0" class="stat-row__val"/>
-                        <ui:Button name="convert-fuel-btn" text="+20% (5)" class="buy-btn"/>
-                    </ui:VisualElement>
                     <ui:VisualElement name="ammo-row" class="stat-row">
                         <ui:Label text="AMMO" class="stat-row__label"/>
                         <ui:Label name="ammo-val" text="0/0" class="stat-row__val"/>

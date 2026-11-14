@@ -23,10 +23,9 @@ namespace FlightRecord
 
         public int DamageTaken;
 
-        public float FuelConsumed;
-
-        // ControlsFlipped (the touch layout swap) was removed with the touch controls;
-        // JsonUtility ignores the field in older saves.
+        // ControlsFlipped (the touch layout swap) was removed with the touch controls, and
+        // FuelConsumed, FuelUpgradeLevel, CurrentFuel and LifetimeFuelConsumed with fuel
+        // (backlog 4.8, D-013); JsonUtility ignores those fields in older saves.
         public bool RumbleEnabled = true;
 
         public int CurrentSector = 1;
@@ -49,8 +48,6 @@ namespace FlightRecord
 
         public int FirePowerUpgradeLevel;
 
-        public int FuelUpgradeLevel;
-
         public int AmmoUpgradeLevel;
 
         public float LastSectorTime;
@@ -63,7 +60,6 @@ namespace FlightRecord
         // Carried over from the ship the player had at the last successful sector transition.
         // -1 is a sentinel meaning "not set" -- Player.ApplyCarryOverStats() falls back to its Max* values,
         // which is also what a fresh New Game gets since ClearSaveData() doesn't copy these.
-        public float CurrentFuel = -1f;
         public float CurrentAmmo = -1f;
         public int CurrentHealth = -1;
 
@@ -79,8 +75,6 @@ namespace FlightRecord
         public int LifetimeDamageDealt;
 
         public int LifetimeDamageTaken;
-
-        public float LifetimeFuelConsumed;
 
         public int LifetimeEnemiesDestroyed;
 

@@ -118,7 +118,7 @@ namespace FlightRecord
             if (ProjectileContainer.Instance != null)
                 instance.transform.SetParent(ProjectileContainer.Instance);
             instance.GetComponent<Missile>().SetHealth(RollFirePower());
-            instance.GetComponent<Rigidbody2D>().linearVelocity = (Cannon.up * 12f) + (_rigidbody.transform.up * _rigidbody.linearVelocity.magnitude);
+            instance.GetComponent<Rigidbody2D>().linearVelocity = (Vector2)(Cannon.up * 12f) + InheritedShotVelocity();
 
             _currentAmmo--;
 
@@ -127,6 +127,14 @@ namespace FlightRecord
             _fireReady = false;
             yield return new WaitForSeconds(PrimaryCoolDown);
             _fireReady = true;
+        }
+
+        // Velocity added to each shot on top of its muzzle speed. Enemy Ships still push
+        // shots along their facing at their current speed; Player overrides this so shots
+        // go straight right at a constant speed (D-016).
+        protected virtual Vector2 InheritedShotVelocity()
+        {
+            return (Vector2)_rigidbody.transform.up * _rigidbody.linearVelocity.magnitude;
         }
 
         // Player-only follow-up on a shared shot: HomingRocket proc, IsPlayerFired flag,

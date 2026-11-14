@@ -128,7 +128,6 @@ MonoBehaviour:
   _damageNumberPrefab: {fileID: 100000, guid: f6e5d4c3b2a1f6e5d4c3b2a19876fedc, type: 3}
   _glyph: {fileID: 0}
   _healthBarFill: {fileID: 25962853523597242}
-  MaxFuel: 20
   Cannon: {fileID: 427250}
   FirePower: 2
   FirePowerVariance: 3
@@ -150,7 +149,6 @@ MonoBehaviour:
   SpeedUpgradeDelta: 0.3
   HealthUpgradeDelta: 10
   FirePowerUpgradeDelta: 1
-  FuelUpgradeDelta: 10
   AmmoUpgradeDelta: 10
   DebugPartsGrant: 100
   _attractionGizmoColor: {r: 0, g: 1, b: 1, a: 1}

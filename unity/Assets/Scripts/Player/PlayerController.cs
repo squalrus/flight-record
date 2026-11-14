@@ -8,14 +8,30 @@ namespace FlightRecord
     {
         public static Transform PlayerTransform { get; private set; }
 
+        // Horizontal scrolling (D-016): the ship always faces right and moves straight from
+        // the stick, with no rotation and no momentum, inside the camera's visible rect.
+        // The ship's art and Cannon point along local +Y, so facing right is -90 degrees.
+        private const float FACING_RIGHT = -90f;
+
+        [Header("Movement")]
+        [Tooltip("Ship speed in world units per second at full stick deflection.")]
+        [Range(1f, 60f)]
+        public float MoveSpeed = 22f;
+        [Tooltip("Extra gap, in world units, kept between the ship's collider and the screen edges.")]
+        [Range(0f, 5f)]
+        public float EdgeMargin = 0.5f;
+        [Tooltip("How far right the ship may go, as a fraction of the visible width (1 = the right edge).")]
+        [Range(0.25f, 1f)]
+        public float MaxRightFraction = 1f;
+
         private Rigidbody2D _player;
         private Player _ship;
         private PauseMenu _pauseMenu;
-        private float _speed;
+        private Camera _camera;
+        private ScrollingCamera _scroller;
+        private Vector2 _halfExtents;
         private Vector2 _moveInput;
         private bool _firing;
-
-        private const float ROTATION_THRESHOLD = .2f;
 
         private void Awake()
         {
@@ -28,8 +44,25 @@ namespace FlightRecord
             _player.GetComponentInChildren<MeshRenderer>().sortingLayerName = "Player";
             _player.GetComponentInChildren<ParticleSystem>().GetComponent<Renderer>().sortingLayerName = "Player";
             _ship = GetComponent<Player>();
-            _speed = _ship.Speed;
             _pauseMenu = FindFirstObjectByType<PauseMenu>();
+            CacheCamera();
+
+            transform.rotation = Quaternion.Euler(0f, 0f, FACING_RIGHT);
+            // Push the new rotation to the physics body and collider now, so the collider
+            // bounds read below are the right-facing ones.
+            Physics2D.SyncTransforms();
+            _player.freezeRotation = true;
+            _player.angularVelocity = 0f;
+            // Velocity is set exactly each step; damping would shave it and leave the
+            // ship short of the stick's target and of the screen edge.
+            _player.linearDamping = 0f;
+            // Physics steps at a fixed rate; without interpolation, direct movement
+            // stutters against a still camera on displays faster than the physics rate.
+            _player.interpolation = RigidbodyInterpolation2D.Interpolate;
+
+            // Rotation never changes after this, so the collider's world extents are fixed.
+            var collider = GetComponent<Collider2D>();
+            _halfExtents = collider != null ? (Vector2)collider.bounds.extents : Vector2.zero;
         }
 
         // True while Ship Management is open. That screen deliberately doesn't pause the
@@ -62,23 +95,54 @@ namespace FlightRecord
 
         private void FixedUpdate()
         {
-            if (IsShipManagementOpen) return;
+            var input = IsShipManagementOpen ? Vector2.zero : Vector2.ClampMagnitude(_moveInput, 1f);
+            var position = _player.position;
+            // Riding the scroll keeps a centered stick still on screen; the stick then
+            // moves the ship relative to the view, not the world.
+            var scroll = _scroller != null ? _scroller.ScrollVelocity : Vector2.zero;
+            var target = position + (input * MoveSpeed + scroll) * Time.fixedDeltaTime;
 
-            var input = _moveInput;
-            if (input.sqrMagnitude > ROTATION_THRESHOLD * ROTATION_THRESHOLD)
+            if (TryGetPlayfield(out var min, out var max))
             {
-                _player.freezeRotation = false;
-                var angle = Mathf.Atan2(input.x, input.y) * -Mathf.Rad2Deg;
-                _player.rotation = angle;
-                if (_ship.TryConsumeFuel(.01f))
-                {
-                    _player.AddForce(input * _speed);
-                }
+                target.x = Mathf.Clamp(target.x, min.x, max.x);
+                target.y = Mathf.Clamp(target.y, min.y, max.y);
             }
-            else
-            {
-                _player.freezeRotation = true;
-            }
+
+            // Drive the body by velocity (not MovePosition) so it stays a dynamic body that
+            // collides normally; overwriting it every step removes momentum and knockback.
+            // If something pushed the ship off screen, this also brings it straight back.
+            _player.linearVelocity = (target - position) / Time.fixedDeltaTime;
+            _player.angularVelocity = 0f;
+            _player.rotation = FACING_RIGHT;
+        }
+
+        private void CacheCamera()
+        {
+            _camera = Camera.main;
+            _scroller = _camera != null ? _camera.GetComponent<ScrollingCamera>() : null;
+        }
+
+        // The rect the ship's center may occupy: the camera's visible area, inset by the
+        // ship's half size and EdgeMargin, with the right side limited by MaxRightFraction.
+        // Read from the camera every step, so it follows a scrolling or zooming camera.
+        private bool TryGetPlayfield(out Vector2 min, out Vector2 max)
+        {
+            min = max = Vector2.zero;
+            if (_camera == null) CacheCamera();
+            if (_camera == null || !_camera.orthographic) return false;
+
+            // The scrolling camera's rendered position is interpolated between physics
+            // steps; bound against where the view is as of this step instead.
+            var center = _scroller != null ? _scroller.PhysicsCenter : (Vector2)_camera.transform.position;
+            var halfHeight = _camera.orthographicSize;
+            var halfWidth = halfHeight * _camera.aspect;
+            var inset = _halfExtents + Vector2.one * EdgeMargin;
+
+            min = new Vector2(center.x - halfWidth, center.y - halfHeight) + inset;
+            max = new Vector2(center.x - halfWidth + 2f * halfWidth * MaxRightFraction, center.y + halfHeight) - inset;
+            max.x = Mathf.Max(min.x, max.x);
+            max.y = Mathf.Max(min.y, max.y);
+            return true;
         }
 
         private void OnMove(InputValue value)

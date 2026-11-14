@@ -161,10 +161,6 @@
     color: rgb(127, 233, 255);
 }
 
-.dial__label--fuel {
-    color: rgb(255, 194, 77);
-}
-
 .parts {
     position: absolute;
     top: 212px;

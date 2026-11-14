@@ -127,7 +127,6 @@ namespace FlightRecord
         private int _hitsAtStart;
         private int _damageDealtAtStart;
         private int _damageTakenAtStart;
-        private float _fuelConsumedAtStart;
         private int _partsSpawnedAtStart;
         private int _partsCollectedAtStart;
         public int ShotsFired => GameControl.control != null ? GameControl.control.ShotsFired - _shotsFiredAtStart : 0;
@@ -135,7 +134,6 @@ namespace FlightRecord
         public float HitPercentage => ShotsFired == 0 ? 0f : (float)Hits / ShotsFired;
         public int DamageDealt => GameControl.control != null ? GameControl.control.DamageDealt - _damageDealtAtStart : 0;
         public int DamageTaken => GameControl.control != null ? GameControl.control.DamageTaken - _damageTakenAtStart : 0;
-        public float FuelConsumed => GameControl.control != null ? GameControl.control.FuelConsumed - _fuelConsumedAtStart : 0f;
         public int PartsSpawned => GameControl.control != null ? GameControl.control.PartsSpawned - _partsSpawnedAtStart : 0;
         public int PartsCollected => GameControl.control != null ? GameControl.control.PartsCollected - _partsCollectedAtStart : 0;
 
@@ -178,7 +176,6 @@ namespace FlightRecord
                 _hitsAtStart = GameControl.control.Hits;
                 _damageDealtAtStart = GameControl.control.DamageDealt;
                 _damageTakenAtStart = GameControl.control.DamageTaken;
-                _fuelConsumedAtStart = GameControl.control.FuelConsumed;
                 _partsSpawnedAtStart = GameControl.control.PartsSpawned;
                 _partsCollectedAtStart = GameControl.control.PartsCollected;
             }

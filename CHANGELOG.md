@@ -2,6 +2,18 @@
 
 User-visible changes, newest first. Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format and [semver](https://semver.org/) versioning.
 
+## [0.11.0] — 2026-11-14
+### Added
+- **Scrolling camera and horizontal parallax (backlog 4.11).** The camera now moves right on its own at one tunable speed, `ScrollSpeed` (default 4 units/s). Changing it eases smoothly toward the new value at `SpeedChangeRate`, so the audio-driven generator can call `SetScrollSpeed` later. The three background layers scroll at their own rates (0.15, 0.45 and 1.5 times the camera speed), and their textures wrap so they show no seams. The galaxy decal drifts off the left edge and comes back from the right. (`unity/Assets/Scripts/World/ScrollingCamera.cs`, `unity/Assets/Scripts/World/ParallaxBackground.cs`, `unity/Assets/Scripts/World/GalaxyDecal.cs`)
+
+### Changed
+- **Fixed facing and screen-bounded movement (backlog 4.10, D-016).** The ship always faces right and moves straight from the stick, with no rotation and no momentum. It can't leave the visible screen, and a centred stick holds it still against the scroll. Movement is tested with the keyboard and a gamepad. Player shots and homing rockets fly straight right at a constant speed (`ShotSpeedBoost`, 18 units/s above the 12 units/s muzzle speed). (`unity/Assets/Scripts/Player/PlayerController.cs`, `unity/Assets/Scripts/Player/Player.cs`, `unity/Assets/Scripts/Entities/Ship.cs`)
+- **Camera script renamed.** `CameraFollow` is now `ScrollingCamera`, and it no longer follows the ship. It centres on the ship once at start, then scrolls. (`unity/Assets/Scripts/World/ScrollingCamera.cs`)
+
+### Removed
+- **Fuel (backlog 4.8, D-013).** Moving no longer uses fuel, so a run can't end for lack of it. The fuel stat, HUD gauge, Max Fuel upgrade, parts-to-fuel conversion, the "FUEL LOW" and "FUEL EMPTY" alerts, and the fuel lines on the Sector Complete, Game Over and Lifetime Stats screens are gone. Old saves still load; the four fuel fields are ignored. (`unity/Assets/Scripts/Player/Player.cs`, `unity/Assets/Scripts/Systems/GameControl.cs`, `unity/Assets/Scripts/Systems/PlayerStatistics.cs`, `unity/Assets/UI/`)
+- **Unused 3x3 background tiler.** `BackgroundTiler` was not used by any scene, and the parallax layers replace it. (`unity/Assets/Scripts/World/BackgroundTiler.cs`)
+
 ## [0.10.2] — 2026-11-14
 ### Removed
 - **Touch and mobile controls (backlog 4.7).** The game is desktop first. The on-screen touch canvas is gone (the `FloatingJoystick`, the `OnScreenStick` and `OnScreenButton` controls, and `TouchControls`), along with the `ControlsFlipped` setting and the Android vibration fallback for rumble. The on-screen controls also created a virtual gamepad, so rumble now always reaches the real controller. Older saves still load; the dropped setting is ignored. Tested with the keyboard; the gamepad has not been tested yet. (`unity/Assets/Scenes/Main.unity`, `unity/Assets/Scripts/Player/`, `unity/Assets/Scripts/Systems/`)

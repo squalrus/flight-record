@@ -12,7 +12,6 @@ namespace FlightRecord
     {
         private static readonly Color Cyan = new Color(0.498f, 0.914f, 1f);
         private static readonly Color Green = new Color(0.212f, 1f, 0.620f);
-        private static readonly Color Amber = new Color(1f, 0.761f, 0.302f);
         private static readonly Color Hostile = new Color(1f, 0.353f, 0.353f);
         private static readonly Color Rock = new Color(0.435f, 0.737f, 1f);
         private static readonly Color Portal = new Color(0.714f, 0.608f, 1f);
@@ -33,10 +32,10 @@ namespace FlightRecord
         private struct Blip { public BlipKind Kind; public Vector2 Pos; }
         private readonly List<Blip> _blips = new List<Blip>();
 
-        private VisualElement _healthGauge, _ammoGauge, _fuelGauge, _radar;
+        private VisualElement _healthGauge, _ammoGauge, _radar;
         private VisualElement _sectorProgressFill;
-        private Label _healthVal, _ammoVal, _fuelVal, _partsVal, _sectorLabel, _sectorTimeLabel, _sectorProgressStatus, _magVal, _homVal;
-        private Label _hpVal, _dmgVal, _fuelCapVal, _ammoCapVal;
+        private Label _healthVal, _ammoVal, _partsVal, _sectorLabel, _sectorTimeLabel, _sectorProgressStatus, _magVal, _homVal;
+        private Label _hpVal, _dmgVal, _ammoCapVal;
         private Label _pilotAvatar;
         private VisualElement _rofPips;
         private float _sweepAngle;
@@ -60,12 +59,10 @@ namespace FlightRecord
 
             _healthGauge = root.Q<VisualElement>("health-gauge");
             _ammoGauge = root.Q<VisualElement>("ammo-gauge");
-            _fuelGauge = root.Q<VisualElement>("fuel-gauge");
             _radar = root.Q<VisualElement>("radar");
 
             _healthVal = root.Q<Label>("health-val");
             _ammoVal = root.Q<Label>("ammo-val");
-            _fuelVal = root.Q<Label>("fuel-val");
             _partsVal = root.Q<Label>("parts-val");
             _sectorLabel = root.Q<Label>("sector-name");
             _sectorTimeLabel = root.Q<Label>("sector-time");
@@ -75,14 +72,12 @@ namespace FlightRecord
             _homVal = root.Q<Label>("hom-val");
             _hpVal = root.Q<Label>("hp-val");
             _dmgVal = root.Q<Label>("dmg-val");
-            _fuelCapVal = root.Q<Label>("fuel-cap-val");
             _ammoCapVal = root.Q<Label>("ammo-cap-val");
             _rofPips = root.Q<VisualElement>("rof-pips");
             _pilotAvatar = root.Q<Label>("pilot-avatar");
 
             if (_healthGauge != null) _healthGauge.generateVisualContent += ctx => DrawDial(ctx, HealthFraction(), Green);
             if (_ammoGauge != null) _ammoGauge.generateVisualContent += ctx => DrawDial(ctx, AmmoFraction(), Cyan);
-            if (_fuelGauge != null) _fuelGauge.generateVisualContent += ctx => DrawDial(ctx, FuelFraction(), Amber);
             if (_radar != null) _radar.generateVisualContent += DrawRadar;
 
             var manageBtn = root.Q<VisualElement>("manage-btn");
@@ -138,12 +133,10 @@ namespace FlightRecord
         {
             if (_healthVal != null) _healthVal.text = $"{_ship.GetCurrentHealth()}/{_ship.MaxHealth}";
             if (_ammoVal != null) _ammoVal.text = $"{Mathf.RoundToInt(_ship.GetAmmunition())}/{_ship.MaxPrimaryAmmunition}";
-            if (_fuelVal != null) _fuelVal.text = $"{Mathf.RoundToInt(_ship.GetFuel())}/{Mathf.RoundToInt(_ship.MaxFuel)}";
             if (_partsVal != null) _partsVal.text = Mathf.RoundToInt(_ship.GetParts()).ToString("00");
 
             _healthGauge?.MarkDirtyRepaint();
             _ammoGauge?.MarkDirtyRepaint();
-            _fuelGauge?.MarkDirtyRepaint();
         }
 
         private void RefreshUpgrades()
@@ -151,12 +144,11 @@ namespace FlightRecord
             if (_magVal != null) _magVal.text = $"Lv {_ship.GetPickupAttractionLevel()}";
             if (_homVal != null) _homVal.text = $"Lv {_ship.GetHomingLevel()}";
 
-            // Health/Firepower/Fuel/Ammo have no level cap, so they're shown as a plain level
+            // Health/Firepower/Ammo have no level cap, so they're shown as a plain level
             // number rather than pips that could never look "full". Fire Rate keeps the legacy
             // capped pip display instead, since it's the row that slot was originally reserved for.
             if (_hpVal != null) _hpVal.text = $"Lv {_ship.GetHealthUpgradeLevel()}";
             if (_dmgVal != null) _dmgVal.text = $"Lv {_ship.GetFirePowerUpgradeLevel()}";
-            if (_fuelCapVal != null) _fuelCapVal.text = $"Lv {_ship.GetFuelUpgradeLevel()}";
             if (_ammoCapVal != null) _ammoCapVal.text = $"Lv {_ship.GetAmmoUpgradeLevel()}";
 
             SetPipRow(_rofPips, _ship.GetFireRateUpgradeLevel());
@@ -272,7 +264,6 @@ namespace FlightRecord
 
         private float HealthFraction() => _ship.MaxHealth <= 0 ? 0f : (float)_ship.GetCurrentHealth() / _ship.MaxHealth;
         private float AmmoFraction() => _ship.MaxPrimaryAmmunition <= 0 ? 0f : _ship.GetAmmunition() / _ship.MaxPrimaryAmmunition;
-        private float FuelFraction() => _ship.MaxFuel <= 0 ? 0f : _ship.GetFuel() / _ship.MaxFuel;
 
         private static void SetPickingModeRecursive(VisualElement element, PickingMode mode)
         {

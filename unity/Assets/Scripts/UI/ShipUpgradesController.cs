@@ -6,8 +6,8 @@ namespace FlightRecord
     // Attach to a GameObject with a UIDocument (Source Asset = ShipUpgrades.uxml) in Main.unity.
     // Shown by SectorTransitionController between sectors, after SectorAchievements; page 3 of 3
     // in the between-sector flow (terminal action: Launch Sector). Permanent Research upgrades
-    // (Max Health/Fire Rate/Firepower/Max Fuel/Max Ammo, Magnet, Homing) plus a Resources section
-    // (Top Off, Health/Fuel/Ammo conversion -- copied from ShipManagementController's wiring,
+    // (Max Health/Fire Rate/Firepower/Max Ammo, Magnet, Homing) plus a Resources section
+    // (Top Off, Health/Ammo conversion -- copied from ShipManagementController's wiring,
     // since the between-sector flow no longer shows that screen at all: its Sector Exploration
     // scans don't apply to a sector that hasn't loaded yet).
     [RequireComponent(typeof(UIDocument))]
@@ -19,27 +19,23 @@ namespace FlightRecord
         private VisualElement _root;
         private Label _partsVal;
         private Label _healthVal;
-        private Label _fuelVal;
         private Label _ammoVal;
         private Label _attractionVal;
         private Label _homingVal;
         private Label _fireRateVal;
         private Label _healthCapVal;
         private Label _firepowerVal;
-        private Label _fuelCapVal;
         private Label _ammoCapVal;
         private Button _backBtn;
         private Button _launchBtn;
         private Button _topOffBtn;
         private Button _convertHealthBtn;
-        private Button _convertFuelBtn;
         private Button _convertAmmoBtn;
         private Button _upgradeAttractionBtn;
         private Button _upgradeHomingBtn;
         private Button _upgradeFireRateBtn;
         private Button _upgradeHealthBtn;
         private Button _upgradeFirepowerBtn;
-        private Button _upgradeFuelBtn;
         private Button _upgradeAmmoBtn;
         private Button[] _focusOrder;
         private Button[] _leftColumnOrder;
@@ -56,14 +52,12 @@ namespace FlightRecord
 
             _partsVal = _root.Q<Label>("parts-val");
             _healthVal = _root.Q<Label>("health-val");
-            _fuelVal = _root.Q<Label>("fuel-val");
             _ammoVal = _root.Q<Label>("ammo-val");
             _attractionVal = _root.Q<Label>("attraction-val");
             _homingVal = _root.Q<Label>("homing-val");
             _fireRateVal = _root.Q<Label>("firerate-val");
             _healthCapVal = _root.Q<Label>("health-cap-val");
             _firepowerVal = _root.Q<Label>("firepower-val");
-            _fuelCapVal = _root.Q<Label>("fuel-cap-val");
             _ammoCapVal = _root.Q<Label>("ammo-cap-val");
 
             _backBtn = _root.Q<Button>("back-btn");
@@ -75,11 +69,9 @@ namespace FlightRecord
 
             _topOffBtn = _root.Q<Button>("topoff-btn");
             _convertHealthBtn = _root.Q<Button>("convert-health-btn");
-            _convertFuelBtn = _root.Q<Button>("convert-fuel-btn");
             _convertAmmoBtn = _root.Q<Button>("convert-ammo-btn");
             _topOffBtn?.RegisterCallback<ClickEvent>(_ => _ship?.TopOff());
             _convertHealthBtn?.RegisterCallback<ClickEvent>(_ => _ship?.ConvertPartsToHealth());
-            _convertFuelBtn?.RegisterCallback<ClickEvent>(_ => _ship?.ConvertPartsToFuel());
             _convertAmmoBtn?.RegisterCallback<ClickEvent>(_ => _ship?.ConvertPartsToAmmo());
 
             _upgradeAttractionBtn = _root.Q<Button>("upgrade-attraction-btn");
@@ -87,14 +79,13 @@ namespace FlightRecord
             _upgradeFireRateBtn = _root.Q<Button>("upgrade-firerate-btn");
             _upgradeHealthBtn = _root.Q<Button>("upgrade-health-btn");
             _upgradeFirepowerBtn = _root.Q<Button>("upgrade-firepower-btn");
-            _upgradeFuelBtn = _root.Q<Button>("upgrade-fuel-btn");
             _upgradeAmmoBtn = _root.Q<Button>("upgrade-ammo-btn");
 
             _focusOrder = new[]
             {
-                _backBtn, _launchBtn, _topOffBtn, _convertHealthBtn, _convertFuelBtn, _convertAmmoBtn,
+                _backBtn, _launchBtn, _topOffBtn, _convertHealthBtn, _convertAmmoBtn,
                 _upgradeAttractionBtn, _upgradeHomingBtn, _upgradeFireRateBtn, _upgradeHealthBtn,
-                _upgradeFirepowerBtn, _upgradeFuelBtn, _upgradeAmmoBtn,
+                _upgradeFirepowerBtn, _upgradeAmmoBtn,
             };
 
             // The grid is two independent top-to-bottom columns: left (under Back) is Resources
@@ -103,12 +94,12 @@ namespace FlightRecord
             // above/below it in its own column, not the other one.
             _leftColumnOrder = new[]
             {
-                _topOffBtn, _convertHealthBtn, _convertFuelBtn, _convertAmmoBtn,
+                _topOffBtn, _convertHealthBtn, _convertAmmoBtn,
                 _upgradeFireRateBtn, _upgradeFirepowerBtn,
             };
             _rightColumnOrder = new[]
             {
-                _upgradeHealthBtn, _upgradeFuelBtn, _upgradeAmmoBtn,
+                _upgradeHealthBtn, _upgradeAmmoBtn,
                 _upgradeAttractionBtn, _upgradeHomingBtn,
             };
 
@@ -129,14 +120,12 @@ namespace FlightRecord
             _upgradeFireRateBtn?.RegisterCallback<ClickEvent>(_ => _ship?.UpgradeFireRate());
             _upgradeHealthBtn?.RegisterCallback<ClickEvent>(_ => _ship?.UpgradeHealth());
             _upgradeFirepowerBtn?.RegisterCallback<ClickEvent>(_ => _ship?.UpgradeFirePower());
-            _upgradeFuelBtn?.RegisterCallback<ClickEvent>(_ => _ship?.UpgradeFuel());
             _upgradeAmmoBtn?.RegisterCallback<ClickEvent>(_ => _ship?.UpgradeAmmo());
 
             if (_ship != null)
             {
                 var buyLabel = $"+{Mathf.RoundToInt(_ship.PartsConversionPercent * 100)}% ({_ship.PartsConversionCost})";
                 if (_convertHealthBtn != null) _convertHealthBtn.text = buyLabel;
-                if (_convertFuelBtn != null) _convertFuelBtn.text = buyLabel;
                 if (_convertAmmoBtn != null) _convertAmmoBtn.text = buyLabel;
             }
 
@@ -174,9 +163,6 @@ namespace FlightRecord
             if (_healthVal != null)
                 _healthVal.text = $"{_ship.GetCurrentHealth()}/{_ship.MaxHealth}";
 
-            if (_fuelVal != null)
-                _fuelVal.text = $"{Mathf.RoundToInt(_ship.GetFuel())}/{Mathf.RoundToInt(_ship.MaxFuel)}";
-
             if (_ammoVal != null)
                 _ammoVal.text = $"{Mathf.RoundToInt(_ship.GetAmmunition())}/{_ship.MaxPrimaryAmmunition}";
 
@@ -210,18 +196,12 @@ namespace FlightRecord
             if (_upgradeFirepowerBtn != null)
                 _upgradeFirepowerBtn.text = $"UPGRADE ({_ship.GetFirePowerUpgradeCost()})";
 
-            if (_fuelCapVal != null)
-                _fuelCapVal.text = $"Lv {_ship.GetFuelUpgradeLevel()}";
-            if (_upgradeFuelBtn != null)
-                _upgradeFuelBtn.text = $"UPGRADE ({_ship.GetFuelUpgradeCost()})";
-
             if (_ammoCapVal != null)
                 _ammoCapVal.text = $"Lv {_ship.GetAmmoUpgradeLevel()}";
             if (_upgradeAmmoBtn != null)
                 _upgradeAmmoBtn.text = $"UPGRADE ({_ship.GetAmmoUpgradeCost()})";
 
             SetEnabledPreservingFocus(_convertHealthBtn, _ship.CanConvertPartsToHealth());
-            SetEnabledPreservingFocus(_convertFuelBtn, _ship.CanConvertPartsToFuel());
             SetEnabledPreservingFocus(_convertAmmoBtn, _ship.CanConvertPartsToAmmo());
             SetEnabledPreservingFocus(_topOffBtn, _ship.CanTopOff());
             SetEnabledPreservingFocus(_upgradeAttractionBtn, _ship.CanUpgradePickupAttraction());
@@ -229,7 +209,6 @@ namespace FlightRecord
             SetEnabledPreservingFocus(_upgradeFireRateBtn, _ship.CanUpgradeFireRate());
             SetEnabledPreservingFocus(_upgradeHealthBtn, _ship.CanUpgradeHealth());
             SetEnabledPreservingFocus(_upgradeFirepowerBtn, _ship.CanUpgradeFirePower());
-            SetEnabledPreservingFocus(_upgradeFuelBtn, _ship.CanUpgradeFuel());
             SetEnabledPreservingFocus(_upgradeAmmoBtn, _ship.CanUpgradeAmmo());
         }
 

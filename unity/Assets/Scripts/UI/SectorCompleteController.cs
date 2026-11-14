@@ -22,7 +22,6 @@ namespace FlightRecord
         private Label _accuracyVal;
         private Label _damageDealtVal;
         private Label _damageTakenVal;
-        private Label _fuelUsedVal;
         private Label _partsEarnedVal;
         private Label _partsConsumedVal;
         private Label _timeVal;
@@ -45,7 +44,6 @@ namespace FlightRecord
             _accuracyVal = _root.Q<Label>("accuracy-val");
             _damageDealtVal = _root.Q<Label>("damage-dealt-val");
             _damageTakenVal = _root.Q<Label>("damage-taken-val");
-            _fuelUsedVal = _root.Q<Label>("fuel-used-val");
             _partsEarnedVal = _root.Q<Label>("parts-earned-val");
             _partsConsumedVal = _root.Q<Label>("parts-consumed-val");
             _timeVal = _root.Q<Label>("time-val");
@@ -97,9 +95,6 @@ namespace FlightRecord
 
             if (_damageTakenVal != null)
                 _damageTakenVal.text = sector.DamageTaken.ToString();
-
-            if (_fuelUsedVal != null)
-                _fuelUsedVal.text = Mathf.RoundToInt(sector.FuelConsumed).ToString();
 
             if (_partsEarnedVal != null)
                 _partsEarnedVal.text = Mathf.RoundToInt(sector.PartsEarned).ToString();

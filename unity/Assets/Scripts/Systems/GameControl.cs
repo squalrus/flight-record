@@ -29,13 +29,11 @@ namespace FlightRecord
         public int FireRateUpgradeLevel;
         public int HealthUpgradeLevel;
         public int FirePowerUpgradeLevel;
-        public int FuelUpgradeLevel;
         public int AmmoUpgradeLevel;
         public float LastSectorTime;
         public float LifetimePlaytimeSeconds;
 
         // See PlayerStatistics for the -1 "not set" sentinel.
-        public float CurrentFuel = -1f;
         public float CurrentAmmo = -1f;
         public int CurrentHealth = -1;
 
@@ -45,7 +43,6 @@ namespace FlightRecord
         public int LifetimeHits;
         public int LifetimeDamageDealt;
         public int LifetimeDamageTaken;
-        public float LifetimeFuelConsumed;
         public int LifetimeEnemiesDestroyed;
         public int LifetimeAsteroidsDestroyed;
         public int HighestSectorReached;
@@ -67,7 +64,6 @@ namespace FlightRecord
         private int _hits;
         private int _damageDealt;
         private int _damageTaken;
-        private float _fuelConsumed;
 
         public int Hits
         {
@@ -99,17 +95,6 @@ namespace FlightRecord
                 int delta = value - _damageTaken;
                 if (delta > 0) LifetimeDamageTaken += delta;
                 _damageTaken = value;
-            }
-        }
-
-        public float FuelConsumed
-        {
-            get => _fuelConsumed;
-            set
-            {
-                float delta = value - _fuelConsumed;
-                if (delta > 0) LifetimeFuelConsumed += delta;
-                _fuelConsumed = value;
             }
         }
 
@@ -233,7 +218,6 @@ namespace FlightRecord
             public float HitPercentage;
             public int DamageDealt;
             public int DamageTaken;
-            public float FuelConsumed;
             public float ElapsedSeconds;
             public float PartsEarned;
             public float PartsSpent;
@@ -244,7 +228,6 @@ namespace FlightRecord
             public float RunHitPercentage;
             public int RunDamageDealt;
             public int RunDamageTaken;
-            public float RunFuelConsumed;
             public int RunEnemiesDestroyed;
             public int RunAsteroidsDestroyed;
             public float RunPartsEarned;
@@ -270,7 +253,6 @@ namespace FlightRecord
                 HitPercentage = sector != null ? sector.HitPercentage : 0f,
                 DamageDealt = sector != null ? sector.DamageDealt : 0,
                 DamageTaken = sector != null ? sector.DamageTaken : 0,
-                FuelConsumed = sector != null ? sector.FuelConsumed : 0f,
                 ElapsedSeconds = sector != null ? sector.ElapsedSeconds : 0f,
                 PartsEarned = sector != null ? sector.PartsEarned : 0f,
                 PartsSpent = sector != null ? sector.PartsSpent : 0f,
@@ -281,7 +263,6 @@ namespace FlightRecord
                 RunHitPercentage = ShotsFired == 0 ? 0f : (float)Hits / ShotsFired,
                 RunDamageDealt = DamageDealt,
                 RunDamageTaken = DamageTaken,
-                RunFuelConsumed = FuelConsumed,
                 RunEnemiesDestroyed = RunEnemiesDestroyed,
                 RunAsteroidsDestroyed = RunAsteroidsDestroyed,
                 RunPartsEarned = RunPartsEarned,
@@ -324,7 +305,6 @@ namespace FlightRecord
                 Hits = Hits,
                 DamageDealt = DamageDealt,
                 DamageTaken = DamageTaken,
-                FuelConsumed = FuelConsumed,
                 RumbleEnabled = RumbleEnabled,
                 CurrentSector = CurrentSector,
                 HasActiveRun = HasActiveRun,
@@ -334,11 +314,9 @@ namespace FlightRecord
                 FireRateUpgradeLevel = FireRateUpgradeLevel,
                 HealthUpgradeLevel = HealthUpgradeLevel,
                 FirePowerUpgradeLevel = FirePowerUpgradeLevel,
-                FuelUpgradeLevel = FuelUpgradeLevel,
                 AmmoUpgradeLevel = AmmoUpgradeLevel,
                 LastSectorTime = LastSectorTime,
                 LifetimePlaytimeSeconds = LifetimePlaytimeSeconds,
-                CurrentFuel = CurrentFuel,
                 CurrentAmmo = CurrentAmmo,
                 CurrentHealth = CurrentHealth,
                 LifetimePartsEarned = LifetimePartsEarned,
@@ -347,7 +325,6 @@ namespace FlightRecord
                 LifetimeHits = LifetimeHits,
                 LifetimeDamageDealt = LifetimeDamageDealt,
                 LifetimeDamageTaken = LifetimeDamageTaken,
-                LifetimeFuelConsumed = LifetimeFuelConsumed,
                 LifetimeEnemiesDestroyed = LifetimeEnemiesDestroyed,
                 LifetimeAsteroidsDestroyed = LifetimeAsteroidsDestroyed,
                 HighestSectorReached = HighestSectorReached,
@@ -363,7 +340,7 @@ namespace FlightRecord
         }
 
         // Called once, by Player.Destruct() on the player ship, the moment Game Over happens.
-        // Lifetime totals are already current -- Hits/DamageDealt/DamageTaken/FuelConsumed/
+        // Lifetime totals are already current -- Hits/DamageDealt/DamageTaken/
         // ShotsFired/Parts all accrue into their Lifetime* counterpart via their setters as
         // they change during play, not just at Save() time. This only needs to reset the
         // current-run fields back to "no run in progress" before saving, so the next
@@ -378,10 +355,8 @@ namespace FlightRecord
             FireRateUpgradeLevel = 0;
             HealthUpgradeLevel = 0;
             FirePowerUpgradeLevel = 0;
-            FuelUpgradeLevel = 0;
             AmmoUpgradeLevel = 0;
             LastSectorTime = 0;
-            CurrentFuel = -1f;
             CurrentAmmo = -1f;
             CurrentHealth = -1;
             Experience = 0;
@@ -389,7 +364,6 @@ namespace FlightRecord
             _hits = 0;
             _damageDealt = 0;
             _damageTaken = 0;
-            _fuelConsumed = 0;
             _runEnemiesDestroyed = 0;
             _runAsteroidsDestroyed = 0;
             _runPartsEarned = 0;
@@ -432,7 +406,6 @@ namespace FlightRecord
                 LifetimeHits = existing.LifetimeHits,
                 LifetimeDamageDealt = existing.LifetimeDamageDealt,
                 LifetimeDamageTaken = existing.LifetimeDamageTaken,
-                LifetimeFuelConsumed = existing.LifetimeFuelConsumed,
                 LifetimeEnemiesDestroyed = existing.LifetimeEnemiesDestroyed,
                 LifetimeAsteroidsDestroyed = existing.LifetimeAsteroidsDestroyed,
                 LifetimePlaytimeSeconds = existing.LifetimePlaytimeSeconds,
@@ -498,7 +471,6 @@ namespace FlightRecord
                 _hits = stats.Hits;
                 _damageDealt = stats.DamageDealt;
                 _damageTaken = stats.DamageTaken;
-                _fuelConsumed = stats.FuelConsumed;
                 Experience = stats.Experience;
                 RumbleEnabled = stats.RumbleEnabled;
                 CurrentSector = stats.CurrentSector;
@@ -509,11 +481,9 @@ namespace FlightRecord
                 FireRateUpgradeLevel = stats.FireRateUpgradeLevel;
                 HealthUpgradeLevel = stats.HealthUpgradeLevel;
                 FirePowerUpgradeLevel = stats.FirePowerUpgradeLevel;
-                FuelUpgradeLevel = stats.FuelUpgradeLevel;
                 AmmoUpgradeLevel = stats.AmmoUpgradeLevel;
                 LastSectorTime = stats.LastSectorTime;
                 LifetimePlaytimeSeconds = stats.LifetimePlaytimeSeconds;
-                CurrentFuel = stats.CurrentFuel;
                 CurrentAmmo = stats.CurrentAmmo;
                 CurrentHealth = stats.CurrentHealth;
                 LifetimePartsEarned = stats.LifetimePartsEarned;
@@ -522,7 +492,6 @@ namespace FlightRecord
                 LifetimeHits = stats.LifetimeHits;
                 LifetimeDamageDealt = stats.LifetimeDamageDealt;
                 LifetimeDamageTaken = stats.LifetimeDamageTaken;
-                LifetimeFuelConsumed = stats.LifetimeFuelConsumed;
                 LifetimeEnemiesDestroyed = stats.LifetimeEnemiesDestroyed;
                 LifetimeAsteroidsDestroyed = stats.LifetimeAsteroidsDestroyed;
                 HighestSectorReached = stats.HighestSectorReached;

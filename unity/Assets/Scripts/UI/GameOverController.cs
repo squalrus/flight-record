@@ -75,7 +75,6 @@ namespace FlightRecord
             SetLabel("sector-accuracy-val", $"{Mathf.RoundToInt(death.HitPercentage * 100f)}%");
             SetLabel("sector-damage-dealt-val", death.DamageDealt.ToString());
             SetLabel("sector-damage-taken-val", death.DamageTaken.ToString());
-            SetLabel("sector-fuel-val", Mathf.RoundToInt(death.FuelConsumed).ToString());
             SetLabel("sector-parts-earned-val", Mathf.RoundToInt(death.PartsEarned).ToString());
             SetLabel("sector-parts-spent-val", Mathf.RoundToInt(death.PartsSpent).ToString());
 
@@ -95,7 +94,6 @@ namespace FlightRecord
                 SetLabel("run-accuracy-val", $"{Mathf.RoundToInt(death.RunHitPercentage * 100f)}%");
                 SetLabel("run-damage-dealt-val", death.RunDamageDealt.ToString());
                 SetLabel("run-damage-taken-val", death.RunDamageTaken.ToString());
-                SetLabel("run-fuel-val", Mathf.RoundToInt(death.RunFuelConsumed).ToString());
                 SetLabel("run-parts-earned-val", Mathf.RoundToInt(death.RunPartsEarned).ToString());
                 SetLabel("run-parts-spent-val", Mathf.RoundToInt(death.RunPartsSpent).ToString());
                 SetLabel("run-playtime-val", PlaytimeFormat.ToClock(death.RunPlaytimeSeconds));

@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 namespace FlightRecord
 {
     // Player-only extensions on top of the shared Ship component: economy (Parts,
-    // upgrades, conversions), Fuel, Portal/Sector scanning, Pickup Attraction/Homing
+    // upgrades, conversions), Portal/Sector scanning, Pickup Attraction/Homing
     // upgrades, haptic rumble, and the HUD low-resource alerts. Enemy prefabs keep a
     // plain Ship component -- only Player.prefab has this script attached.
     public class Player : Ship
@@ -22,11 +22,6 @@ namespace FlightRecord
         // per-sector reset. Backs the "Close Call" sector achievement (SectorAchievements.cs).
         private int _lowestHealthThisLife;
         public int LowestHealthThisLife => _lowestHealthThisLife;
-
-        [Header("Fuel")]
-        [Range(0, 1000)]
-        public float MaxFuel;
-        private float _currentFuel;
 
         private Coroutine _rumbleCoroutine;
 
@@ -69,7 +64,7 @@ namespace FlightRecord
         private bool _asteroidLocatorPurchased;
         private bool _partsLocatorPurchased;
 
-        // Threshold (as a fraction of max) below which AddHealth/FirePrimaryWeapon/TryConsumeFuel
+        // Threshold (as a fraction of max) below which AddHealth/FirePrimaryWeapon
         // flash a "LOW" warning via ResourceAlertController instead of "EMPTY" (reserved for 0).
         private const float LOW_RESOURCE_FRACTION = 0.10f;
 
@@ -92,7 +87,6 @@ namespace FlightRecord
         public float MinPrimaryCoolDown = 0.05f;
         public int HealthUpgradeDelta = 10;
         public int FirePowerUpgradeDelta = 1;
-        public float FuelUpgradeDelta = 10f;
         public int AmmoUpgradeDelta = 10;
 
 #if UNITY_EDITOR
@@ -162,12 +156,6 @@ namespace FlightRecord
             set => GameControl.control.FirePowerUpgradeLevel = value;
         }
 
-        private int FuelUpgradeLevel
-        {
-            get => GameControl.control.FuelUpgradeLevel;
-            set => GameControl.control.FuelUpgradeLevel = value;
-        }
-
         private int AmmoUpgradeLevel
         {
             get => GameControl.control.AmmoUpgradeLevel;
@@ -184,7 +172,6 @@ namespace FlightRecord
             PrimaryCoolDown = Mathf.Max(MinPrimaryCoolDown, PrimaryCoolDown - FireRateUpgradeLevel * FireRateCoolDownDelta);
             FirePower += FirePowerUpgradeLevel * FirePowerUpgradeDelta;
             MaxHealth += HealthUpgradeLevel * HealthUpgradeDelta;
-            MaxFuel += FuelUpgradeLevel * FuelUpgradeDelta;
             MaxPrimaryAmmunition += AmmoUpgradeLevel * AmmoUpgradeDelta;
         }
 
@@ -192,11 +179,8 @@ namespace FlightRecord
         // transition instead of always handing them a fresh full tank.
         protected override int ApplyCarryOverStats(int startingHealth)
         {
-            _currentFuel = MaxFuel;
-
             if (GameControl.control == null) return startingHealth;
 
-            if (GameControl.control.CurrentFuel >= 0) _currentFuel = Mathf.Clamp(GameControl.control.CurrentFuel, 0, MaxFuel);
             if (GameControl.control.CurrentAmmo >= 0) _currentAmmo = Mathf.Clamp(GameControl.control.CurrentAmmo, 0, MaxPrimaryAmmunition);
             if (GameControl.control.CurrentHealth >= 0) startingHealth = GameControl.control.CurrentHealth;
 
@@ -245,6 +229,17 @@ namespace FlightRecord
             }
         }
 
+        // The ship moves directly from the stick and always faces right, so its speed says
+        // nothing about where it's aiming; shots fly straight right at a constant speed
+        // (D-016). The flat boost replaces the speed shots used to inherit from flight,
+        // since the bare 12 u/s muzzle speed is slow across a 16:9 screen.
+        [Header("Shots")]
+        [Tooltip("Speed added to the shared 12 u/s muzzle speed, along the cannon (straight right).")]
+        [Range(0f, 60f)]
+        public float ShotSpeedBoost = 18f;
+
+        protected override Vector2 InheritedShotVelocity() => (Vector2)Cannon.up * ShotSpeedBoost;
+
         protected override void OnWeaponFired(GameObject missileInstance)
         {
             missileInstance.GetComponent<Missile>().IsPlayerFired = true;
@@ -260,7 +255,7 @@ namespace FlightRecord
                 if (ProjectileContainer.Instance != null)
                     rocket.transform.SetParent(ProjectileContainer.Instance);
                 rocket.GetComponent<Missile>().SetHealth(Mathf.RoundToInt(RollFirePower() * HomingRocketDamageMultiplier));
-                rocket.GetComponent<Rigidbody2D>().linearVelocity = (Cannon.up * 12f) + (_rigidbody.transform.up * _rigidbody.linearVelocity.magnitude);
+                rocket.GetComponent<Rigidbody2D>().linearVelocity = (Vector2)(Cannon.up * 12f) + InheritedShotVelocity();
                 rocket.GetComponent<Missile>().SetHoming(HomingRocketTurnRate, HomingDelay, HomingRange);
                 rocket.GetComponent<Missile>().IsPlayerFired = true;
             }
@@ -295,41 +290,8 @@ namespace FlightRecord
         {
             if (GameControl.control == null) return;
 
-            GameControl.control.CurrentFuel = _currentFuel;
             GameControl.control.CurrentAmmo = _currentAmmo;
             GameControl.control.CurrentHealth = _currentHealth;
-        }
-
-        public float GetFuel()
-        {
-            return _currentFuel;
-        }
-
-        public void AddFuel(float fuel)
-        {
-            _currentFuel += fuel;
-            _currentFuel = Mathf.Clamp(_currentFuel, 0, MaxFuel);
-
-            if (fuel < 0 && GameControl.control != null)
-                GameControl.control.FuelConsumed += -fuel;
-        }
-
-        // Used by PlayerController instead of calling AddFuel directly so thrust attempts
-        // while empty flash a warning instead of just silently doing nothing.
-        public bool TryConsumeFuel(float amount)
-        {
-            if (_currentFuel <= 0)
-            {
-                ResourceAlertController.Instance?.Flash("FUEL EMPTY", critical: true);
-                return false;
-            }
-
-            AddFuel(-amount);
-
-            if (_currentFuel / MaxFuel <= LOW_RESOURCE_FRACTION)
-                ResourceAlertController.Instance?.Flash("FUEL LOW");
-
-            return true;
         }
 
         public override void AddHealth(int health, Vector3? hitPoint = null)
@@ -393,19 +355,6 @@ namespace FlightRecord
             AddHealth(Mathf.RoundToInt(MaxHealth * PartsConversionPercent));
         }
 
-        public bool CanConvertPartsToFuel()
-        {
-            return Parts >= PartsConversionCost && _currentFuel < MaxFuel;
-        }
-
-        public void ConvertPartsToFuel()
-        {
-            if (!CanConvertPartsToFuel()) return;
-
-            Parts -= PartsConversionCost;
-            AddFuel(MaxFuel * PartsConversionPercent);
-        }
-
         public bool CanConvertPartsToAmmo()
         {
             return Parts >= PartsConversionCost && _currentAmmo < MaxPrimaryAmmunition;
@@ -431,7 +380,6 @@ namespace FlightRecord
         public int GetTopOffCost()
         {
             int levels = GetTopOffLevels(_currentHealth, MaxHealth)
-                + GetTopOffLevels(_currentFuel, MaxFuel)
                 + GetTopOffLevels(_currentAmmo, MaxPrimaryAmmunition);
             return levels * PartsConversionCost;
         }
@@ -452,12 +400,6 @@ namespace FlightRecord
             {
                 Parts -= GetTopOffLevels(_currentHealth, MaxHealth) * PartsConversionCost;
                 AddHealth(MaxHealth - _currentHealth);
-            }
-
-            if (_currentFuel < MaxFuel)
-            {
-                Parts -= GetTopOffLevels(_currentFuel, MaxFuel) * PartsConversionCost;
-                AddFuel(MaxFuel - _currentFuel);
             }
 
             if (_currentAmmo < MaxPrimaryAmmunition)
@@ -581,22 +523,6 @@ namespace FlightRecord
             Parts -= GetFirePowerUpgradeCost();
             FirePowerUpgradeLevel++;
             FirePower += FirePowerUpgradeDelta;
-        }
-
-        public int GetFuelUpgradeLevel() => FuelUpgradeLevel;
-
-        public int GetFuelUpgradeCost() => GetStatUpgradeCost(FuelUpgradeLevel);
-
-        public bool CanUpgradeFuel() => Parts >= GetFuelUpgradeCost();
-
-        public void UpgradeFuel()
-        {
-            if (!CanUpgradeFuel()) return;
-
-            Parts -= GetFuelUpgradeCost();
-            FuelUpgradeLevel++;
-            MaxFuel += FuelUpgradeDelta;
-            AddFuel(FuelUpgradeDelta);
         }
 
         public int GetAmmoUpgradeLevel() => AmmoUpgradeLevel;

@@ -29,10 +29,6 @@
                 <ui:Label name="ammo-val" text="98/100" class="dial__val"/>
                 <ui:Label text="AMMO" class="dial__label dial__label--ammo"/>
             </ui:VisualElement>
-            <ui:VisualElement name="fuel-gauge" class="dial">
-                <ui:Label name="fuel-val" text="68/100" class="dial__val"/>
-                <ui:Label text="FUEL" class="dial__label dial__label--fuel"/>
-            </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="parts" class="parts">
             <ui:Label text="PARTS" class="parts__label"/>
@@ -70,10 +66,6 @@
             <ui:VisualElement class="upgrade">
                 <ui:Label text="DMG" class="upgrade__label"/>
                 <ui:Label name="dmg-val" text="Lv 0" class="upgrade__val"/>
-            </ui:VisualElement>
-            <ui:VisualElement class="upgrade">
-                <ui:Label text="FUEL" class="upgrade__label"/>
-                <ui:Label name="fuel-cap-val" text="Lv 0" class="upgrade__val"/>
             </ui:VisualElement>
             <ui:VisualElement class="upgrade">
                 <ui:Label text="AMMO" class="upgrade__label"/>

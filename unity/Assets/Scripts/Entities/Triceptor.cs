@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     // Three cannons fixed 120 degrees apart, firing a homing rocket volley from all three at once
     // every VolleyInterval seconds whenever the player is within FiringRange -- distinct from the

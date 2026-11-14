@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     // Attach to a GameObject with a UIDocument (Source Asset = Mission.uxml) in Main.unity.
     // Lets the player re-check the sector's objective from the Pause Menu in case the

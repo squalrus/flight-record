@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     [RequireComponent(typeof(PlayerInput))]
     public class PlayerController : MonoBehaviour

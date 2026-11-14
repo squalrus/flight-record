@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     // Marks the scene's "Projectiles" GameObject so Ship/Triceptor can parent spawned missiles
     // under it without a prefab holding a hard reference to that scene instance -- prefabs (Player,

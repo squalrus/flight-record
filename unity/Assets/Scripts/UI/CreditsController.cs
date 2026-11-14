@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     // Attach to a GameObject with a UIDocument (Source Asset = Credits.uxml) in Start.unity.
     [RequireComponent(typeof(UIDocument))]

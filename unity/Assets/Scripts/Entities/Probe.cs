@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     public class Probe : Enemy
     {

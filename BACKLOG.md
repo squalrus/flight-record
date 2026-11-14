@@ -29,9 +29,6 @@ Legend: 🔌 needs the physical hardware (turntable, interface) · 🌐 needs an
 
 Game items are one change each, so each one can be played and tested on its own. The audit in [unity-fork-plan.md](docs/unity/unity-fork-plan.md) Step 0 names the classes involved. The direction is arcade over resource management (D-013).
 
-  *Done when:* the sidecar-vs-C# decision is recorded in [decisions.md](docs/decisions.md).
-- [ ] **4.6 🖥️ Game: rename InfinitySpace to Flight Record.** The C# namespace, `InfinitySpace.inputactions`, on-screen titles, and credits. No behavior change.
-  *Done when:* no `InfinitySpace` remains in `unity/Assets` outside credits for the original game, and the project opens, compiles, and plays as before.
 - [ ] **4.7 🖥️ Game: desktop first.** Remove `FloatingJoystick`, `TouchControls`, autorotation, and the Android-only settings; fix a landscape window.
   *Done when:* keyboard and gamepad still drive every screen, and nothing references the removed touch code.
 - [ ] **4.8 🖥️ Game: remove fuel.** Thrust stops burning fuel; remove the fuel stat, HUD gauge, fuel pickups and upgrades, and the out-of-fuel failure (D-013).

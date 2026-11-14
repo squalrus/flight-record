@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     // Attach to a GameObject with a UIDocument (Source Asset = ProfileSetup.uxml) in Start.unity.
     // Shown by MainMenuController.ShowProfileSetup() when New Game is pressed, before the Main

@@ -2,6 +2,10 @@
 
 User-visible changes, newest first. Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format and [semver](https://semver.org/) versioning.
 
+## [0.10.1] — 2026-11-13
+### Changed
+- **Game renamed in code (backlog 4.6).** The Unity game's C# namespace changes from `InfinitySpace` to `FlightRecord`, the input actions asset is now `FlightRecord.inputactions` (same GUID, so the player's `PlayerInput` keeps its reference), the editor menus sit under "Flight Record", and the title screen reads FLIGHT RECORD. The credits gain a "Based on InfinitySpace (Squalrus Games)" line. No behavior change; saves are unaffected. (`unity/Assets/Scripts/`, `unity/Assets/Input/`, `unity/Assets/UI/`, `unity/Assets/Scenes/`, `unity/Assets/Prefabs/`, `unity/README.md`, `docs/unity/unity-fork-plan.md`)
+
 ## [0.10.0] — 2026-11-13
 ### Added
 - **Message bridge to Unity (experiment 06, backlog 4.1).** The Python sender streams the message contract over loopback UDP to a Unity scene, which flashes a square per onset and reports its clock back so latencies can be measured. Sending a file silently, or heard through the computer with `--listen`, gives a calibrated delay of about 80 ms in time with the music; live input measured a median 180 ms from sound to flash at the default 150 ms delay, with jitter of 44 ms at worst. Unity's own microphone capture saw clap samples a median 7.6 ms before the bridge delivered a finished onset. Decided D-101: keep the audio analysis a Python sidecar. (`experiments/06-message-bridge/`, `flightrec/bridge.py`, `unity/Assets/Scripts/Audio/`, `unity/Assets/Experiments/Bridge/`)

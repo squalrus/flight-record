@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     // Attach to a GameObject with a UIDocument (Source Asset = SectorAchievements.uxml) in Main.unity.
     // Shown by SectorTransitionController after the sector-complete stats screen and before

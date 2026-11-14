@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     // Purely decorative ring dressing placed at a sector's edge -- see "Sector Boundary Marker
     // (Asteroid Belt)" in BACKLOG.md. Deliberately has no Collider2D/Rigidbody2D/DestroyableObject:

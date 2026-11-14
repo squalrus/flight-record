@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     [DefaultExecutionOrder(100)]
     public class BackgroundTiler : MonoBehaviour

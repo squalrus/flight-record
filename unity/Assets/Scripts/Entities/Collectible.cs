@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     // Lets Player.FixedUpdate's magnet loop pull any collectible toward the player without
     // knowing whether it's a Part or a Relic.

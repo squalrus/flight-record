@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     // Attach to a GameObject with a UIDocument (Source Asset = Settings.uxml) in Main.unity.
     [RequireComponent(typeof(UIDocument))]

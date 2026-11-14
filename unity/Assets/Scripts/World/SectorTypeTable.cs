@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     [System.Serializable]
     public class SectorTypeOption
@@ -27,7 +27,7 @@ namespace InfinitySpace
     // sector-reference.html like other baked Inspector values. Tiers and Types are picked
     // independently: Sector.ApplyType() works the same regardless of which tier prefab was
     // instantiated, so a tier's spawn composition and its objective type don't need to be coupled.
-    [CreateAssetMenu(fileName = "SectorTypeTable", menuName = "InfinitySpace/Sector Type Table")]
+    [CreateAssetMenu(fileName = "SectorTypeTable", menuName = "Flight Record/Sector Type Table")]
     public class SectorTypeTable : ScriptableObject
     {
         public SectorTierOption[] Tiers;

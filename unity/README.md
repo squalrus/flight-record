@@ -10,7 +10,7 @@ The game: a copy of **InfinitySpace** (a top-down space shooter, from the privat
 
 ## Identity
 
-Renamed from InfinitySpace in `ProjectSettings/ProjectSettings.asset`, so the two games do not collide: product name **Flight Record** (window title, and the save folder `AppData/LocalLow/Squalrus Games/Flight Record/`), application id **com.SqualrusGames.FlightRecord**, a new product GUID, and version **0.10.0**, kept equal to the repo's `VERSION`. The C# namespace (`InfinitySpace`), the input actions asset (`InfinitySpace.inputactions`), and on-screen titles still use the old name; they change during the gameplay rework.
+Renamed from InfinitySpace in `ProjectSettings/ProjectSettings.asset`, so the two games do not collide: product name **Flight Record** (window title, and the save folder `AppData/LocalLow/Squalrus Games/Flight Record/`), application id **com.SqualrusGames.FlightRecord**, a new product GUID, and version **0.10.1**, kept equal to the repo's `VERSION`. The code was renamed too (backlog 4.6): the C# namespace is `FlightRecord`, the input actions asset is `Assets/Input/FlightRecord.inputactions` (same GUID, so references hold), the editor menus are under **Flight Record**, and the title screen reads FLIGHT RECORD. The credits name InfinitySpace as the game this one is based on.
 
 ## What came over
 

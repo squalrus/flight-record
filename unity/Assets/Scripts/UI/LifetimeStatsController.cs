@@ -2,7 +2,7 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     // Attach to a GameObject with a UIDocument (Source Asset = LifetimeStats.uxml) in
     // Start.unity. Reads stats.json directly rather than through GameControl.control,

@@ -1,6 +1,6 @@
 using System;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     [Serializable]
     public class PlayerStatistics

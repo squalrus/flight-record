@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d0688c8fd0b8426428a1e622dbc3ced3, type: 3}
   m_Name: SectorTypeTable
-  m_EditorClassIdentifier: Assembly-CSharp::InfinitySpace.SectorTypeTable
+  m_EditorClassIdentifier: Assembly-CSharp::FlightRecord.SectorTypeTable
   Tiers:
   - Prefab: {fileID: 196558, guid: 6b05031bf0fa6d24db479c8f5dd40a71, type: 3}
     MinSector: 1

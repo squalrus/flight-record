@@ -110,7 +110,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 22bd0ef62bed3674180236e646a7b6f9, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InfinitySpace.Relic
+  m_EditorClassIdentifier: Assembly-CSharp::FlightRecord.Relic
   MaxHealth: 80
   BloomDelay: 0.35
   PulseSpeed: 3

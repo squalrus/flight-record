@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     // Orbits the player at medium range and fires a sustained directional beam instead of
     // missiles. The beam direction locks to transform.up at the moment of firing and the

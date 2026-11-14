@@ -285,7 +285,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 329741a6dabf8bb4bbb02292cf68c92c, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InfinitySpace.GameOverController
+  m_EditorClassIdentifier: Assembly-CSharp::FlightRecord.GameOverController
 --- !u!114 &293964361
 MonoBehaviour:
   m_ObjectHideFlags: 0

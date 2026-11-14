@@ -264,7 +264,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 822ebfcd60465cd408c3aaf83f01030c, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::InfinitySpace.Portal
+  m_EditorClassIdentifier: Assembly-CSharp::FlightRecord.Portal
   _glyph: {fileID: 1474968042717008273}
   _warbleSpeed: 6
   _warbleScale: 0.08

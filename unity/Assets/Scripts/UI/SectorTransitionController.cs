@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
-namespace InfinitySpace
+namespace FlightRecord
 {
     // Attach to a GameObject in Main.unity. Triggered by Portal instead of an immediate
     // AdvanceSector()+LoadScene("Main"): pauses the game and walks through a paginated 3-screen

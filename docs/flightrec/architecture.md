@@ -72,6 +72,8 @@ Every message carries `v` (schema version) and `t` (seconds on the sender's mono
 
 Numbers must be finite (no NaN or infinity). A consumer that receives a newer `v` than it knows must reject the message; an unknown `type` may be skipped. Logs are JSON lines, one message per line in send order.
 
+**Transport:** UDP on the loopback interface, port 9750, one JSON message per datagram, exactly as a log line. A late or lost datagram is skipped, never retried. Python sends with [flightrec/bridge.py](../../flightrec/bridge.py); Unity receives with `UdpMessageSource` and parses with `Contract.Parse`, which mirrors this section ([unity/Assets/Scripts/Audio/](../../unity/Assets/Scripts/Audio/)). The game turns each message's `t` into a local time with its delay buffer (`EventScheduler`). Experiment 06 measures this path; see its [RESULTS.md](../../experiments/06-message-bridge/RESULTS.md).
+
 **Reference implementation:** [flightrec/messages.py](../../flightrec/messages.py) (standard library only) validates, serializes, writes, and reads logs, and replays them at original timing; `tools/play_log.py` plays a log from the command line. This doc stays authoritative: change both together.
 
 ## Latency model

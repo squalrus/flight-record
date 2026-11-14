@@ -35,6 +35,9 @@ class Capture:
         """``time.perf_counter()`` when the most recent block arrived."""
         self.lag = 0.0
         self.max_lag = 0.0
+        self.offset: float | None = None
+        """The latest block's offset: its arrival ``perf_counter()`` minus its end time in
+        the audio (frames / samplerate). None until the first block."""
         self._max_gap = 0.0
         self._first_offset: float | None = None
         self._min_offset = 0.0
@@ -54,6 +57,14 @@ class Capture:
         """
         gap, self._max_gap = self._max_gap, 0.0
         return gap
+
+    @property
+    def base_offset(self) -> float | None:
+        """The smallest block offset so far: the earliest any block arrived, relative to
+        its audio time. ``base_offset + frame / samplerate`` is when audio frame ``frame``
+        reached the computer on the ``perf_counter()`` clock, without delivery jitter.
+        None until the first block."""
+        return None if self._first_offset is None else self._min_offset
 
     @property
     def samplerate(self) -> int:
@@ -100,6 +111,7 @@ class Capture:
             self._min_offset = offset
         elif offset > self._max_offset:
             self._max_offset = offset
+        self.offset = offset
         self.lag = offset - self._first_offset
         self.max_lag = self._max_offset - self._min_offset
         if self.last_t is not None and t - self.last_t > self._max_gap:

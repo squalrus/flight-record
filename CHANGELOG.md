@@ -2,6 +2,20 @@
 
 User-visible changes, newest first. Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format and [semver](https://semver.org/) versioning.
 
+## [0.10.0] — 2026-11-13
+### Added
+- **Message bridge to Unity (experiment 06, backlog 4.1).** The Python sender streams the message contract over loopback UDP to a Unity scene, which flashes a square per onset and reports its clock back so latencies can be measured. Sending a file silently, or heard through the computer with `--listen`, gives a calibrated delay of about 80 ms in time with the music; live input measured a median 180 ms from sound to flash at the default 150 ms delay, with jitter of 44 ms at worst. Unity's own microphone capture saw clap samples a median 7.6 ms before the bridge delivered a finished onset. Decided D-101: keep the audio analysis a Python sidecar. (`experiments/06-message-bridge/`, `flightrec/bridge.py`, `unity/Assets/Scripts/Audio/`, `unity/Assets/Experiments/Bridge/`)
+- **Unity contract parser, message sources, and delay buffer.** `Contract.Parse` mirrors `flightrec.messages`; sources for UDP, replay, and null sit behind `IMessageSource`; `EventScheduler` holds each message until its due time. (`unity/Assets/Scripts/Audio/`, `unity/Assets/Tests/EditMode/`)
+- **Generated songs.** Six full-length songs made with Google's generative tools, committed through Git LFS with their measured tempo and key, section notes, and what each tests. Two test tracks are included: a steady-tempo track and a key test piece. Measured values are recorded where the generator missed the tempo or key it was asked for. (`samples/_gen/`)
+- **Synthesized reference song.** A song rendered from code with exact tempo, key, drum hits, and section boundaries, for tests whose answers must be exact. `python tools/make_reference_song.py` writes it as a WAV with its truth as JSON. (`flightrec/reference_song.py`, `tools/make_reference_song.py`)
+- **Pipeline tests on the reference song and the generated songs.** The reference song checks key, tempo, kicks, false onsets, and layer changes; the generated songs are scored against their measured values, with known misses marked as expected failures. (`tests/test_reference_song.py`, `experiments/02-onset-features/test_generated_songs.py`)
+- **`run.py` plays generated and reference songs.** `python run.py reference` and any generated song's short name now work, and untagged files are listed by file name. (`run.py`)
+
+### Changed
+- **Sample rules.** Full songs you generated may be committed to `samples/_gen/`; the short-clip rule still applies to everything else. (`AGENTS.md`, `samples/README.md`)
+- **Capture offsets.** The capture exposes its time offset to the sender, so message timestamps line up with the audio's arrival time. (`flightrec/audio/capture.py`)
+- **Architecture doc.** The transport is described: UDP on loopback, one JSON message per datagram. (`docs/flightrec/architecture.md`)
+
 ## [0.9.0] — 2026-11-13
 ### Added
 - **Unity game project.** InfinitySpace v0.35.3 (a top-down space shooter) is copied into `unity/` as the starting point for the game, to be reworked into a vertical scroller with local co-op and audio-driven levels. It is renamed so it does not collide with the original: product name Flight Record, application id `com.SqualrusGames.FlightRecord`, a new product GUID, and a version kept equal to `VERSION`. It opens and plays in Unity 6000.3.17f1. (`unity/`, `unity/README.md`)

@@ -4,6 +4,8 @@ Short test clips used by the experiments. **Short clips only (10-30 seconds). Ne
 
 Full songs for evaluating key and tempo go in `samples/_songs/` (also git-ignored), with their published key and BPM in `samples/_songs/truth.csv` (columns `file,key,bpm,source`). Run `python experiments/02-onset-features/evaluate.py`; it writes a template CSV the first time.
 
+**Generated songs** the project owner made with AI and may distribute go in `samples/_gen/` and are committed in full (through Git LFS); see [_gen/README.md](_gen/README.md) for each song's measured tempo, key, and sections. For a song whose answers are exact by construction, render the synthesized reference song with `python tools/make_reference_song.py` (it writes to `samples/_local/`, so it is not committed; the tests render it themselves).
+
 Feature logs from `tools/record_features.py` go to `samples/_local/logs/` by default (git-ignored with the rest of `_local/`).
 
 ## Manifest

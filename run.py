@@ -1,6 +1,7 @@
 """Shortcuts for the explorer: play a song by a short name, or listen on the mic.
 
-    python run.py list            # your songs (samples/_songs) and their short names
+    python run.py list            # your songs and their short names
+    python run.py reference       # the synthesized reference song (tools/make_reference_song.py)
     python run.py kalax           # replay that song: speakers + identification + Discogs
     python run.py silllver        # any part of the artist, title, or file name works
     python run.py mic             # listen on FR_AUDIO_DEVICE (or --device N) instead
@@ -28,6 +29,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 EXPLORE = ROOT / "experiments" / "02-onset-features" / "explore.py"
 SONGS = ROOT / "samples" / "_songs"
+SONG_DIRS = (
+    (SONGS, "*"),
+    (ROOT / "samples" / "_gen", "*"),
+    (ROOT / "samples" / "_local", "reference-*"),
+)
+"""(folder, file pattern): your songs, the generated songs, and reference songs from
+``tools/make_reference_song.py``."""
 AUDIO = {".mp3", ".flac", ".ogg", ".wav"}
 
 
@@ -59,16 +67,27 @@ def songs() -> list[tuple[str, Path, str]]:
 
     found = []
     used: set[str] = set()
-    for path in (
-        sorted(p for p in SONGS.iterdir() if p.suffix.lower() in AUDIO) if SONGS.is_dir() else []
-    ):
+    paths = [
+        p
+        for folder, pattern in SONG_DIRS
+        if folder.is_dir()
+        for p in sorted(folder.glob(pattern))
+        if p.suffix.lower() in AUDIO
+    ]
+    for path in paths:
         tags = read_tags(path)
-        artist, title = tags.artist or path.stem, tags.title or path.stem
-        name = slug(artist.removeprefix("the ").removeprefix("The ")) or slug(path.stem)
+        if not tags.artist:  # untagged (generated and reference songs): use the file name
+            title = tags.title or path.stem.replace("_", " ")
+            name = slug(path.stem)
+            label = title
+        else:
+            title = tags.title or path.stem
+            name = slug(tags.artist.removeprefix("the ").removeprefix("The ")) or slug(path.stem)
+            label = f"{tags.artist} - {title}"
         if name in used:
             name = f"{name}-{slug(title)[:12]}"
         used.add(name)
-        found.append((name, path, f"{artist} - {title}"))
+        found.append((name, path, label))
     return found
 
 
@@ -100,7 +119,8 @@ def main(argv: list[str]) -> int:
 
     if not words or words[0] in ("list", "help", "-h"):
         print(__doc__.split("Options")[0].rstrip())
-        print(f"\nsongs in {SONGS.relative_to(ROOT)}:")
+        folders = ", ".join(str(d.relative_to(ROOT)) for d, _ in SONG_DIRS)
+        print(f"\nsongs in {folders}:")
         for name, _, label in catalog:
             print(f"  python run.py {name:<20} {label}")
         if not catalog:

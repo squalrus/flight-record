@@ -51,11 +51,13 @@ Primary fire is unlimited by default. The ammunition code from `Ship` stays, beh
 ### D-015 · Content templates chosen by genre, tempo, and energy — Provisional
 Some content is authored ahead of time rather than generated entirely from live features: sets of waves, enemies, bullet patterns, and palettes grouped into templates, chosen by genre (from identification when available), BPM, and energy. Live features still place and time events inside the chosen template. This does not conflict with D-002: nothing is pre-computed for a specific record, templates apply to any record, and choosing one never waits on identification (D-004), because an unidentified record gets a template chosen from features alone. Backlog 4.18.
 
+### D-101 · Audio modules stay a Python sidecar — Provisional
+Capture, analysis, identification, and side tracking run in a Python process that sends the message contract to the game over loopback UDP (port 9750), rather than being ported to C#. Experiment 06 ([RESULTS.md](../experiments/06-message-bridge/RESULTS.md)) measured transport under 2 ms with no losses in about 42,000 messages, jitter absorbed by a 50-100 ms buffer, and Unity's own `Microphone` making raw samples visible only a median 7.6 ms before the bridge delivers a finished onset, which a C# port would spend on the same analysis. Keeping one Python codebase also keeps identification and Discogs in one place. The game's side (contract parser, message sources, delay buffer) is in `unity/Assets/Scripts/Audio/`. Revisit if shipping with a Python process proves impractical (D-109).
+
 ## Open
 
 | ID | Question | Decided by |
 | --- | --- | --- |
-| D-101 | Sidecar (Python) vs port audio modules to C# | Experiment 06 |
 | D-102 | Which recognition service, clip length, retry cadence | Experiment 03 |
 | D-104 | License for the repository | Owner |
 | D-106 | Playfield: true portrait vs fixed-width column in landscape | Unity fork work |

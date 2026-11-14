@@ -1788,6 +1788,108 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a912a0a895fd431428ee9b70a9f08a48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FlightRecord.ProjectileContainer
+--- !u!1 &1412000001
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1412000002}
+  - component: {fileID: 1412000003}
+  m_Layer: 0
+  m_Name: FormationSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1412000002
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1412000001}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1412000003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1412000001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c85c15be866441439b8bc6b84dae56a0, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::FlightRecord.FormationSpawner
+  StartDelay: 2
+  Loop: 1
+  Entries:
+  - Prefab: {fileID: 100000, guid: b179a46ee5e01a548bc26205d062e415, type: 3}
+    Formation: {fileID: 11400000, guid: 6a2b2ac2cb4949e98b24d9ae09d2dfed, type: 2}
+    Path: {fileID: 11400000, guid: 72f8e1ec9fc0442eac49fa0a410e99b0, type: 2}
+    MirrorY: 0
+    GapAfter: 6
+  - Prefab: {fileID: 199218, guid: c923a8170e9f28d4baab31f80c6a9b9e, type: 3}
+    Formation: {fileID: 11400000, guid: 414f7c58c2fe425792951583660d9c2a, type: 2}
+    Path: {fileID: 11400000, guid: 2bb9a6fe726c4b2598be08ef7f3484be, type: 2}
+    MirrorY: 0
+    GapAfter: 4
+  - Prefab: {fileID: 199218, guid: c923a8170e9f28d4baab31f80c6a9b9e, type: 3}
+    Formation: {fileID: 11400000, guid: 414f7c58c2fe425792951583660d9c2a, type: 2}
+    Path: {fileID: 11400000, guid: 2bb9a6fe726c4b2598be08ef7f3484be, type: 2}
+    MirrorY: 1
+    GapAfter: 6
+  - Prefab: {fileID: 100000, guid: bfd37559a2a36ca438a31b92c4d61408, type: 3}
+    Formation: {fileID: 11400000, guid: be824bdeb82545dfa456e5270a904ad1, type: 2}
+    Path: {fileID: 11400000, guid: e9d2116b43e74087b859080267629862, type: 2}
+    MirrorY: 0
+    GapAfter: 5
+  - Prefab: {fileID: 100000, guid: 01a84daeeb7eda64a8dca89fdcc8c587, type: 3}
+    Formation: {fileID: 11400000, guid: c4a17a2235d54639a301c153a426d125, type: 2}
+    Path: {fileID: 11400000, guid: a6bc36c0acc3484b88931ba60e500b28, type: 2}
+    MirrorY: 0
+    GapAfter: 6
+  - Prefab: {fileID: 100000, guid: b179a46ee5e01a548bc26205d062e415, type: 3}
+    Formation: {fileID: 11400000, guid: 414f7c58c2fe425792951583660d9c2a, type: 2}
+    Path: {fileID: 11400000, guid: 23b384f3b7f044a3984a9fe6c478e0c8, type: 2}
+    MirrorY: 0
+    GapAfter: 6
+  - Prefab: {fileID: 100000, guid: bfd37559a2a36ca438a31b92c4d61408, type: 3}
+    Formation: {fileID: 11400000, guid: c4a17a2235d54639a301c153a426d125, type: 2}
+    Path: {fileID: 11400000, guid: e9d2116b43e74087b859080267629862, type: 2}
+    MirrorY: 1
+    GapAfter: 6
+  - Prefab: {fileID: 199218, guid: c923a8170e9f28d4baab31f80c6a9b9e, type: 3}
+    Formation: {fileID: 11400000, guid: 6a2b2ac2cb4949e98b24d9ae09d2dfed, type: 2}
+    Path: {fileID: 11400000, guid: a6bc36c0acc3484b88931ba60e500b28, type: 2}
+    MirrorY: 0
+    GapAfter: 6
+  - Prefab: {fileID: 100000, guid: 01a84daeeb7eda64a8dca89fdcc8c587, type: 3}
+    Formation: {fileID: 11400000, guid: be824bdeb82545dfa456e5270a904ad1, type: 2}
+    Path: {fileID: 11400000, guid: 72f8e1ec9fc0442eac49fa0a410e99b0, type: 2}
+    MirrorY: 0
+    GapAfter: 6
+  - Prefab: {fileID: 100000, guid: f90ab217ed8991443a2cf84f1b692911, type: 3}
+    Formation: {fileID: 11400000, guid: be824bdeb82545dfa456e5270a904ad1, type: 2}
+    Path: {fileID: 11400000, guid: 23b384f3b7f044a3984a9fe6c478e0c8, type: 2}
+    MirrorY: 0
+    GapAfter: 9
+  - Prefab: {fileID: 100000, guid: f90ab217ed8991443a2cf84f1b692911, type: 3}
+    Formation: {fileID: 11400000, guid: c4a17a2235d54639a301c153a426d125, type: 2}
+    Path: {fileID: 11400000, guid: a6bc36c0acc3484b88931ba60e500b28, type: 2}
+    MirrorY: 0
+    GapAfter: 10
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1815,3 +1917,4 @@ SceneRoots:
   - {fileID: 555000002}
   - {fileID: 666000002}
   - {fileID: 1219652861}
+  - {fileID: 1412000002}

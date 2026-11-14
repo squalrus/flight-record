@@ -2,6 +2,23 @@
 
 User-visible changes, newest first. Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format and [semver](https://semver.org/) versioning.
 
+## [0.13.0] — 2026-11-14
+### Added
+- **Enemy entry paths and formations (backlog 4.12).** Enemies now fly paths across the screen instead of orbiting the player or wandering. A path enters from the right, top or bottom, sweeps, can hold at points, and leaves. Formations fly a group on one path, either as a fixed shape (a V) or staggered one after another (a snake). Paths and formations are data assets in `Config/Paths` and `Config/Formations`, so new ones need no code. (`unity/Assets/Scripts/Entities/Enemy.cs`, `unity/Assets/Scripts/Entities/EnemyPath.cs`, `unity/Assets/Scripts/Entities/EnemyFormation.cs`)
+- **Turrets track the nearest player.** An enemy's aim can follow the nearest ship, follow its direction of travel, or stay fixed. Satellite IV is a turret: it holds on its path while its beam is on, and the beam follows it across the screen.
+- **Escaped enemies.** An enemy that leaves the screen past the left, top or bottom edge, or finishes its path off screen, despawns without exploding or dropping anything.
+- **Test spawner.** A `FormationSpawner` in the main scene loops through the path and formation entries until hand-authored waves (4.2) replace it. (`unity/Assets/Scripts/World/FormationSpawner.cs`)
+- **Path tests.** The path math is in an engine-free `FlightRecord.Gameplay` assembly with EditMode tests. (`unity/Assets/Scripts/Gameplay/PathTrack.cs`, `unity/Assets/Tests/EditMode/Gameplay/PathTrackTests.cs`)
+
+### Changed
+- **No enemy friendly fire.** Enemy shots pass through enemies, and members of one formation don't collide with each other, so a formation can't shoot itself down.
+- **Enemy homing rockets chase the nearest player** instead of always the first player.
+- **Enemies fire only while on screen.**
+- **Sectors no longer spawn enemies.** Enemies come from the test spawner until waves (4.2) land, and every sector is now a clear-hostiles sector, so the portal opens straight away. The relic and large-threat sector types are paused until waves replace sectors. Asteroids still spawn.
+
+### Removed
+- **Orbit and patrol AI.** Enemies no longer orbit the player or wander in patrol loops. The orbit radius, orbit speed, patrol, and Probe orbit-burst settings are gone from the enemy prefabs, and Triceptor's spin is now a single `SpinRate`.
+
 ## [0.12.0] — 2026-11-14
 ### Added
 - **Weapon power-ups (backlog 4.9, D-014).** Destroyed enemies have a 15% chance to drop a power-up: **Spread** (an extra shot on each side), **Rapid Fire** (0.4× the time between shots), or **Homing** (a homing rocket with every shot). Each lasts 10 s. Different power-ups stack with separate timers, and picking up one that is already running resets its timer. Active power-ups show under PARTS on the HUD with a countdown, blink for their last 3 s, and flash their name when picked up. Pickups can't be shot and disappear after 15 s. The drop chance and types live in `Resources/PowerUpDrops.asset` until the drop tables in 4.16; durations and weapon tuning are on the Player. In the Editor, F11 drops one ahead of the ship. Timers end when a sector reloads. (`unity/Assets/Scripts/Entities/PowerUp.cs`, `unity/Assets/Scripts/Entities/PowerUpDropTable.cs`, `unity/Assets/Scripts/Player/Player.cs`, `unity/Assets/Prefabs/Entities/Collectable/PowerUp.prefab`, `unity/Assets/Resources/PowerUpDrops.asset`, `unity/Assets/UI/Hud/`)

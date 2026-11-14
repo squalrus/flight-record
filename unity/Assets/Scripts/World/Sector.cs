@@ -224,6 +224,10 @@ namespace FlightRecord
         private void SpawnEntities(EntitySpawn entity, bool isLargeThreatObjective = false)
         {
             if (entity.Prefab == null) return;
+            // Enemies now fly entry paths relative to the scrolling view (4.12), which random
+            // arena positions can't give them; FormationSpawner spawns them until hand-authored
+            // waves (4.2) replace sectors. Asteroids still spawn here.
+            if (entity.Prefab.GetComponent<Enemy>() != null) return;
             float range = (_size / 2f) * (entity.Spread / 100f);
             for (int i = 0; i < entity.Count; i++)
             {

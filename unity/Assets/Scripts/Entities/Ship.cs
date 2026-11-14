@@ -133,7 +133,10 @@ namespace FlightRecord
             GameObject instance = Instantiate(prefab, Cannon.position, rotation);
             if (ProjectileContainer.Instance != null)
                 instance.transform.SetParent(ProjectileContainer.Instance);
-            instance.GetComponent<Missile>().SetHealth(damage);
+            var missile = instance.GetComponent<Missile>();
+            missile.SetHealth(damage);
+            // No enemy friendly fire (4.12).
+            if (GetComponent<Enemy>() != null) missile.IgnoreEnemies();
             var direction = (Vector2)(rotation * Vector3.up);
             instance.GetComponent<Rigidbody2D>().linearVelocity = direction * 12f + InheritedShotVelocity(direction);
             return instance;

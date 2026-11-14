@@ -43,7 +43,7 @@ namespace FlightRecord
 
             // Player-fired homing rockets hunt the nearest enemy/asteroid; enemy-fired ones (e.g.
             // Triceptor's volley) home in on the player instead -- there's only one valid target.
-            var target = IsPlayerFired ? FindNearestEnemy() : PlayerController.PlayerTransform;
+            var target = IsPlayerFired ? FindNearestEnemy() : PlayerController.NearestTo(_rigidbody.position);
             if (target == null) return;
 
             // Past the flat HomingDelay, the rocket still flies straight (no force/turn applied
@@ -66,6 +66,15 @@ namespace FlightRecord
             // fixed target speed, which read as a jarring speed change the instant a lock started.
             var speed = _rigidbody.linearVelocity.magnitude;
             _rigidbody.linearVelocity = (Vector2)transform.up * speed;
+        }
+
+        // Enemy-fired shots pass through every enemy alive now (4.12): formations fly close
+        // together and fire along their path, so otherwise the back of a V shoots down the front.
+        // Call right after spawning the shot, before its first physics step.
+        public void IgnoreEnemies()
+        {
+            foreach (var shot in GetComponentsInChildren<Collider2D>())
+                Enemy.IgnoreCollisionsWith(shot);
         }
 
         public void SetHoming(float turnRate, float delay, float range)

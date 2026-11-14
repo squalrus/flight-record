@@ -16,6 +16,17 @@ namespace FlightRecord
         private BoxCollider2D _boxCollider;
         private LineRenderer _lineRenderer;
         private Color _beamColor;
+        private Transform _anchor;
+
+        // Keeps the beam's origin on `anchor` (its satellite) while both exist. Enemies ride
+        // the scrolling view (4.12), so a beam left at a fixed world position would slide off
+        // its satellite. Not parented: a child collider would join the satellite's Rigidbody2D.
+        public void Follow(Transform anchor) => _anchor = anchor;
+
+        private void LateUpdate()
+        {
+            if (_anchor != null) transform.position = _anchor.position;
+        }
 
         // Called synchronously by Satellite immediately after AddComponent, before the
         // first Update -- sets up the collider and renderer with the beam's parameters.

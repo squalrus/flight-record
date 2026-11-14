@@ -181,21 +181,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8017b01f9e3a406aa41c6dce2b0a11cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RadarDistance: 27
-  FiringRange: 17
-  OrbitRadius: 15
-  OrbitSpeed: 1
-  PatrolResumeDelay: 1
-  PatrolMoveDistance: 5
-  PatrolSpeed: 2
-  PatrolScanDurationRange: {x: 2, y: 5}
-  PatrolRotationRange: {x: 45, y: 180}
-  _radarGizmoColor: {r: 0, g: 1, b: 1, a: 1}
-  _firingRangeGizmoColor: {r: 1, g: 0, b: 0, a: 1}
-  _orbitGizmoColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  OrbitBurstIntervalRange: {x: 1, y: 2}
-  OrbitBurstDurationRange: {x: 4, y: 5}
-  OrbitBurstSpeedMultiplier: 5
+  Aim: 0
+  DespawnMargin: 2
+  _pathGizmoColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
 --- !u!1 &101112
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,6 +8,7 @@ Command-line helpers built on the shared `flightrec.audio` package. Install the 
 | `record_clip.py` | Record N seconds from a device to WAV through the live capture path |
 | `replay.py` | Feed an audio file (WAV, MP3, FLAC, OGG) through the same capture path as live input, at real-time pace, and print levels |
 | `record_features.py` | Record the feature stream to a message log (+ `.meta.json`, and the audio with `--save-audio`) from live input, a file in real time, or a file `--offline`; logs go to `samples/_local/logs/` |
+| `make_reference_song.py` | Write the synthesized reference song (exact tempo, key, drum hits, and sections; `--bpm`, `--key`) as a WAV plus its truth as JSON, to `samples/_local/` by default |
 | `play_log.py` | Play a message log (JSON lines, message contract) back at its original timing; `--speed`, `--type`, `--every`, `--summary` |
 
 ```sh

@@ -1,0 +1,7 @@
+file,key,bpm,source
+Vector_Seven_Engaged.mp3,,126,"bpm measured (stated 120, the audio's grid is about 126); stated key D minor was inferred by the generator, unconfirmed"
+Trench_Run_Finale.mp3,,150,"bpm stated and measured; stated key E minor was inferred by the generator, unconfirmed"
+Watching_the_Galaxy_Sleep.mp3,,80,"bpm stated and measured; stated key F major was inferred by the generator, unconfirmed"
+Vanguard_of_the_Sunlit_Rim.mp3,Bb major,120,"bpm stated and measured; key a generation parameter, not yet confirmed by ear"
+Constant_Velocity.mp3,,135,"tempo test track: bpm measured (asked for 128); no key requested"
+Before_the_Silence.mp3,A major,102,"key test piece: asked for A minor at 100; measured A major (C# well above C) at 102, confirm by ear"

@@ -267,3 +267,15 @@ def test_replay_cli_runs(tmp_path: Path) -> None:
         check=True,
     )
     assert "done: 19 blocks" in result.stdout
+
+
+def test_capture_offsets_track_block_arrival() -> None:
+    capture = Capture(NullSource(samplerate=1000, channels=1, blocksize=10), seconds=1)
+    assert capture.offset is None and capture.base_offset is None
+    block = np.zeros((10, 1), np.float32)
+    # Blocks end at audio times 0.01, 0.02, 0.03 s; the second arrives 5 ms late.
+    for i, arrived in enumerate((100.010, 100.025, 100.030)):
+        capture._on_block(block, i * 10, arrived)
+    assert capture.offset == pytest.approx(100.0)
+    assert capture.base_offset == pytest.approx(100.0)
+    assert capture.max_lag == pytest.approx(0.005)

@@ -10,7 +10,7 @@ The game: a copy of **InfinitySpace** (a top-down space shooter, from the privat
 
 ## Identity
 
-Renamed from InfinitySpace in `ProjectSettings/ProjectSettings.asset`, so the two games do not collide: product name **Flight Record** (window title, and the save folder `AppData/LocalLow/Squalrus Games/Flight Record/`), application id **com.SqualrusGames.FlightRecord**, a new product GUID, and version **0.9.0**, kept equal to the repo's `VERSION`. The C# namespace (`InfinitySpace`), the input actions asset (`InfinitySpace.inputactions`), and on-screen titles still use the old name; they change during the gameplay rework.
+Renamed from InfinitySpace in `ProjectSettings/ProjectSettings.asset`, so the two games do not collide: product name **Flight Record** (window title, and the save folder `AppData/LocalLow/Squalrus Games/Flight Record/`), application id **com.SqualrusGames.FlightRecord**, a new product GUID, and version **0.10.0**, kept equal to the repo's `VERSION`. The C# namespace (`InfinitySpace`), the input actions asset (`InfinitySpace.inputactions`), and on-screen titles still use the old name; they change during the gameplay rework.
 
 ## What came over
 
@@ -21,6 +21,14 @@ Renamed from InfinitySpace in `ProjectSettings/ProjectSettings.asset`, so the tw
 | `Assets/Art/Fonts/` | Orbitron and Share Tech Mono (each with its `License!.txt`, redistribution allowed), and the project's icon font |
 | `Packages/`, `ProjectSettings/` | Package manifest and lock file; project settings |
 | [`../docs/unity/infinityspace/`](../docs/unity/infinityspace/) | Reference from InfinitySpace, kept with the repo's other docs: `AUDIT.md` (its modernization audit), `DESIGN_DOCUMENT.md`, `infinityspace-conventions.md` (its coding-agent notes), and `design/` (reference images and screenshots) |
+
+## Added for Flight Record
+
+| Folder | Contents |
+| --- | --- |
+| `Assets/Scripts/Audio/` | `FlightRecord.Audio` assembly: the message contract parser (mirrors `flightrec.messages`), message sources behind `IMessageSource` (UDP bridge, replay, null), and `EventScheduler`, the delay buffer |
+| `Assets/Tests/EditMode/` | Edit-mode tests for `FlightRecord.Audio` (Window → General → Test Runner, or `-runTests -testPlatform EditMode` in batch mode) |
+| `Assets/Experiments/Bridge/` | Experiment 06's scene and its builder (menu **Flight Record → Experiments**); see [../experiments/06-message-bridge/README.md](../experiments/06-message-bridge/README.md) |
 
 **Not brought over:** generated folders (`Library/`, `Logs/`, `UserSettings/`), InfinitySpace's backlog, changelog, and release history, and its Android build workflow (Flight Record targets desktop first).
 

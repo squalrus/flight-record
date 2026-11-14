@@ -42,6 +42,7 @@ The repo is in the **pre-prototype** phase. Right now the work is small, standal
 ## Copyright and samples
 
 - Do **not** commit full copyrighted tracks. `samples/` holds short test clips only (target: 10-30 seconds each), small in size, and only audio the owner has the right to keep. If in doubt, keep it out of git and describe it in `samples/README.md`.
+- **Exception: `samples/_gen/`** holds full songs the project owner generated with AI and may distribute, through Git LFS. Each one gets a row in `samples/_gen/README.md` (stated vs measured tempo and key, sections) and `samples/_gen/truth.csv`. Generated audio often misses the tempo or key it was asked for, so record measured values, never the prompt's. For exact answers, use the synthesized reference song (`flightrec.reference_song`) instead.
 - Album art and Discogs data have licensing and terms-of-service implications; see the risks doc before caching or shipping them.
 
 ## Conventions

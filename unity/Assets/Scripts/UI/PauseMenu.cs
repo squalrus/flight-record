@@ -106,7 +106,7 @@ namespace FlightRecord
         // Opens Ship Management straight from the HUD's Manage button or gamepad Select --
         // the only way to reach this screen mid-sector. Deliberately does NOT pause the
         // game: enemies, projectiles, and asteroids keep moving while the menu is open, so
-        // running out of fuel or ammo and getting shot is still a real risk during a
+        // running out of ammo and getting shot is still a real risk during a
         // purchase (PlayerController separately blocks piloting/firing input while this is
         // open, via IsShipManagementOpen, without touching Time.timeScale or PlayerInput).
         // Guarded against being called again while already open (e.g. a second click/press

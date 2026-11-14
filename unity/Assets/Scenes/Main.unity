@@ -1331,11 +1331,9 @@ MonoBehaviour:
   SpeedUpgradeLevel: 0
   HealthUpgradeLevel: 0
   FirePowerUpgradeLevel: 0
-  FuelUpgradeLevel: 0
   AmmoUpgradeLevel: 0
   LastSectorTime: 0
   LifetimePlaytimeSeconds: 0
-  CurrentFuel: -1
   CurrentAmmo: -1
   CurrentHealth: -1
   LifetimePartsEarned: 0
@@ -1344,7 +1342,6 @@ MonoBehaviour:
   LifetimeHits: 0
   LifetimeDamageDealt: 0
   LifetimeDamageTaken: 0
-  LifetimeFuelConsumed: 0
   LifetimeEnemiesDestroyed: 0
   LifetimeAsteroidsDestroyed: 0
   HighestSectorReached: 1
@@ -1365,7 +1362,6 @@ MonoBehaviour:
     HitPercentage: 0
     DamageDealt: 0
     DamageTaken: 0
-    FuelConsumed: 0
     ElapsedSeconds: 0
     PartsEarned: 0
     PartsSpent: 0
@@ -1375,7 +1371,6 @@ MonoBehaviour:
     RunHitPercentage: 0
     RunDamageDealt: 0
     RunDamageTaken: 0
-    RunFuelConsumed: 0
     RunEnemiesDestroyed: 0
     RunAsteroidsDestroyed: 0
     RunPartsEarned: 0

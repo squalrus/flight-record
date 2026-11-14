@@ -36,10 +36,6 @@
                     <ui:Label name="sector-damage-taken-val" text="0" class="stat-row__val"/>
                 </ui:VisualElement>
                 <ui:VisualElement class="stat-row">
-                    <ui:Label text="FUEL USED" class="stat-row__label"/>
-                    <ui:Label name="sector-fuel-val" text="0" class="stat-row__val"/>
-                </ui:VisualElement>
-                <ui:VisualElement class="stat-row">
                     <ui:Label text="PARTS COLLECTED" class="stat-row__label"/>
                     <ui:Label name="sector-parts-earned-val" text="0" class="stat-row__val"/>
                 </ui:VisualElement>
@@ -86,10 +82,6 @@
                 <ui:VisualElement class="stat-row">
                     <ui:Label text="DAMAGE TAKEN" class="stat-row__label"/>
                     <ui:Label name="run-damage-taken-val" text="0" class="stat-row__val"/>
-                </ui:VisualElement>
-                <ui:VisualElement class="stat-row">
-                    <ui:Label text="FUEL USED" class="stat-row__label"/>
-                    <ui:Label name="run-fuel-val" text="0" class="stat-row__val"/>
                 </ui:VisualElement>
                 <ui:VisualElement class="stat-row">
                     <ui:Label text="PARTS EARNED" class="stat-row__label"/>

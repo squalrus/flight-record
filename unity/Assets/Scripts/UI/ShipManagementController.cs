@@ -19,7 +19,6 @@ namespace FlightRecord
 
         private Label _partsVal;
         private Label _healthVal;
-        private Label _fuelVal;
         private Label _ammoVal;
         private Label _portalVal;
         private Label _enemyLocatorVal;
@@ -27,7 +26,6 @@ namespace FlightRecord
         private Label _partsLocatorVal;
         private Button _closeBtn;
         private Button _convertHealthBtn;
-        private Button _convertFuelBtn;
         private Button _convertAmmoBtn;
         private Button _topOffBtn;
         private Button _scanPortalBtn;
@@ -74,7 +72,6 @@ namespace FlightRecord
         {
             _partsVal = root.Q<Label>("parts-val");
             _healthVal = root.Q<Label>("health-val");
-            _fuelVal = root.Q<Label>("fuel-val");
             _ammoVal = root.Q<Label>("ammo-val");
             _portalVal = root.Q<Label>("portal-val");
             _enemyLocatorVal = root.Q<Label>("enemy-locator-val");
@@ -87,7 +84,6 @@ namespace FlightRecord
             root.RegisterCallback<NavigationCancelEvent>(_ => _pauseMenu?.CloseShipManagement());
 
             _convertHealthBtn = root.Q<Button>("convert-health-btn");
-            _convertFuelBtn = root.Q<Button>("convert-fuel-btn");
             _convertAmmoBtn = root.Q<Button>("convert-ammo-btn");
             _topOffBtn = root.Q<Button>("topoff-btn");
             _scanPortalBtn = root.Q<Button>("scan-portal-btn");
@@ -97,7 +93,7 @@ namespace FlightRecord
 
             _focusOrder = new[]
             {
-                _closeBtn, _topOffBtn, _convertHealthBtn, _convertFuelBtn, _convertAmmoBtn,
+                _closeBtn, _topOffBtn, _convertHealthBtn, _convertAmmoBtn,
                 _scanPortalBtn, _scanEnemyLocatorBtn, _scanAsteroidLocatorBtn, _scanPartsLocatorBtn,
             };
 
@@ -116,7 +112,6 @@ namespace FlightRecord
             });
 
             _convertHealthBtn?.RegisterCallback<ClickEvent>(_ => _ship?.ConvertPartsToHealth());
-            _convertFuelBtn?.RegisterCallback<ClickEvent>(_ => _ship?.ConvertPartsToFuel());
             _convertAmmoBtn?.RegisterCallback<ClickEvent>(_ => _ship?.ConvertPartsToAmmo());
             _topOffBtn?.RegisterCallback<ClickEvent>(_ => _ship?.TopOff());
             _scanPortalBtn?.RegisterCallback<ClickEvent>(_ => _ship?.ScanForPortal());
@@ -128,7 +123,6 @@ namespace FlightRecord
 
             var buyLabel = $"+{Mathf.RoundToInt(_ship.PartsConversionPercent * 100)}% ({_ship.PartsConversionCost})";
             if (_convertHealthBtn != null) _convertHealthBtn.text = buyLabel;
-            if (_convertFuelBtn != null) _convertFuelBtn.text = buyLabel;
             if (_convertAmmoBtn != null) _convertAmmoBtn.text = buyLabel;
             if (_scanPortalBtn != null) _scanPortalBtn.text = $"SCAN ({_ship.ScanForPortalCost})";
             if (_scanEnemyLocatorBtn != null) _scanEnemyLocatorBtn.text = $"SCAN ({_ship.LocatorScanCost})";
@@ -160,9 +154,6 @@ namespace FlightRecord
             if (_healthVal != null)
                 _healthVal.text = $"{_ship.GetCurrentHealth()}/{_ship.MaxHealth}";
 
-            if (_fuelVal != null)
-                _fuelVal.text = $"{Mathf.RoundToInt(_ship.GetFuel())}/{Mathf.RoundToInt(_ship.MaxFuel)}";
-
             if (_ammoVal != null)
                 _ammoVal.text = $"{Mathf.RoundToInt(_ship.GetAmmunition())}/{_ship.MaxPrimaryAmmunition}";
 
@@ -182,7 +173,6 @@ namespace FlightRecord
                 _partsLocatorVal.text = _ship.IsPartsLocatorPurchased() ? "ACTIVE" : "LOCKED";
 
             SetEnabledPreservingFocus(_convertHealthBtn, _ship.CanConvertPartsToHealth());
-            SetEnabledPreservingFocus(_convertFuelBtn, _ship.CanConvertPartsToFuel());
             SetEnabledPreservingFocus(_convertAmmoBtn, _ship.CanConvertPartsToAmmo());
             SetEnabledPreservingFocus(_topOffBtn, _ship.CanTopOff());
             SetEnabledPreservingFocus(_scanPortalBtn, _ship.CanScanForPortal());

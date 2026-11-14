@@ -25,7 +25,6 @@ namespace FlightRecord
         private Label _accuracyVal;
         private Label _damageDealtVal;
         private Label _damageTakenVal;
-        private Label _fuelUsedVal;
         private Label _partsEarnedVal;
         private Label _partsSpentVal;
 
@@ -49,7 +48,6 @@ namespace FlightRecord
             _accuracyVal = _root.Q<Label>("accuracy-val");
             _damageDealtVal = _root.Q<Label>("damage-dealt-val");
             _damageTakenVal = _root.Q<Label>("damage-taken-val");
-            _fuelUsedVal = _root.Q<Label>("fuel-used-val");
             _partsEarnedVal = _root.Q<Label>("parts-earned-val");
             _partsSpentVal = _root.Q<Label>("parts-spent-val");
 
@@ -93,7 +91,6 @@ namespace FlightRecord
                 : $"{Mathf.RoundToInt((float)stats.LifetimeHits / stats.LifetimeShotsFired * 100f)}%";
             _damageDealtVal.text = stats.LifetimeDamageDealt.ToString();
             _damageTakenVal.text = stats.LifetimeDamageTaken.ToString();
-            _fuelUsedVal.text = Mathf.RoundToInt(stats.LifetimeFuelConsumed).ToString();
             _partsEarnedVal.text = stats.LifetimePartsEarned.ToString("F0");
             _partsSpentVal.text = stats.LifetimePartsSpent.ToString("F0");
         }

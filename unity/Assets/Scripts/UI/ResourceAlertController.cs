@@ -7,7 +7,7 @@ namespace FlightRecord
     // Attach to a GameObject with a UIDocument (Source Asset = ResourceAlert.uxml) in
     // Main.unity, active from scene load. Same show/hold/fade rhythm as
     // MissionBriefingController, but reusable: Player calls Flash() every time the player fires
-    // with no ammo, tries to thrust with no fuel, or either resource (including health) drops
+    // with no ammo, or ammo or health drops
     // to the last 5%, instead of showing once on scene load. Exposes a static Instance instead
     // of a serialized reference because Player lives in a prefab and can't hold a hard reference
     // to a scene-only object.

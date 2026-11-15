@@ -43,6 +43,10 @@ namespace FlightRecord
         [Header("Aim")]
         public EnemyAim Aim = EnemyAim.FaceTravel;
 
+        [Header("Score")]
+        [Tooltip("Points for destroying this enemy (backlog 4.14). Escaping pays nothing.")]
+        [Min(0)] public int Points = 100;
+
         [Header("Despawn")]
         [Tooltip("Extra world units past the screen edge, beyond the enemy's own size, before it despawns.")]
         [Min(0f)] public float DespawnMargin = 2f;

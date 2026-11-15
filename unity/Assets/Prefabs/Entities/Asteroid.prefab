@@ -124,6 +124,7 @@ MonoBehaviour:
     type: 3}
   PartsDrop: 20
   PartsVariance: 5
+  Points: 25
   _damageNumberPrefab: {fileID: 100000, guid: f6e5d4c3b2a1f6e5d4c3b2a19876fedc, type: 3}
 --- !u!1 &194644
 GameObject:

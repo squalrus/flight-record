@@ -27,6 +27,10 @@ namespace FlightRecord
         public int PartsDrop = 20;
         public int PartsVariance = 80;
 
+        [Header("Score")]
+        [Tooltip("Points for destroying this asteroid (backlog 4.14).")]
+        [Min(0)] public int Points = 25;
+
         [Header("Damage Feedback")]
         [SerializeField] private GameObject _damageNumberPrefab;
 
@@ -78,6 +82,10 @@ namespace FlightRecord
 
         public override void Destruct()
         {
+            if (!MarkDestructed()) return;
+
+            GameControl.control?.AddPoints(Points);
+
             if (_partPrefab != null)
             {
                 var count = Random.Range(Mathf.Max(0, PartsDrop - PartsVariance), PartsDrop + PartsVariance + 1);

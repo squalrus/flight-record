@@ -20,6 +20,12 @@
                 <ui:VisualElement name="sector-progress-fill" class="sector-progress__fill"/>
             </ui:VisualElement>
         </ui:VisualElement>
+        <ui:VisualElement name="score" class="score">
+            <ui:Label text="SCORE" class="score__label"/>
+            <ui:Label name="score-val" text="0000000" class="score__val"/>
+            <ui:Label name="high-score-label" text="HI" class="score__label score__label--high"/>
+            <ui:Label name="high-score-val" text="0000000" class="score__val score__val--high"/>
+        </ui:VisualElement>
         <ui:VisualElement name="gauges" class="gauges">
             <ui:VisualElement name="health-gauge" class="dial">
                 <ui:Label name="health-val" text="83/100" class="dial__val"/>

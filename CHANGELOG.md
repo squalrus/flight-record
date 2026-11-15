@@ -2,6 +2,13 @@
 
 User-visible changes, newest first. Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format and [semver](https://semver.org/) versioning.
 
+## [0.15.0] — 2026-11-15
+### Added
+- **Points and high score (backlog 4.14).** Every enemy kill adds points: Probe II 50, Probe I 100, Satellite IV 100, Triceptor 300, Triceptor LT 2000. Asteroids are worth 25. Enemies that escape off screen pay nothing. A running score sits under the sector progress bar on the HUD, next to the saved high score, which turns green once this run passes it. The Game Over run summary shows the score and high score and a "NEW HIGH SCORE" banner when it was beaten. The high score survives Continue and New Game and is cleared only by Clear Saved Data. Each run's score and high score are saved, so quitting mid-run keeps the best. (`unity/Assets/Scripts/Gameplay/ScoreBoard.cs`, `unity/Assets/Scripts/Entities/Enemy.cs`, `unity/Assets/Scripts/Entities/Asteroid.cs`, `unity/Assets/Scripts/Systems/GameControl.cs`, `unity/Assets/Scripts/UI/VectorHudController.cs`, `unity/Assets/Scripts/UI/GameOverController.cs`)
+
+### Fixed
+- **Ships could be destroyed twice in one frame.** Damage and the ship's own update could both call `Destruct()` before Unity removed the object. That could pay points, drops, and the player's run failure twice. Each ship now destructs once, and the player's death ends the run once. (`unity/Assets/Scripts/Core/DestroyableObject.cs`, `unity/Assets/Scripts/Entities/Ship.cs`, `unity/Assets/Scripts/Player/Player.cs`)
+
 ## [0.14.0] — 2026-11-14
 ### Added
 - **Bullet-pattern emitters (backlog 4.13).** Enemies can fire aimed, spread, ring, and sweeping-stream patterns. Each pattern is a `BulletPattern` asset that sets its shape, aim, rate, projectile, and homing, and a `PatternEmitter` component fires it on the enemy's own timer or on a `Trigger()` call. The generator can drive patterns from beats later. (`unity/Assets/Scripts/Entities/BulletPattern.cs`, `unity/Assets/Scripts/Entities/PatternEmitter.cs`)

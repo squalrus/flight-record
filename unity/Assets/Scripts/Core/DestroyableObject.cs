@@ -44,6 +44,20 @@ namespace FlightRecord
             _currentHealth = Mathf.Min(_currentHealth, MaxHealth);
         }
 
+        // Destroy() only takes effect at the end of the frame, so Destruct() can run more than
+        // once for one death (AddHealth and Ship.Update both call it on the same frame). A
+        // subclass that awards points or spawns drops calls this first and stops if it's false.
+        private bool _destructed;
+
+        protected bool IsDestructed => _destructed;
+
+        protected bool MarkDestructed()
+        {
+            if (_destructed) return false;
+            _destructed = true;
+            return true;
+        }
+
         /// <summary>
         /// Destroy the gameObject
         /// </summary>

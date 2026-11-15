@@ -31,8 +31,6 @@ Game items are one change each, so each one can be played and tested on its own.
 
 - [ ] **4.2 🖥️ Game: hand-authored waves.** A `Wave` asset (formation, path, enemy types, timing) and a hand-authored sequence that replaces `Sector`, `SectorSpawner`, and `SectorTypeTable` random arena spawning. See [unity-fork-plan.md](docs/unity/unity-fork-plan.md) Step 2. Depends on 4.10, 4.11, 4.12.
   *Done when:* a few minutes of hand-authored waves play start to finish in the scrolling view, and a wave knows when every one of its enemies is destroyed (needed by 4.15).
-- [ ] **4.14 🖥️ Game: points and high score.** Points per enemy type, a running score on the HUD, and a saved high score.
-  *Done when:* every kill adds its enemy's points, and the high score persists across runs.
 - [ ] **4.15 🖥️ Game: wave-clear combos.** Destroying every enemy in a wave pays a bonus and raises a combo multiplier; letting one escape resets it. Depends on 4.2, 4.14.
   *Done when:* clearing consecutive waves visibly raises the multiplier and the bonus, and one escape resets it.
 - [ ] **4.16 🖥️ Game: expanded drops.** A drop table per enemy and wave (power-ups, points, shields or extra lives, bombs), with pickups attracted to the nearest ship. Depends on 4.9.

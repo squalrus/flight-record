@@ -97,6 +97,11 @@ namespace FlightRecord
                 SetLabel("run-parts-earned-val", Mathf.RoundToInt(death.RunPartsEarned).ToString());
                 SetLabel("run-parts-spent-val", Mathf.RoundToInt(death.RunPartsSpent).ToString());
                 SetLabel("run-playtime-val", PlaytimeFormat.ToClock(death.RunPlaytimeSeconds));
+
+                SetLabel("run-score-val", death.RunScore.ToString(VectorHudController.ScoreFormat));
+                SetLabel("run-high-score-val", death.HighScore.ToString(VectorHudController.ScoreFormat));
+                GetComponent<UIDocument>().rootVisualElement.Q<Label>("run-new-high-score")
+                    ?.EnableInClassList("game-over__new-high--visible", death.NewHighScore);
             }
 
             _showingRunSummary = true;

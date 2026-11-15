@@ -106,5 +106,15 @@ namespace FlightRecord
         public float RunPartsSpent;
 
         public float RunPlaytimeSeconds;
+
+        // Points (backlog 4.14). RunScore is the current run's score, reset with the run;
+        // HighScore survives New Game. RunStartHighScore is the high score when the run
+        // began, so Continue still knows whether this run set a new one. Older saves
+        // without these fields load as 0.
+        public int RunScore;
+
+        public int HighScore;
+
+        public int RunStartHighScore;
     }
 }

@@ -37,6 +37,8 @@ namespace FlightRecord
         private VisualElement _sectorProgressFill;
         private Label _healthVal, _ammoVal, _partsVal, _sectorLabel, _sectorTimeLabel, _sectorProgressStatus, _magVal, _homVal;
         private Label _hpVal, _dmgVal, _ammoCapVal;
+        private VisualElement _score;
+        private Label _scoreVal, _highScoreVal;
         private Label _pilotAvatar;
         private VisualElement _rofPips;
         private readonly Label[] _powerUpLabels = new Label[PowerUpTimers.AllTypes.Length];
@@ -81,6 +83,9 @@ namespace FlightRecord
             _ammoCapVal = root.Q<Label>("ammo-cap-val");
             _rofPips = root.Q<VisualElement>("rof-pips");
             _pilotAvatar = root.Q<Label>("pilot-avatar");
+            _score = root.Q<VisualElement>("score");
+            _scoreVal = root.Q<Label>("score-val");
+            _highScoreVal = root.Q<Label>("high-score-val");
 
             foreach (var type in PowerUpTimers.AllTypes)
             {
@@ -121,6 +126,7 @@ namespace FlightRecord
             _radar?.MarkDirtyRepaint();
 
             if (_pilotAvatar != null) _pilotAvatar.text = GameControl.control != null ? GameControl.control.AvatarGlyph : "v";
+            RefreshScore();
 
             if (_ship == null) return;
 
@@ -141,6 +147,20 @@ namespace FlightRecord
             int totalSeconds = Mathf.CeilToInt(remaining);
             _sectorTimeLabel.text = $"· {totalSeconds / 60}:{totalSeconds % 60:D2}";
             _sectorTimeLabel.EnableInClassList("sector__time--warning", remaining <= TIME_WARNING_THRESHOLD_SECONDS);
+        }
+
+        // Seven digits, zero-padded, so the row doesn't shift as the score grows.
+        public const string ScoreFormat = "0000000";
+
+        private void RefreshScore()
+        {
+            var control = GameControl.control;
+            int score = control != null ? control.RunScore : 0;
+            int high = control != null ? control.HighScore : 0;
+
+            if (_scoreVal != null) _scoreVal.text = score.ToString(ScoreFormat);
+            if (_highScoreVal != null) _highScoreVal.text = high.ToString(ScoreFormat);
+            _score?.EnableInClassList("score--new-high", control != null && control.IsNewHighScore);
         }
 
         private void RefreshGauges()

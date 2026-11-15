@@ -85,6 +85,47 @@
     color: rgb(255, 90, 90);
 }
 
+/* Run score and high score (backlog 4.14), centered under the sector progress bar. */
+.score {
+    position: absolute;
+    top: 100px;
+    left: 0;
+    right: 0;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    -unity-font-definition: url("project://database/Assets/Art/Fonts/ShareTechMono/ShareTechMono-Regular%20SDF.ttf?fileID=12800000&guid=7fee49d8fbac016489f46f913649c73b&type=3#ShareTechMono-Regular SDF");
+}
+
+.score__label {
+    font-size: 13px;
+    letter-spacing: 2px;
+    opacity: 0.7;
+    margin-right: 8px;
+}
+
+.score__label--high {
+    margin-left: 28px;
+}
+
+.score__val {
+    font-size: 20px;
+    letter-spacing: 2px;
+    color: rgb(255, 255, 255);
+}
+
+.score__val--high {
+    font-size: 15px;
+    color: rgba(127, 233, 255, 0.85);
+}
+
+/* This run has passed the high score it started with. */
+.score--new-high .score__label--high,
+.score--new-high .score__val--high {
+    color: rgb(54, 255, 158);
+    opacity: 1;
+}
+
 .sector-progress {
     position: absolute;
     top: 72px;

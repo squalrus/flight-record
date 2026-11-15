@@ -181,6 +181,12 @@ namespace FlightRecord
 
         public override void Destruct()
         {
+            if (!MarkDestructed()) return;
+
+            // Only enemies are worth points (4.14); the player's own Ship never is.
+            var enemy = GetComponent<Enemy>();
+            if (enemy != null) GameControl.control?.AddPoints(enemy.Points);
+
             var num = UnityEngine.Random.Range(Mathf.Max(0f, PartsDrop - PartsVariance), PartsDrop + PartsVariance);
 
             for (var i = 0; i < num; i++)
@@ -192,7 +198,7 @@ namespace FlightRecord
             }
 
             // Only enemies drop power-ups; the player's own Ship (also a Ship) never does.
-            if (GetComponent<Enemy>() != null)
+            if (enemy != null)
                 PowerUpDropTable.TryDrop(_collider.bounds.center);
 
             var explosion = new GameObject("ShipExplosion");

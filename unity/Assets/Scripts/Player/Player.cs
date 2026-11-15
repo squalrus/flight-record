@@ -350,6 +350,9 @@ namespace FlightRecord
 
         public override void Destruct()
         {
+            // A second call on the same frame (see DestroyableObject.MarkDestructed) must not
+            // fail the run twice.
+            if (IsDestructed) return;
             base.Destruct();
 
             // GameControl.FailRun captures the snapshot (read across the scene

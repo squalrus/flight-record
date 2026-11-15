@@ -59,6 +59,16 @@
                 </ui:VisualElement>
                 <ui:Label name="run-summary-subtitle" text="0 SECTORS CLEARED" class="game-over__subtitle"/>
                 <ui:VisualElement class="panel__rule"/>
+                <ui:Label name="run-new-high-score" text="NEW HIGH SCORE" class="game-over__new-high"/>
+                <ui:VisualElement class="stat-row">
+                    <ui:Label text="SCORE" class="stat-row__label stat-row__label--score"/>
+                    <ui:Label name="run-score-val" text="0" class="stat-row__val stat-row__val--score"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="stat-row">
+                    <ui:Label text="HIGH SCORE" class="stat-row__label"/>
+                    <ui:Label name="run-high-score-val" text="0" class="stat-row__val"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="panel__rule"/>
                 <ui:VisualElement class="stat-row">
                     <ui:Label text="ENEMIES DESTROYED" class="stat-row__label"/>
                     <ui:Label name="run-enemies-val" text="0" class="stat-row__val"/>

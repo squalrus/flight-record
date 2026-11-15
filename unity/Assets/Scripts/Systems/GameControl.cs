@@ -1,4 +1,5 @@
 using System.IO;
+using FlightRecord.Gameplay;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -181,6 +182,16 @@ namespace FlightRecord
             }
         }
 
+        // Run score and high score (backlog 4.14). Kills add points through AddPoints();
+        // the HUD and Game Over screen read them here.
+        private ScoreBoard _score = new ScoreBoard();
+
+        public int RunScore => _score.Score;
+        public int HighScore => _score.HighScore;
+        public bool IsNewHighScore => _score.IsNewHighScore;
+
+        public void AddPoints(int points) => _score.Add(points);
+
         // Sectors successfully cleared this run -- CurrentSector is 1-based and already
         // incremented past the last cleared sector, so subtract 1 rather than reading it raw.
         public int RunSectorsCleared => Mathf.Max(0, CurrentSector - 1);
@@ -236,6 +247,10 @@ namespace FlightRecord
             public float RunPartsEarned;
             public float RunPartsSpent;
             public float RunPlaytimeSeconds;
+
+            public int RunScore;
+            public int HighScore;
+            public bool NewHighScore;
         }
 
         public DeathSnapshot LastDeath;
@@ -271,6 +286,10 @@ namespace FlightRecord
                 RunPartsEarned = RunPartsEarned,
                 RunPartsSpent = RunPartsSpent,
                 RunPlaytimeSeconds = RunPlaytimeSeconds,
+
+                RunScore = RunScore,
+                HighScore = HighScore,
+                NewHighScore = IsNewHighScore,
             };
         }
 
@@ -339,6 +358,9 @@ namespace FlightRecord
                 RunPartsEarned = RunPartsEarned,
                 RunPartsSpent = RunPartsSpent,
                 RunPlaytimeSeconds = RunPlaytimeSeconds,
+                RunScore = _score.Score,
+                HighScore = _score.HighScore,
+                RunStartHighScore = _score.PreviousHighScore,
             };
             File.WriteAllText(Application.persistentDataPath + "/stats.json", JsonUtility.ToJson(stats));
         }
@@ -373,6 +395,7 @@ namespace FlightRecord
             _runPartsEarned = 0;
             _runPartsSpent = 0;
             _runPlaytimeSeconds = 0;
+            _score.EndRun();
             Save();
         }
 
@@ -416,6 +439,10 @@ namespace FlightRecord
                 HighestSectorReached = existing.HighestSectorReached,
                 LifetimeRunsStarted = existing.LifetimeRunsStarted + 1,
                 LifetimeSectorsCleared = existing.LifetimeSectorsCleared,
+                // The high score outlives runs; the new run starts at 0 and has to beat it.
+                // Max() covers a save whose last run was quit mid-way above an older HighScore.
+                HighScore = System.Math.Max(existing.HighScore, existing.RunScore),
+                RunStartHighScore = System.Math.Max(existing.HighScore, existing.RunScore),
                 // Settings, not run state -- New Game keeps them.
                 RumbleEnabled = existing.RumbleEnabled,
                 LimitedAmmo = existing.LimitedAmmo,
@@ -528,6 +555,7 @@ namespace FlightRecord
                 _runPartsEarned = stats.RunPartsEarned;
                 _runPartsSpent = stats.RunPartsSpent;
                 _runPlaytimeSeconds = stats.RunPlaytimeSeconds;
+                _score = new ScoreBoard(stats.RunScore, stats.HighScore, stats.RunStartHighScore);
             }
         }
     }

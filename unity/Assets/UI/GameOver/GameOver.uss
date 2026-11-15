@@ -38,6 +38,30 @@
     -unity-font-style: bold;
 }
 
+/* Run score (backlog 4.14): larger than the other rows. */
+.stat-row__label--score {
+    font-size: 16px;
+}
+
+.stat-row__val--score {
+    font-size: 16px;
+}
+
+/* Shown only when the run beat the high score it started with. */
+.game-over__new-high {
+    display: none;
+    align-self: center;
+    color: rgb(54, 255, 158);
+    letter-spacing: 3px;
+    font-size: 14px;
+    -unity-font-style: bold;
+    margin-bottom: 8px;
+}
+
+.game-over__new-high--visible {
+    display: flex;
+}
+
 .game-over__continue-btn {
     align-self: center;
     margin-top: 6px;

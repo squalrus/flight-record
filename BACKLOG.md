@@ -29,8 +29,6 @@ Legend: 🔌 needs the physical hardware (turntable, interface) · 🌐 needs an
 
 Game items are one change each, so each one can be played and tested on its own. The audit in [unity-fork-plan.md](docs/unity/unity-fork-plan.md) Step 0 names the classes involved. The direction is arcade over resource management (D-013).
 
-- [ ] **4.13 🖥️ Game: bullet-pattern emitters.** Generalize Triceptor's volley into emitters: aimed, spread, ring, and sweeping stream, each with rate and speed settings and a trigger call the generator can drive from beats later.
-  *Done when:* each pattern can be put on any enemy as data and fired by a trigger, with a pooled projectile cap so dense patterns hold frame rate.
 - [ ] **4.2 🖥️ Game: hand-authored waves.** A `Wave` asset (formation, path, enemy types, timing) and a hand-authored sequence that replaces `Sector`, `SectorSpawner`, and `SectorTypeTable` random arena spawning. See [unity-fork-plan.md](docs/unity/unity-fork-plan.md) Step 2. Depends on 4.10, 4.11, 4.12.
   *Done when:* a few minutes of hand-authored waves play start to finish in the scrolling view, and a wave knows when every one of its enemies is destroyed (needed by 4.15).
 - [ ] **4.14 🖥️ Game: points and high score.** Points per enemy type, a running score on the HUD, and a saved high score.

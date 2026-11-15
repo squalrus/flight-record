@@ -2,6 +2,17 @@
 
 User-visible changes, newest first. Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format and [semver](https://semver.org/) versioning.
 
+## [0.14.0] — 2026-11-14
+### Added
+- **Bullet-pattern emitters (backlog 4.13).** Enemies can fire aimed, spread, ring, and sweeping-stream patterns. Each pattern is a `BulletPattern` asset that sets its shape, aim, rate, projectile, and homing, and a `PatternEmitter` component fires it on the enemy's own timer or on a `Trigger()` call. The generator can drive patterns from beats later. (`unity/Assets/Scripts/Entities/BulletPattern.cs`, `unity/Assets/Scripts/Entities/PatternEmitter.cs`)
+- **Enemy shot cap.** Enemy pattern shots are pooled, with at most 300 in flight. Shots past the cap are skipped, so dense patterns thin out instead of dropping the frame rate. (`unity/Assets/Scripts/Entities/EnemyProjectilePool.cs`)
+- **Example patterns.** Aimed Shot, Spread Five, Ring Twelve, and Sweep Stream in `Config/Patterns`, ready for new enemies. (`unity/Assets/Config/Patterns`)
+
+### Changed
+- **Triceptor's volley is a pattern.** It fires a ring of three homing rockets from its spinning facing, defined in data as `Triceptor Ring`. Triceptor LT uses the same ring with a shorter homing range. Enemies with an emitter skip their default single-cannon shot. (`unity/Assets/Prefabs/Entities/Enemies/Triceptor.prefab`, `unity/Assets/Scripts/Entities/Triceptor.cs`)
+- **Missiles leave at the screen edge.** Every missile, the player's included, now ends once it is 2 units past any edge of the screen, instead of flying for its full 7 seconds. (`unity/Assets/Scripts/Entities/Missile.cs`)
+- **Triceptor's rockets ride the scroll.** Its volley keeps its shape on the scrolling screen. (`unity/Assets/Config/Patterns/Triceptor Ring.asset`)
+
 ## [0.13.0] — 2026-11-14
 ### Added
 - **Enemy entry paths and formations (backlog 4.12).** Enemies now fly paths across the screen instead of orbiting the player or wandering. A path enters from the right, top or bottom, sweeps, can hold at points, and leaves. Formations fly a group on one path, either as a fixed shape (a V) or staggered one after another (a snake). Paths and formations are data assets in `Config/Paths` and `Config/Formations`, so new ones need no code. (`unity/Assets/Scripts/Entities/Enemy.cs`, `unity/Assets/Scripts/Entities/EnemyPath.cs`, `unity/Assets/Scripts/Entities/EnemyFormation.cs`)

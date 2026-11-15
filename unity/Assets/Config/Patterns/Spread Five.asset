@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a75d17c9ed9471094a47406ff427cc6, type: 3}
+  m_Name: Spread Five
+  m_EditorClassIdentifier: Assembly-CSharp::FlightRecord.BulletPattern
+  Kind: 1
+  Count: 5
+  Arc: 60
+  SweepStep: 0
+  VolleySpin: 0
+  AngleOffset: 0
+  Aim: 0
+  Direction: 180
+  Interval: 2
+  VolleysPerBurst: 1
+  VolleySpacing: 0
+  Projectile: {fileID: 100000, guid: c52ed365ccab137489363452dc45d004, type: 3}
+  Speed: 10
+  SpawnRadius: 1.5
+  RideScroll: 1
+  HomingTurnRate: 0
+  HomingDelay: 0
+  HomingRange: 0

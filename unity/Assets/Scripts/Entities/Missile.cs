@@ -2,8 +2,14 @@
 
 namespace FlightRecord
 {
+    // A projectile. Spawned directly (Ship's shots, destroyed when done) or taken from
+    // EnemyProjectilePool (enemy pattern shots, returned to the pool when done). Either way
+    // it ends when it hits something, when its time to live runs out, or once it is past
+    // the edge of the screen (by OffscreenMargin).
     public class Missile : DestroyableObject
     {
+        private const float OffscreenMargin = 2f;
+
         private float _ttl = 7f;
         private float _age;
         private ParticleSystem _explosion;
@@ -14,12 +20,22 @@ namespace FlightRecord
         private float _homingDelay;
         private float _homingRange;
 
+        // Pooling (4.13): the pool and prefab this missile came from, if any, and the
+        // countdown to returning after a hit (so the hit effect can play).
+        private EnemyProjectilePool _pool;
+        private GameObject _poolPrefab;
+        private bool _inPool;
+        private float _returnIn = -1f;
+
         // Set by Player.OnWeaponFired() when the player fires -- used to count Hits for the
         // Sector Complete screen's hit-percentage stat without counting enemy missiles
         // or friendly fire toward the player's accuracy.
         public bool IsPlayerFired;
 
-        private void Start()
+        public Rigidbody2D Body => _rigidbody;
+
+        // Awake, not Start: a pooled missile is reset right after it is instantiated.
+        private void Awake()
         {
             _explosion = GetComponentInChildren<ParticleSystem>();
             // InChildren, not GetComponent -- the regular Missile's MeshRenderer is on the root,
@@ -30,11 +46,64 @@ namespace FlightRecord
 
         private void Update()
         {
+            if (_returnIn >= 0f)
+            {
+                _returnIn -= Time.deltaTime;
+                if (_returnIn < 0f) ReturnToPool();
+                return;
+            }
+
             _age += Time.deltaTime;
-            if (_age > _ttl)
+            if (_age > _ttl || IsPastScreenEdge())
             {
                 Destruct();
             }
+        }
+
+        private bool IsPastScreenEdge()
+        {
+            if (!Playfield.TryGetView(out var center, out var halfSize)) return false;
+            var offset = (Vector2)transform.position - center;
+            return Mathf.Abs(offset.x) > halfSize.x + OffscreenMargin
+                   || Mathf.Abs(offset.y) > halfSize.y + OffscreenMargin;
+        }
+
+        // Called by EnemyProjectilePool each time it hands this missile out: back to a
+        // fresh, unfired state. The caller then sets damage, velocity, and homing.
+        internal void TakenFromPool(EnemyProjectilePool pool, GameObject prefab)
+        {
+            _pool = pool;
+            _poolPrefab = prefab;
+            _inPool = false;
+            _returnIn = -1f;
+            _age = 0f;
+            _canDamage = true;
+            _homingTurnRate = _homingDelay = _homingRange = 0f;
+            IsPlayerFired = false;
+            if (_meshRenderer != null) _meshRenderer.enabled = true;
+            if (_explosion != null) _explosion.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            _rigidbody.linearVelocity = Vector2.zero;
+            _rigidbody.angularVelocity = 0f;
+        }
+
+        private void ReturnToPool()
+        {
+            if (_inPool) return;
+            _inPool = true;
+            _returnIn = -1f;
+            _pool.Return(this, _poolPrefab);
+        }
+
+        private void OnDestroy()
+        {
+            // Destroyed in flight (not returned): the pool stops counting it.
+            if (_pool != null && !_inPool) _pool.Forget();
+        }
+
+        public override void Destruct()
+        {
+            if (_pool != null) ReturnToPool();
+            else base.Destruct();
         }
 
         private void FixedUpdate()
@@ -144,7 +213,8 @@ namespace FlightRecord
 
         public void Destruct(float time)
         {
-            Destroy(gameObject, time);
+            if (_pool != null) _returnIn = Mathf.Max(0f, time);
+            else Destroy(gameObject, time);
         }
     }
 }

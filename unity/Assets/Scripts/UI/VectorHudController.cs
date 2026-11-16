@@ -65,6 +65,10 @@ namespace FlightRecord
             // pointer input. Only the ship/pause button should actually intercept clicks.
             SetPickingModeRecursive(root, PickingMode.Ignore);
 
+            // Audio-side HUD pieces, built in code on this document (styles in HUD.uss).
+            if (GetComponent<NowPlayingHud>() == null) gameObject.AddComponent<NowPlayingHud>();
+            if (GetComponent<IncomingWarningHud>() == null) gameObject.AddComponent<IncomingWarningHud>();
+
             _healthGauge = root.Q<VisualElement>("health-gauge");
             _ammoGauge = root.Q<VisualElement>("ammo-gauge");
             _radar = root.Q<VisualElement>("radar");

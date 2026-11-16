@@ -84,6 +84,28 @@ namespace FlightRecord.Audio.Tests
             Assert.AreEqual(2, release.Tracks.Length);
             Assert.AreEqual(215.0, release.Tracks[0].Seconds.Value);
             Assert.IsNull(release.Tracks[1].Seconds);
+            Assert.IsNull(release.CoverPath);
+        }
+
+        [Test]
+        public void IdentificationTimingAndCover()
+        {
+            // The answer (t = 112.5) came 2.5 s after the clip ended 60 s into the track.
+            var track = (TrackIdentified)Contract.Parse(
+                "{\"v\":1,\"type\":\"track_identified\",\"t\":112.5,\"artist\":\"A\",\"title\":\"T\"," +
+                "\"offset_seconds\":60,\"clip_end_t\":110,\"cover_path\":\"C:\\\\covers\\\\x.img\"}");
+            Assert.AreEqual(62.5, track.PositionAt(112.5).Value, 1e-9);
+            Assert.AreEqual(72.5, track.PositionAt(122.5).Value, 1e-9);
+            Assert.AreEqual("C:\\covers\\x.img", track.CoverPath);
+
+            // From file tags: no clip_end_t, so the offset holds at t.
+            var tagged = (TrackIdentified)Contract.Parse(
+                "{\"v\":1,\"type\":\"track_identified\",\"t\":30,\"artist\":\"A\",\"title\":\"T\",\"offset_seconds\":30}");
+            Assert.AreEqual(35.0, tagged.PositionAt(35).Value, 1e-9);
+
+            var release = (ReleaseSelected)Contract.Parse(
+                "{\"v\":1,\"type\":\"release_selected\",\"t\":133,\"discogs_id\":42,\"side\":\"A\",\"cover_path\":\"/tmp/c.img\"}");
+            Assert.AreEqual("/tmp/c.img", release.CoverPath);
 
             var side = (SideState)Contract.Parse(
                 "{\"v\":1,\"type\":\"side_state\",\"t\":140,\"side\":\"A\",\"track_index\":1," +

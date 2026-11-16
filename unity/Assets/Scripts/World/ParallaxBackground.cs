@@ -15,10 +15,16 @@ namespace FlightRecord
         [SerializeField, Range(0f, 2f)] float _parallaxFactor = 0.15f;
         [SerializeField] Sprite[] _variants;
 
+        // How much the layer swells on a beat of the playing audio (GameAudio.BeatPulse):
+        // 0.012 = 1.2% larger at the beat, settling back within a quarter second. The sprite
+        // covers the view and is centred on the camera, so growing never shows an edge.
+        [SerializeField, Range(0f, 0.05f)] float _beatPulse = 0.012f;
+
         private SpriteRenderer _renderer;
         private Camera _camera;
         private Vector2 _startCameraPos;
         private Vector2 _spriteSize;
+        private Vector3 _baseScale;
 
         private void Start()
         {
@@ -31,6 +37,7 @@ namespace FlightRecord
 
             // Use renderer bounds (world-space, scale-aware) not sprite bounds (local, unscaled).
             _spriteSize = _renderer.bounds.size;
+            _baseScale = transform.localScale;
         }
 
         private void LateUpdate()
@@ -38,6 +45,8 @@ namespace FlightRecord
             Vector2 camPos = _camera.transform.position;
 
             transform.position = new Vector3(camPos.x, camPos.y, transform.position.z);
+            float pulse = GameAudio.BeatPulse;
+            transform.localScale = _baseScale * (1f + _beatPulse * pulse * pulse); // eased: a quick swell, a soft settle
 
             // The scrolling camera (ScrollingCamera) only ever travels right, so over a
             // whole side the raw offset would grow into the hundreds and lose float

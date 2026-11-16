@@ -20,11 +20,12 @@ The generator does not reliably hit the tempo or key it was asked for, so every 
 | `Vanguard_of_the_Sunlit_Rim.mp3` | 3:00 | Cinematic orchestral / space opera | Bb major, 120 | 120.0 | Eb major (28%) | 120 (72%, 0.47) |
 | `Constant_Velocity.mp3` | 2:51 | **Tempo test track** | 128 | **135.0** | A minor (83%) | 134 (95%, 0.70) |
 | `Before_the_Silence.mp3` | 2:01 | **Key test piece** | A minor, 100 | **102.0** | A major (100%) | 102 (100%, 0.75) |
+| `Three_Fingers_on_the_Lever.mp3` | 3:00 | Space bluegrass | G major, 150 | 150.0 | **E major (98%)** | 150 (100%, 0.70) |
 
-Measured on 2026-11-13. "True tempo" is the autocorrelation of a whole-song onset envelope (spectral flux at 128-sample hops) at lags of 4 and 16 beats. It is a different method from the pipeline's tracker, and the two lags agree within 0.05 BPM for every song except Vector Seven (126.0 and 124.1), whose grid is the least steady. The pipeline's columns come from `evaluate.py` (experiment 02's pipeline at its defaults; tempo in 2-BPM bins).
+Measured on 2026-11-13, except Three Fingers on the Lever on 2026-11-15. "True tempo" is the autocorrelation of a whole-song onset envelope (spectral flux at 128-sample hops) at lags of 4 and 16 beats. It is a different method from the pipeline's tracker, and the two lags agree within 0.05 BPM for every song except Vector Seven (126.0 and 124.1), whose grid is the least steady. The pipeline's columns come from `evaluate.py` (experiment 02's pipeline at its defaults; tempo in 2-BPM bins).
 
 - **Tempo:** four songs are exactly on a grid at their stated tempo or another one. Constant Velocity is at 135, not 128, and Before the Silence at 102, not 100. Vector Seven's tempo was a generation parameter of 120, but the audio runs at about 126 (check against a 120 BPM metronome: they drift a beat apart about every 10 s). The pipeline matched the true tempo on five songs and doubled the ambient one.
-- **Keys:** the stated keys of the first three songs were inferred by the generator, not set, so they are guesses. Vanguard's B♭ major was a parameter; the pipeline's E♭ major is a fifth away and unexplained until checked by ear. Before the Silence was asked for A natural minor, but its chroma has C# (10.5%) well above C (6.3%) and G# at 10.3%: the tonic A is right, the mode is major. Only 64% of its energy is on the A natural minor notes.
+- **Keys:** the stated keys of the first three songs were inferred by the generator, not set, so they are guesses. Vanguard's B♭ major was a parameter; the pipeline's E♭ major is a fifth away and unexplained until checked by ear. Before the Silence was asked for A natural minor, but its chroma has C# (10.5%) well above C (6.3%) and G# at 10.3%: the tonic A is right, the mode is major. Only 64% of its energy is on the A natural minor notes. Three Fingers on the Lever was described as "centered around G major", but its whole-song chroma is led by E (14.5%), F# (10.6%), A# (9.8%), and B (9.4%), with G at only 5.4%; the pipeline held E major for 98% of the song. Neither scale fits well (G major notes 61%, E major 66%), so the key stays blank until checked by ear.
 
 ## Test tracks
 
@@ -89,3 +90,9 @@ The generator gave the section times as "0:16, 0:64, 0:96, 1:28", which are seco
 | Triumphant peak | 1:04-1:36 | Full orchestra | Dense, wide-band energy with soft attacks |
 | Space battle | 1:36-2:08 | Fast strings, sharp brass stabs | Brass stabs as clear onsets; a combat-section template |
 | Grand finale | 2:08-3:00 | Reprise of the main theme, closing chords, chimes | Sustained chords, then a soft tail of chimes before the end |
+
+### Three Fingers on the Lever
+
+Acoustic bluegrass at a steady 150.0 BPM (the stated tempo, confirmed: the 4-, 8-, and 16-beat lags all give 150.0), themed around probes, satellites, lasers, Triceptors, asteroids, and power-ups. The first sound is at 0.08 s and the last at 178.3 s. Its stated key is in doubt (see above). The generator gave no section times; add them here if they turn up. It has no tags, so `send.py` sends no `track_identified` for it.
+
+Use it for: a fast acoustic grid with no electronic drums (picked strings as onsets), and a key test where the stated key and the audio disagree.

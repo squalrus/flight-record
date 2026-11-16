@@ -128,17 +128,20 @@ class Discogs:
             break
         return status, body
 
+    def image_path(self, url: str) -> Path | None:
+        """Where ``image(url)`` caches that image (it exists once downloaded), or None
+        without a cache."""
+        if self.cache_dir is None:
+            return None
+        return self.cache_dir.parent / "images" / f"{hashlib.sha1(url.encode()).hexdigest()}.img"
+
     def image(self, url: str) -> bytes:
         """Download an image (e.g. a release cover) once; cached next to the API cache, in
         an ``images`` folder. Discogs image terms apply to anything shown publicly."""
-        path = None
-        if self.cache_dir is not None:
-            path = (
-                self.cache_dir.parent / "images" / f"{hashlib.sha1(url.encode()).hexdigest()}.img"
-            )
-            if path.exists():
-                self.cache_hits += 1
-                return path.read_bytes()
+        path = self.image_path(url)
+        if path is not None and path.exists():
+            self.cache_hits += 1
+            return path.read_bytes()
         status, body = self._fetch(url)
         if status != 200 or not body:
             raise DiscogsError(f"HTTP {status} for an image")
@@ -932,6 +935,11 @@ class ReleaseTracker:
 
         self._thread = threading.Thread(target=run, name="discogs", daemon=True)
         self._thread.start()
+
+
+def release_year(date: str | None) -> int | None:
+    """'2013-05-28' -> 2013: a recognition service's release date as a Discogs year hint."""
+    return int(date[:4]) if date and date[:4].isdigit() else None
 
 
 def primary_artist(artist: str) -> str:

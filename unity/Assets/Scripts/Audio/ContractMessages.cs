@@ -112,8 +112,14 @@ namespace FlightRecord.Audio
         public readonly string Artist, Title, Album;
         public readonly float Confidence;
         public readonly double? TrackSeconds, OffsetSeconds;
+
+        /// <summary>Audio t at which the identified clip ended (OffsetSeconds held then); null means T.</summary>
+        public readonly double? ClipEndT;
         public readonly string RecordingId, Label, ReleaseDate;
         public readonly string[] Genres;
+
+        /// <summary>A cover image file on this machine (local bridge only), or null.</summary>
+        public readonly string CoverPath;
 
         internal TrackIdentified(Fields f)
         {
@@ -123,11 +129,16 @@ namespace FlightRecord.Audio
             Confidence = f.OptionalUnit("confidence") ?? 0f;
             TrackSeconds = f.OptionalDouble("track_seconds", 0);
             OffsetSeconds = f.OptionalDouble("offset_seconds", 0);
+            ClipEndT = f.OptionalDouble("clip_end_t", 0);
             RecordingId = f.OptionalString("recording_id");
             Label = f.OptionalString("label");
             ReleaseDate = f.OptionalString("release_date");
             Genres = f.OptionalStrings("genres");
+            CoverPath = f.OptionalString("cover_path");
         }
+
+        /// <summary>Seconds into the track at audio time <paramref name="t"/>, or null without an offset.</summary>
+        public double? PositionAt(double t) => OffsetSeconds is double o ? o + (t - (ClipEndT ?? T)) : (double?)null;
     }
 
     public sealed class ReleaseSelected : ContractMessage
@@ -138,6 +149,9 @@ namespace FlightRecord.Audio
         public readonly Track[] Tracks;
         public readonly int? Year;
         public readonly string[] Genres, Styles;
+
+        /// <summary>The release's cover as a file on this machine (the Discogs image cache), or null.</summary>
+        public readonly string CoverPath;
 
         public readonly struct Track
         {
@@ -160,6 +174,7 @@ namespace FlightRecord.Audio
             Year = f.OptionalInt("year", 0);
             Genres = f.OptionalStrings("genres");
             Styles = f.OptionalStrings("styles");
+            CoverPath = f.OptionalString("cover_path");
             var tracks = new List<Track>();
             foreach (var item in f.OptionalList("tracks") ?? new List<object>())
             {

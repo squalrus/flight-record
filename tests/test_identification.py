@@ -14,13 +14,15 @@ from flightrec.identification import (
     ACRCloud,
     Attempt,
     AudD,
+    Fallback,
     IdentificationError,
     Identifier,
     Result,
     Service,
     multipart,
+    service_chain,
 )
-from flightrec.tags import read_id3_frames, read_tags
+from flightrec.tags import genre_text, read_id3_frames, read_tags
 
 # AudD
 
@@ -154,6 +156,7 @@ def id3_frame(fid: str, text: str) -> bytes:
 def test_read_id3_tags(tmp_path: Path) -> None:
     frames = id3_frame("TPE1", "Kalax") + id3_frame("TIT2", "Calling (feat. Frankmusik)")
     frames += id3_frame("TBPM", "90") + id3_frame("TKEY", "C#")
+    frames += id3_frame("TCON", "(52)Electronic")
     size = len(frames)
     syncsafe = bytes([(size >> 21) & 0x7F, (size >> 14) & 0x7F, (size >> 7) & 0x7F, size & 0x7F])
     path = tmp_path / "song.mp3"
@@ -161,12 +164,21 @@ def test_read_id3_tags(tmp_path: Path) -> None:
 
     assert read_id3_frames(path)["TPE1"] == ["Kalax"]
     tags = read_tags(path)
-    assert (tags.artist, tags.title, tags.bpm, tags.key) == (
+    assert (tags.artist, tags.title, tags.genre, tags.bpm, tags.key) == (
         "Kalax",
         "Calling (feat. Frankmusik)",
+        "Electronic",
         "90",
         "C#",
     )
+
+
+def test_genre_text() -> None:
+    assert genre_text("Synthwave") == "Synthwave"
+    assert genre_text("(17)Rock") == "Rock"
+    assert genre_text("(17)") is None
+    assert genre_text("17") is None
+    assert genre_text("") is None
 
 
 def test_tags_fall_back_to_store_filename(tmp_path: Path) -> None:
@@ -174,6 +186,51 @@ def test_tags_fall_back_to_store_filename(tmp_path: Path) -> None:
     path.write_bytes(b"\xff\xfb" + b"\x00" * 64)  # no ID3 header
     tags = read_tags(path)
     assert (tags.artist, tags.album, tags.title) == ("Glowbug", "Headhunters", "False Metal")
+
+
+# Fallback chain
+
+
+class Canned(Service):
+    """Answers with a fixed result and counts calls."""
+
+    def __init__(self, name: str, result: Result) -> None:
+        super().__init__()
+        self.name = name
+        self.result = result
+        self.calls = 0
+
+    def identify(self, wav: bytes) -> Result:
+        self.calls += 1
+        return self.result
+
+
+def test_fallback_stops_at_the_first_match() -> None:
+    hit = Canned("acrcloud", Result("acrcloud", True, artist="Kalax", title="Calling"))
+    spare = Canned("audd", Result("audd", True, artist="x", title="y"))
+    r = Fallback([hit, spare]).identify(b"")
+    assert (r.service, r.artist, spare.calls) == ("acrcloud", "Kalax", 0)
+
+
+def test_fallback_tries_the_next_on_a_miss_or_error() -> None:
+    miss = Canned("acrcloud", Result("acrcloud", False))
+    err = Canned("other", Result("other", False, error="HTTP 500"))
+    hit = Canned("audd", Result("audd", True, artist="a", title="b"))
+    chain = Fallback([miss, err, hit])
+    assert chain.name == "acrcloud+other+audd"
+    r = chain.identify(b"")
+    assert r.matched and r.service == "audd"
+    last = Fallback([miss, err]).identify(b"")
+    assert not last.matched and last.error == "HTTP 500"
+
+
+def test_service_chain_uses_configured_services(monkeypatch: pytest.MonkeyPatch) -> None:
+    for key in ("ACRCLOUD_HOST", "ACRCLOUD_ACCESS_KEY", "ACRCLOUD_ACCESS_SECRET", "AUDD_API_TOKEN"):
+        monkeypatch.delenv(key, raising=False)
+    assert service_chain(["acrcloud", "audd"]) is None
+    monkeypatch.setenv("AUDD_API_TOKEN", "test-token")
+    only = service_chain(["acrcloud", "audd"])
+    assert isinstance(only, AudD)
 
 
 # Background identifier
@@ -279,7 +336,7 @@ def test_attempts_become_contract_messages() -> None:
     )
     msg = matched.to_message()
     assert isinstance(msg, TrackIdentified) and msg.confidence == 0.95 and msg.t == 11.2
-    assert msg.extra["service"] == "acrcloud" and msg.extra["clip_end_t"] == 10.0
+    assert msg.extra["service"] == "acrcloud" and msg.clip_end_t == 10.0
     assert loads(msg.to_json()) == msg
 
     no_score = Attempt(10.0, 12.0, Result("audd", True, artist="a", title="b")).to_message()

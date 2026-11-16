@@ -19,9 +19,9 @@ Send the message contract from Python over UDP to a minimal Unity scene that fla
 | UDP sender | [flightrec/bridge.py](../../flightrec/bridge.py) | Sends contract messages to `127.0.0.1:9750`, one JSON message per datagram; never blocks or raises on send; reads the game's replies |
 | Sender script | [send.py](send.py) | Runs the feature pipeline on a file (silent or `--listen`), live input, or a recorded log, and sends the stream. For files it also sends `track_identified` from tags, `side_state` every second, and `side_end`. Writes a timing CSV |
 | Analysis | [analyze.py](analyze.py) | Joins the sender's and the scene's CSVs into stage latencies, jitter, late shares per delay size, and the native-capture comparison, as Markdown |
-| Contract and sources (C#) | [unity/Assets/Scripts/Audio/](../../unity/Assets/Scripts/Audio/) | `Contract.Parse` (mirrors `flightrec.messages`), `IMessageSource` with UDP, replay, and null sources, and `EventScheduler`, the delay buffer. Reusable by the game (backlog 4.3) |
+| Contract and sources (C#) | [unity/Assets/Scripts/Audio/](../../unity/Assets/Scripts/Audio/) | `Contract.Parse` (mirrors `flightrec.messages`), `IMessageSource` with UDP, replay, and null sources, `EventScheduler` (the delay buffer), and the `IAudioFeed` the game reads, including file playback (backlog 4.3) |
 | Scene | [unity/Assets/Experiments/Bridge/](../../unity/Assets/Experiments/Bridge/) | `Bridge.unity` with `BridgeDemo` (visuals, overlay, CSV log, clock replies) and `MicrophoneProbe` (native capture test) |
-| Tests | [test_bridge.py](test_bridge.py), [unity/Assets/Tests/EditMode/](../../unity/Assets/Tests/EditMode/) | Python: sender, analysis maths, and `send.py` against a stand-in game. Unity: JSON reader, contract parser, scheduler |
+| Tests | [test_bridge.py](test_bridge.py), [unity/Assets/Tests/EditMode/](../../unity/Assets/Tests/EditMode/) | Python: sender, analysis maths, and `send.py` against a stand-in game. Unity: JSON reader, contract parser, scheduler, file playback feed, playback clock |
 
 ### How timing is measured
 
@@ -46,7 +46,7 @@ Python: the shared venv (see [../README.md](../README.md#setup)); no extra packa
       -logdir "C:\github\flight-record\experiments\06-message-bridge\out"
   ```
 
-  Player options: `-logdir DIR` (default: the player's data folder; the editor writes to `experiments/06-message-bridge/out/`), `-delay MS` (default 150), `-port N`, `-mic NAME`, `-replay LOG.jsonl` (play a recorded log with no Python), `-nullsource`.
+  Player options: `-logdir DIR` (default: the player's data folder; the editor writes to `experiments/06-message-bridge/out/`), `-delay MS` (default 150), `-port N`, `-mic NAME`, `-replay LOG.jsonl` (play a recorded log with no Python), `-nullsource`, `-file AUDIO` (file mode, below), `-lead MS` (default 500).
 
 **2. Send audio** from the repo root:
 
@@ -57,6 +57,8 @@ python experiments/06-message-bridge/send.py --device 9                         
 python experiments/06-message-bridge/send.py --log samples/_local/logs/LOG.jsonl        # a log
 ```
 
+**Identification** (experiments 03-04) runs by default for live input when recognition keys are in `.env.local` or `.env`. Every so often, the last 10 s of audio go to ACRCloud, then to AudD on a miss, on a background thread. A match is sent as `track_identified`, looked up on Discogs, and sent as `release_selected` with the cached cover's path (`cover_path`). The game's now-playing panel shows them. Both are re-sent every 10 s. It's capped at 20 requests a run (`--max-identify`). `--no-identify` turns it off, `--identify` turns it on for a file (instead of its tags), `--services audd` picks the services, and `--no-discogs` skips the release lookup. Answers and lookups are printed as they arrive.
+
 `--seconds N` stops early. The sender prints a line a second, including the game's clock offset once the scene replies. Its CSV goes to `out/send-*.csv` (git-ignored) or `--out`.
 
 **3. Analyze** the newest pair of logs (or name them with `--send` and `--game`):
@@ -64,6 +66,14 @@ python experiments/06-message-bridge/send.py --log samples/_local/logs/LOG.jsonl
 ```sh
 python experiments/06-message-bridge/analyze.py
 ```
+
+**File mode** (backlog 4.3, D-012): the scene plays the file itself and the sender analyzes the same file silently, ahead of playback. Set **Audio File** on the `BridgeDemo` component (editor) or pass `-file PATH` (player), press Play, then run `send.py --wav PATH` without `--listen`, in either order:
+
+```sh
+python experiments/06-message-bridge/send.py --wav samples/_gen/Three_Fingers_on_the_Lever.mp3
+```
+
+The first message sets when the file starts: half a second later (`-lead`), or at once partway in if the sender started first. Messages are released when playback reaches their `t`, so the delay setting is replaced by the output latency (default: Unity's mixer buffering; tune it by ear with the arrow keys). **Space** pauses and resumes. Rerunning the sender restarts the file with it, and with no sender the file plays anyway after 3 s. Unity plays WAV, OGG, and MP3 at runtime, not FLAC. The overlay shows how far ahead of playback the analysis is arriving ("analysis ahead"); if it falls toward zero over a long file, the sender's clock is drifting from the sound card's.
 
 In the scene, **Up / Down** change the delay by 10 ms and **Left / Right** by 1 ms; **M** starts or stops the microphone probe; **R** resets the counters. The overlay shows the message rate, frame rate, delay, the buffer's base, how many messages arrived after they were due, the track and side, and the log path.
 

@@ -15,20 +15,29 @@ namespace FlightRecord.Experiments
     /// and text shows the track and side. Everything is built in code, so the scene file holds
     /// only a camera and this component.
     ///
-    /// Keys: Up / Down change the delay by 10 ms, Left / Right by 1 ms; M toggles the
-    /// microphone probe (Unity-native capture test); R resets the counters.
+    /// Keys: Up / Down change the delay by 10 ms, Left / Right by 1 ms (with a file: the
+    /// output latency); Space pauses a file; M toggles the microphone probe (Unity-native
+    /// capture test); R resets the counters.
+    ///
+    /// File mode (backlog 4.3, D-012): the scene plays the file itself and the sidecar
+    /// analyzes the same file, <c>send.py --wav FILE</c> started before or after the scene.
+    /// Messages are released when playback reaches them (<see cref="FilePlaybackFeed"/>).
     ///
     /// Each released message is logged to a CSV (kind, type, t, recv, due, shown, delay_ms)
     /// with its times on <see cref="AudioClock"/>, for experiments/06-message-bridge/analyze.py.
     /// The scene replies to the sender with clock samples so the two logs can be lined up.
     ///
-    /// Command line (player builds): -replay LOG.jsonl, -nullsource, -port N, -delay MS,
-    /// -mic NAME, -logdir DIR.
+    /// Command line (player builds): -replay LOG.jsonl, -nullsource, -file AUDIO, -lead MS,
+    /// -port N, -delay MS, -mic NAME, -logdir DIR. In the editor, set Audio File instead.
     /// </summary>
     public sealed class BridgeDemo : MonoBehaviour
     {
         [SerializeField] int port = UdpMessageSource.DefaultPort;
         [SerializeField] float delayMs = 150f;
+        [Tooltip("Play this audio file (WAV, OGG, MP3) and sync the sidecar's analysis to it; empty for the bridge.")]
+        [SerializeField] string audioFile = "";
+        [Tooltip("How far the sidecar's analysis runs ahead of file playback.")]
+        [SerializeField] float leadMs = 500f;
         [Tooltip("Microphone for the native capture test; empty for the system default.")]
         [SerializeField] string microphoneDevice = "";
         [SerializeField] bool logToCsv = true;
@@ -40,9 +49,11 @@ namespace FlightRecord.Experiments
             new Color(1f, 0.35f, 0.3f), new Color(0.4f, 1f, 0.5f), new Color(0.4f, 0.6f, 1f), Color.white,
         };
 
-        IMessageSource _source;
+        IAudioFeed _feed;
         UdpMessageSource _udp;
         readonly EventScheduler _scheduler = new EventScheduler();
+        FilePlaybackFeed _file;
+        AudioSourcePlayback _playback;
         readonly List<ScheduledMessage> _released = new List<ScheduledMessage>();
         MicrophoneProbe _mic;
         string _micStatus = "off (M to start)";
@@ -68,10 +79,16 @@ namespace FlightRecord.Experiments
             ReadCommandLine(out string replay, out bool nullSource, out string logDir);
             _scheduler.DelaySeconds = delayMs / 1000.0;
 
-            if (replay != null) _source = new ReplayMessageSource(replay);
-            else if (nullSource) _source = new NullMessageSource();
-            else _source = _udp = new UdpMessageSource(port);
-            _source.Start();
+            if (replay != null) _feed = new BufferedFeed(new ReplayMessageSource(replay), _scheduler);
+            else if (nullSource) _feed = new BufferedFeed(new NullMessageSource(), _scheduler);
+            else if (!string.IsNullOrWhiteSpace(audioFile))
+            {
+                _udp = new UdpMessageSource(port);
+                _playback = new AudioSourcePlayback(gameObject.AddComponent<AudioSource>(), audioFile.Trim().Trim('"'));
+                _feed = _file = new FilePlaybackFeed(_udp, _playback, leadMs / 1000.0);
+            }
+            else _feed = new BufferedFeed(_udp = new UdpMessageSource(port), _scheduler);
+            _feed.Start();
 
             BuildVisuals();
             if (logToCsv) OpenLog(logDir);
@@ -92,6 +109,8 @@ namespace FlightRecord.Experiments
                     case "-nullsource": nullSource = true; break;
                     case "-port": port = int.Parse(next, CultureInfo.InvariantCulture); break;
                     case "-delay": delayMs = float.Parse(next, CultureInfo.InvariantCulture); break;
+                    case "-file": audioFile = next; break;
+                    case "-lead": leadMs = float.Parse(next, CultureInfo.InvariantCulture); break;
                     case "-mic": microphoneDevice = next; break;
                     case "-logdir": logDir = next; break;
                 }
@@ -113,9 +132,8 @@ namespace FlightRecord.Experiments
         void Update()
         {
             double now = AudioClock.Now;
-            while (_source.TryRead(out var received)) _scheduler.Add(received);
             _released.Clear();
-            _scheduler.Release(now, _released);
+            _feed.Update(now, _released);
             foreach (var m in _released) Show(m);
 
             if (_mic != null && _mic.Poll(now, out double seen))
@@ -145,7 +163,7 @@ namespace FlightRecord.Experiments
         {
             _countThisSecond++;
             _shown++;
-            // Arrived after it was due: jitter the delay buffer did not absorb.
+            // Arrived after it was due: jitter the delay buffer (or the file lead) did not absorb.
             double lateBy = s.Received.Received - s.Due;
             if (lateBy > 0)
             {
@@ -190,6 +208,8 @@ namespace FlightRecord.Experiments
             }
         }
 
+        double DelaySetting => _playback != null ? _playback.Clock.OutputLatency : _scheduler.DelaySeconds;
+
         static string Clock(double seconds) => $"{(int)(seconds / 60)}:{(int)(seconds % 60):00}";
 
         void Log(string kind, string type, double t, double recv, double due, double shown)
@@ -197,7 +217,7 @@ namespace FlightRecord.Experiments
             if (_log == null) return;
             var c = CultureInfo.InvariantCulture;
             _log.WriteLine(string.Join(",", kind, type, t.ToString("F6", c), recv.ToString("F6", c),
-                due.ToString("F6", c), shown.ToString("F6", c), (_scheduler.DelaySeconds * 1000).ToString("F1", c)));
+                due.ToString("F6", c), shown.ToString("F6", c), (DelaySetting * 1000).ToString("F1", c)));
         }
 
         void HandleKeys()
@@ -206,7 +226,13 @@ namespace FlightRecord.Experiments
             if (kb == null) return;
             double step = kb.upArrowKey.wasPressedThisFrame ? 10 : kb.downArrowKey.wasPressedThisFrame ? -10
                 : kb.rightArrowKey.wasPressedThisFrame ? 1 : kb.leftArrowKey.wasPressedThisFrame ? -1 : 0;
-            if (step != 0) _scheduler.DelaySeconds = Math.Max(0, _scheduler.DelaySeconds + step / 1000);
+            if (step != 0 && _playback != null) _playback.Clock.OutputLatency = Math.Max(0, _playback.Clock.OutputLatency + step / 1000);
+            else if (step != 0) _scheduler.DelaySeconds = Math.Max(0, _scheduler.DelaySeconds + step / 1000);
+            if (kb.spaceKey.wasPressedThisFrame && _playback != null)
+            {
+                if (_playback.Paused) _playback.Resume();
+                else _playback.Pause();
+            }
             if (kb.rKey.wasPressedThisFrame) { _shown = _late = 0; _worstLate = 0; }
             if (kb.mKey.wasPressedThisFrame) ToggleMicrophone();
         }
@@ -299,16 +325,31 @@ namespace FlightRecord.Experiments
         void OnGUI()
         {
             _style ??= new GUIStyle(GUI.skin.label) { fontSize = 16, normal = { textColor = Color.white } };
-            string baseText = _scheduler.Base is double b ? $"{b * 1000:F1} ms" : "waiting";
+            string timing;
+            if (_file != null)
+            {
+                string pos = _playback.Position(AudioClock.Now) is double p ? $"{Clock(p)} / {Clock(_playback.Length)}" : "not started";
+                string state = _playback.Error ?? (!_playback.Ready ? "loading" : !_file.Started ? "waiting for the sidecar"
+                    : _playback.Paused ? "paused" : _playback.Finished ? "finished" : "playing");
+                string ahead = _file.Headroom is double h ? $"{h * 1000:F0} ms (min {_file.MinHeadroom.Value * 1000:F0})" : "-";
+                timing = $"file {Path.GetFileName(_playback.Path)}: {state}, {pos}  ·  Space pauses\n" +
+                         $"output latency {_playback.Clock.OutputLatency * 1000:F0} ms (Up/Down ±10, Left/Right ±1)  ·  " +
+                         $"analysis ahead {ahead}  ·  stale {_file.Stale}  ·  restarts {_file.Restarts}";
+            }
+            else
+            {
+                string baseText = _scheduler.Base is double b ? $"{b * 1000:F1} ms" : "waiting";
+                timing = $"delay {_scheduler.DelaySeconds * 1000:F0} ms (Up/Down ±10, Left/Right ±1)  ·  base {baseText}";
+            }
             string latePct = _shown > 0 ? $"{100.0 * _late / _shown:F2}%" : "-";
             string counters = _udp != null
                 ? $"received {_udp.Received}  invalid {_udp.Invalid}  skipped {_udp.Skipped}  rejected {_udp.Rejected}"
                 : "";
             string text =
                 "Flight Record · experiment 06 · message bridge\n" +
-                $"{_source.Description}  ·  {_rate} messages/s  ·  {_fps:F0} fps\n" +
+                $"{_feed.Description}  ·  {_rate} messages/s  ·  {_fps:F0} fps\n" +
                 (counters.Length > 0 ? counters + "\n" : "") +
-                $"delay {_scheduler.DelaySeconds * 1000:F0} ms (Up/Down ±10, Left/Right ±1)  ·  base {baseText}\n" +
+                timing + "\n" +
                 $"shown {_shown}  ·  arrived after due {_late} ({latePct})  ·  worst {_worstLate * 1000:F1} ms  ·  R resets\n" +
                 $"{_track}\n{_side}\n{_end}\n" +
                 $"microphone probe: {_micStatus}" + (_mic != null ? $", {_mic.Onsets} onsets" : "") + "\n" +
@@ -318,7 +359,8 @@ namespace FlightRecord.Experiments
 
         void OnDestroy()
         {
-            _source?.Dispose();
+            _feed?.Dispose();
+            _playback?.Dispose();
             _mic?.Dispose();
             _log?.Dispose();
             _log = null;

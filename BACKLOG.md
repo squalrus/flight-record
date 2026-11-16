@@ -37,7 +37,6 @@ Game items are one change each, so each one can be played and tested on its own.
   *Done when:* drop tables are data, and each drop type has a pickup, an effect, and a HUD cue.
 - [ ] **4.17 🖥️ Game: new enemies.** Design and make new enemy types for side-scrolling play (art, prefab, path, and pattern), filling roles the old roster lacks: fodder swarms, tanks, turrets, and dive-bombers. Depends on 4.12, 4.13.
   *Done when:* at least three new enemies play in hand-authored waves, each with a distinct role.
-- [ ] **4.3 🖥️ Game: audio source abstraction.** Live bridge, replay, null, and **file** sources behind one interface. The file source plays the file in-game and feeds analysis a little ahead of playback (D-012). Depends on 4.1.
 - [ ] **4.4 🖥️ Game: audio-driven level generator.** See Step 3. Deterministic given a feature stream and seed; unit-tested against recorded logs from 1.4.
 - [ ] **4.18 🖥️ Game: content templates by genre, tempo, and energy.** Authored sets of waves, enemies, patterns, and palettes, chosen by genre (from identification when known), BPM, and energy, with the live features filling in timing and density inside the template (D-015). Unknown genre falls back to a template chosen from features alone. Depends on 4.4, 1.3, 2.2.
   *Done when:* the same record replayed twice picks the same template, different genres and tempos pick visibly different ones, and an unidentified record still plays.

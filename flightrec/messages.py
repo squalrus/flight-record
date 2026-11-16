@@ -129,6 +129,10 @@ class TrackIdentified(Message):
     offset_seconds: float | None = field(default=None, metadata=_range(0, None))
     """Where in the track the identified clip ended: with ``track_seconds``, the time
     left on the current track at the moment the clip was captured."""
+    clip_end_t: float | None = None
+    """Audio time ``t`` at which the identified clip ended, when ``offset_seconds`` was
+    true. The answer arrives seconds later, so the position now is ``offset_seconds +
+    (now - clip_end_t)``. Absent: ``offset_seconds`` holds at this message's ``t``."""
     recording_id: str | None = None
     """The service's stable id for the recording; a different id means a track change."""
     label: str | None = None
@@ -139,6 +143,9 @@ class TrackIdentified(Message):
     """Barcode of the matched release: a Discogs barcode search can find it exactly."""
     alt_albums: list[str] | None = None
     """Albums of the service's other matches, for release lookup fallbacks."""
+    cover_path: str | None = None
+    """A cover image file on this machine (JPEG or PNG), e.g. from the file's own tags.
+    Local only (D-009): the game reads it from disk."""
 
 
 @dataclass(frozen=True)
@@ -157,6 +164,9 @@ class ReleaseSelected(Message):
     """Broad genres, e.g. "Electronic", "Rock"."""
     styles: list[str] | None = None
     """Fine-grained styles, e.g. "Synthwave", "Math Rock": useful for level theming."""
+    cover_path: str | None = None
+    """The release's cover image as a file on this machine (the Discogs image cache).
+    Local only (D-009); Discogs image terms apply to anything shown publicly."""
 
 
 @dataclass(frozen=True)

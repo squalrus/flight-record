@@ -12,8 +12,33 @@ namespace FlightRecord
     // to try is an asset and a list entry, not code.
     //
     // SpawnGroup is the piece 4.2's waves are meant to reuse.
+    //
+    // While waiting, it publishes the next entry (Next): when it will spawn and where it
+    // comes in, so the HUD can warn the players (IncomingWarningHud).
     public class FormationSpawner : MonoBehaviour
     {
+        public enum EntryEdge { Right, Top, Bottom }
+
+        // The next group to spawn, in view-relative units: Y from -1 (bottom of the view) to
+        // 1 (top), X likewise from left to right; YMin..YMax spans the formation's slots.
+        public struct Incoming
+        {
+            public float SpawnTime; // Time.time
+            public EntryEdge Edge;
+            public float X, YMin, YMax;
+        }
+
+        private static readonly List<FormationSpawner> _active = new List<FormationSpawner>();
+        public static IReadOnlyList<FormationSpawner> Active => _active;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics() => _active.Clear();
+
+        public Incoming? Next { get; private set; }
+
+        private void OnEnable() => _active.Add(this);
+        private void OnDisable() => _active.Remove(this);
+
         [Serializable]
         public class Entry
         {
@@ -33,18 +58,54 @@ namespace FlightRecord
 
         private IEnumerator Start()
         {
+            if (Entries.Count > 0) Next = Preview(Entries[0], Time.time + StartDelay);
             yield return new WaitForSeconds(StartDelay);
 
             do
             {
-                foreach (var entry in Entries)
+                for (var i = 0; i < Entries.Count; i++)
                 {
+                    var entry = Entries[i];
+                    Next = null;
                     SpawnGroup(entry.Prefab, entry.Formation, entry.Path, entry.MirrorY, transform);
+
+                    var following = i + 1 < Entries.Count ? Entries[i + 1] : Loop ? Entries[0] : null;
+                    if (following != null) Next = Preview(following, Time.time + entry.GapAfter);
                     // At least a frame per entry, so a list of zero gaps can't spin forever.
                     yield return entry.GapAfter > 0f ? new WaitForSeconds(entry.GapAfter) : null;
                 }
                 if (Entries.Count == 0) yield break;
             } while (Loop);
+            Next = null;
+        }
+
+        // Where an entry will come in, from the same path and formation data SpawnGroup uses.
+        private static Incoming? Preview(Entry entry, float spawnTime)
+        {
+            if (entry.Prefab == null || entry.Path == null || !Playfield.TryGetView(out _, out var halfSize))
+                return null;
+            var track = entry.Path.Build(halfSize, entry.MirrorY);
+            float yMin = track.StartY, yMax = track.StartY;
+            if (entry.Formation != null)
+            {
+                foreach (var slot in entry.Formation.Slots)
+                {
+                    float y = track.StartY + (entry.MirrorY ? -slot.Offset.y : slot.Offset.y);
+                    yMin = Mathf.Min(yMin, y);
+                    yMax = Mathf.Max(yMax, y);
+                }
+            }
+            var edge = track.StartY > halfSize.y ? EntryEdge.Top
+                : track.StartY < -halfSize.y ? EntryEdge.Bottom
+                : EntryEdge.Right;
+            return new Incoming
+            {
+                SpawnTime = spawnTime,
+                Edge = edge,
+                X = track.StartX / halfSize.x,
+                YMin = yMin / halfSize.y,
+                YMax = yMax / halfSize.y,
+            };
         }
 
         // Spawns one enemy per formation slot (one enemy without a formation), each placed

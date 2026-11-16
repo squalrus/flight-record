@@ -1,4 +1,4 @@
-"""Read basic ID3v2 text tags (artist, title, album, BPM, key) from MP3 files.
+"""Read basic ID3v2 text tags (artist, title, album, genre, BPM, key) from MP3 files.
 
 Just enough of ID3v2.3/2.4 for text frames, with no dependency. Used for answer keys in
 the experiments (e.g. who a song is by, for scoring fingerprint matches) and, later, for
@@ -19,6 +19,7 @@ class Tags:
     artist: str | None = None
     title: str | None = None
     album: str | None = None
+    genre: str | None = None
     bpm: str | None = None
     key: str | None = None
 
@@ -57,8 +58,20 @@ def read_id3_frames(path: str | Path) -> dict[str, list[str]]:
     return frames
 
 
+def genre_text(value: str | None) -> str | None:
+    """An ID3 genre (``TCON``) as text: "(17)Rock" and "Rock" give "Rock".
+
+    A bare ID3v1 number ("17" or "(17)") gives None rather than a lookup table: what the
+    game needs is the text, and the player can retag the file.
+    """
+    if not value:
+        return None
+    text = re.sub(r"^(\(\d+\))+", "", value.strip()).strip()
+    return None if not text or text.isdigit() else text
+
+
 def read_tags(path: str | Path) -> Tags:
-    """Artist, title, album, BPM, and key from an MP3's ID3v2 tags.
+    """Artist, title, album, genre, BPM, and key from an MP3's ID3v2 tags.
 
     Falls back to the "Artist - Album - NN Title" filename pattern that many stores use
     when the tags lack artist or title.
@@ -77,4 +90,11 @@ def read_tags(path: str | Path) -> Tags:
             title = title or re.sub(r"^\d+\s+", "", parts[-1]).strip()
             if len(parts) >= 3:
                 album = album or parts[1].strip()
-    return Tags(artist=artist, title=title, album=album, bpm=first("TBPM"), key=first("TKEY"))
+    return Tags(
+        artist=artist,
+        title=title,
+        album=album,
+        genre=genre_text(first("TCON")),
+        bpm=first("TBPM"),
+        key=first("TKEY"),
+    )

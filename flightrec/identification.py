@@ -283,6 +283,38 @@ def _first(value: Any) -> str | None:
 SERVICES: dict[str, type[Service]] = {"audd": AudD, "acrcloud": ACRCloud}
 
 
+class Fallback(Service):
+    """Ask each service in turn until one matches: e.g. ACRCloud (track length, offset,
+    stable ids), then AudD on a miss or an error. Returns the first match, else the last
+    answer. Latency is the total, since that is how long the caller waited."""
+
+    def __init__(self, services: list[Service]) -> None:
+        if not services:
+            raise ValueError("Fallback needs at least one service")
+        super().__init__(timeout=max(s.timeout for s in services))
+        self.services = services
+        self.name = "+".join(s.name for s in services)
+
+    def identify(self, wav: bytes) -> Result:
+        start = time.perf_counter()
+        result = None
+        for service in self.services:
+            result = service.identify(wav)
+            if result.matched:
+                break
+        assert result is not None
+        return Result(**{**result.__dict__, "latency_s": time.perf_counter() - start})
+
+
+def service_chain(names: list[str]) -> Service | None:
+    """The configured services among ``names`` (in order), as one ``Service``: a single
+    one as is, several as a ``Fallback``. None when none of them has keys."""
+    services = [s for s in (SERVICES[n].from_env() for n in names) if s is not None]
+    if not services:
+        return None
+    return services[0] if len(services) == 1 else Fallback(services)
+
+
 def encode_wav(audio: Any, samplerate: int) -> bytes:
     """Mono 16-bit WAV bytes for a clip (``audio``: float array, 1-D or (n, channels))."""
     import io
@@ -314,7 +346,6 @@ class Attempt:
         extra = {
             "service": r.service,
             "latency_s": round(r.latency_s, 3),
-            "clip_end_t": self.clip_end_t,
         }
         if r.matched:
             # AudD reports no score; its matches are logged at confidence 1.0.
@@ -324,10 +355,12 @@ class Attempt:
             return TrackIdentified(
                 t=self.t, artist=r.artist or "", title=r.title or "", album=r.album,
                 confidence=confidence, track_seconds=r.duration_s, offset_seconds=r.offset_s,
-                recording_id=r.recording_id, label=r.label, genres=r.genres or None,
+                clip_end_t=round(self.clip_end_t, 4), recording_id=r.recording_id,
+                label=r.label, genres=r.genres or None,
                 release_date=r.release_date, isrc=r.isrc, upc=r.upc,
                 alt_albums=r.alt_albums or None, extra=extra,
             )  # fmt: skip
+        extra["clip_end_t"] = self.clip_end_t
         if r.error:
             return IdentificationFailed(t=self.t, reason="error", extra={**extra, "error": r.error})
         return IdentificationFailed(t=self.t, reason="no_match", extra=extra)

@@ -11,6 +11,14 @@ Runs the same feature pipeline as the explorer and the recorder and sends one
 a file can tell without fingerprinting (D-012): ``track_identified`` from the tags,
 ``side_state`` once a second with the exact time left, and ``side_end`` at the end.
 
+Live input is identified by default when recognition keys are set (experiments 03-04):
+every so often the last 10 s go to ACRCloud, then AudD on a miss, on a background thread;
+a match is sent as ``track_identified`` and looked up on Discogs, whose release goes out
+as ``release_selected`` with the cover image's cached path (``cover_path``). Both are
+re-sent every 10 s, since UDP may drop them. ``--no-identify`` turns it off,
+``--identify`` turns it on for files, ``--no-discogs`` skips the release lookup. The game
+never waits on any of it (D-004).
+
 Every message sent is written to a timing CSV (default
 experiments/06-message-bridge/out/send-*.csv): its audio time ``t``, when the sound it
 came from happened (``event``), and when it left (``sent``), on the ``perf_counter()``
@@ -29,6 +37,7 @@ import csv
 import statistics
 import sys
 import time
+from dataclasses import replace
 from datetime import datetime
 from pathlib import Path
 
@@ -41,10 +50,13 @@ from flightrec.audio import (
 )
 from flightrec.bridge import DEFAULT_HOST, DEFAULT_PORT, UdpSender
 from flightrec.console import safe_output
+from flightrec.discogs import Discogs, Lookup, ReleaseTracker, Selections, release_year
 from flightrec.env import load_env
+from flightrec.identification import SERVICES, Attempt, Identifier, Service, service_chain
 from flightrec.messages import (
     FeaturesMessage,
     Message,
+    ReleaseSelected,
     SideEnd,
     SideState,
     TrackIdentified,
@@ -54,6 +66,8 @@ from flightrec.messages import (
 from flightrec.tags import Tags, read_tags
 
 HERE = Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+DISCOGS_DATA = ROOT / "samples" / "_local" / "discogs"
 COLUMNS = ["kind", "type", "t", "onset", "event", "sent", "game", "arrived"]
 
 
@@ -128,6 +142,7 @@ def file_messages(tags: Tags, t: float, duration: float, side: str, last: dict) 
                     artist=tags.artist,
                     title=tags.title,
                     album=tags.album,
+                    genres=[tags.genre] if tags.genre else None,
                     confidence=1.0,
                     track_seconds=round(duration, 3),
                     offset_seconds=round(t, 3),
@@ -148,6 +163,136 @@ def file_messages(tags: Tags, t: float, duration: float, side: str, last: dict) 
     return out
 
 
+class Identification:
+    """Identify what is playing and send it to the game, never blocking the send loop.
+
+    ``update(audio_t)`` returns the messages to send now: each identification answer
+    (``track_identified`` or ``identification_failed``), each Discogs release
+    (``release_selected`` with ``cover_path``), and every ``RESEND_S`` the current track and
+    release again with a fresh ``t`` (a message with an old ``t`` would look like a restart
+    to the game's delay buffer; ``clip_end_t`` keeps the track position right).
+    """
+
+    RESEND_S = 10.0
+
+    def __init__(
+        self,
+        identifier: Identifier,
+        tracker: ReleaseTracker | None,
+        discogs: Discogs | None,
+    ) -> None:
+        self.identifier = identifier
+        self.tracker = tracker
+        self.discogs = discogs
+        self.track: TrackIdentified | None = None
+        self.release: ReleaseSelected | None = None
+        self._resent = -1e9
+
+    def update(self, audio_t: float) -> list[Message]:
+        t = round(audio_t, 4)
+        out: list[Message] = []
+        for attempt in self.identifier.update(audio_t):
+            msg = attempt.to_message()
+            print(describe_attempt(attempt), flush=True)
+            out.append(msg)
+            r = attempt.result
+            if not (isinstance(msg, TrackIdentified) and r.matched):
+                continue
+            if self.track is None or _track_key(self.track) != _track_key(msg):
+                self.release = None  # a new track may be on another record
+            self.track = msg
+            self._resent = audio_t  # just sent: resend RESEND_S from now
+            if self.tracker is not None and r.artist:
+                self.tracker.request(
+                    r.artist, r.album, r.title,
+                    alt_albums=r.alt_albums, label=r.label, barcode=r.upc,
+                    year=release_year(r.release_date),
+                )  # fmt: skip
+        if self.tracker is not None:
+            found = self.tracker.poll()
+            if found is not None:
+                print(describe_lookup(found), flush=True)
+                if found.message is not None:
+                    self.release = replace(found.message, t=t, cover_path=self._cover(found))
+                    out.append(self.release)
+                    self._resent = audio_t
+        if (self.track or self.release) and audio_t - self._resent >= self.RESEND_S:
+            self._resent = audio_t
+            out.extend(replace(m, t=t) for m in (self.track, self.release) if m is not None)
+        return out
+
+    def _cover(self, found: Lookup) -> str | None:
+        if self.discogs is None or not found.cover or not found.cover_url:
+            return None
+        path = self.discogs.image_path(found.cover_url)
+        return str(path) if path is not None and path.exists() else None
+
+    def finish(self, audio_t: float) -> list[Message]:
+        """Wait briefly for an answer already on its way, so it is not lost at the end."""
+        if self.identifier.busy:
+            self.identifier.wait(timeout=5.0)
+        return self.update(audio_t)
+
+
+def _track_key(m: TrackIdentified) -> tuple[str | None, ...]:
+    return (m.recording_id,) if m.recording_id else (m.artist.lower(), m.title.lower())
+
+
+def describe_attempt(attempt: Attempt) -> str:
+    r = attempt.result
+    took = f"{r.latency_s:.1f} s"
+    if r.matched:
+        left = ""
+        if r.duration_s is not None and r.offset_s is not None:
+            left = f", {max(0.0, r.duration_s - r.offset_s):.0f} s left"
+        return f"identified ({r.service}, {took}): {r.artist} - {r.title} [{r.album or '?'}]{left}"
+    if r.error:
+        return f"identification error ({r.service}, {took}): {r.error}"
+    return f"no match ({r.service}, {took})"
+
+
+def describe_lookup(found: Lookup) -> str:
+    if found.release is None or found.message is None:
+        return f"discogs: {found.how}" + (f" ({found.error})" if found.error else "")
+    m = found.message
+    cover = "with cover" if found.cover else "no cover"
+    return (
+        f"discogs: {m.album} ({m.year or '?'}), side {m.side}, {len(found.tracks)} tracks, "
+        f"release {m.discogs_id}, {found.how}, {cover}"
+    )
+
+
+def make_identification(
+    args: argparse.Namespace, capture: Capture, samplerate: int
+) -> Identification | None:
+    """The identification for this run, or None when it is off or has no keys."""
+    if not args.identify:
+        return None
+    service: Service | None = service_chain(args.services)
+    if service is None:
+        print(f"identification off: no keys for {', '.join(args.services)} in .env.local or .env")
+        return None
+    identifier = Identifier(
+        service,
+        lambda seconds: (samplerate, capture.latest(int(seconds * samplerate))[0]),
+        clip_s=args.identify_clip,
+        max_requests=args.max_identify,
+    )
+    discogs = tracker = None
+    if args.discogs:
+        discogs = Discogs.from_env(cache_dir=DISCOGS_DATA / "http")
+        if discogs is None:
+            print("discogs off: DISCOGS_TOKEN is not set in .env.local or .env")
+        else:
+            tracker = ReleaseTracker(discogs, Selections(DISCOGS_DATA / "selections.json"))
+    print(
+        f"identifying with {service.name}: {args.identify_clip:g} s clips, "
+        f"up to {args.max_identify} requests" + (", then Discogs" if tracker else ""),
+        flush=True,
+    )
+    return Identification(identifier, tracker, discogs)
+
+
 def run_audio(args: argparse.Namespace, sender: UdpSender, log: TimingLog) -> None:
     source = open_source(
         args.wav,
@@ -159,13 +304,17 @@ def run_audio(args: argparse.Namespace, sender: UdpSender, log: TimingLog) -> No
     )
     sr = source.samplerate
     fx = FeatureExtractor(sr, hop=args.hop, gate_db=args.gate)
-    capture = Capture(source, seconds=max(3.0, 2 * fx.window / sr))
+    clip_s = args.identify_clip if args.identify else 0.0
+    capture = Capture(source, seconds=max(3.0, 2 * fx.window / sr, clip_s + 1.0))
     reader = HopReader(capture, fx.window, fx.hop)
     file_frames = len(source.frames) if args.wav is not None else None  # type: ignore[attr-defined]
     duration = file_frames / sr if file_frames is not None else 0.0
     status = Status(sender, log)
     last: dict[str, float] = {}
     tags = read_tags(args.wav) if args.wav is not None else Tags()
+    ident = make_identification(args, capture, sr)
+    if ident is not None:
+        tags = Tags()  # identification answers what is playing; don't also send the tags
 
     def send(m: Message) -> None:
         # When the sound behind this message happened, on the perf_counter() clock.
@@ -198,9 +347,15 @@ def run_audio(args: argparse.Namespace, sender: UdpSender, log: TimingLog) -> No
                     if args.wav is not None:
                         for extra in file_messages(tags, t, duration, args.side, last):
                             send(extra)
+                if ident is not None:
+                    for m in ident.update(capture.frames / sr):
+                        send(m)
                 log.clocks(sender)
                 status.tick(t)
                 time.sleep(0.002)
+            if ident is not None:
+                for m in ident.finish(capture.frames / sr):
+                    send(m)
             if source.finished:
                 capture.wait(0)  # re-raises a replay error, if any
                 send(SideEnd(t=round(duration, 4), cause="file_end"))
@@ -254,9 +409,35 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--blocksize", type=int, default=512)
     parser.add_argument("--hop", type=int, default=512)
     parser.add_argument("--gate", type=float, default=DEFAULT_GATE_DB, help="trigger gate, dBFS")
+    ident = parser.add_argument_group("identification (experiments 03-04)")
+    ident.add_argument(
+        "--identify",
+        action=argparse.BooleanOptionalAction,
+        default=None,
+        help="identify what is playing (default: on for live input when keys are set)",
+    )
+    ident.add_argument(
+        "--services",
+        nargs="+",
+        choices=sorted(SERVICES),
+        default=["acrcloud", "audd"],
+        help="recognition services, tried in order until one matches",
+    )
+    ident.add_argument("--identify-clip", type=float, default=10.0, help="seconds per request")
+    ident.add_argument("--max-identify", type=int, default=20, help="requests per run")
+    ident.add_argument(
+        "--discogs",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="look up each match on Discogs for the track list and cover",
+    )
     args = parser.parse_args(argv)
     if args.listen and args.wav is None:
         parser.error("--listen needs --wav: live input is never played by the computer")
+    if args.identify is None:
+        args.identify = args.wav is None and args.log is None  # live input
+    elif args.identify and args.log is not None:
+        parser.error("--identify needs audio: a message log has none")
     safe_output()
     load_env()  # FR_AUDIO_DEVICE
 

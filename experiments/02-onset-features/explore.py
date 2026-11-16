@@ -56,6 +56,7 @@ from flightrec.discogs import (
     agreement,
     find_track,
     progress,
+    release_year,
 )
 from flightrec.env import load_env
 from flightrec.identification import SERVICES, Attempt, Identifier
@@ -439,11 +440,6 @@ def run_live(args: argparse.Namespace) -> int:
         )
         print(f"identification: {identifier.requests} requests, {dict(outcomes)}")
     return 0
-
-
-def release_year(date: str | None) -> int | None:
-    """'2013-05-28' -> 2013."""
-    return int(date[:4]) if date and date[:4].isdigit() else None
 
 
 def describe_lookup(lookup: Lookup) -> str:

@@ -208,3 +208,62 @@ def test_send_file_to_a_stand_in_game_and_analyze(tmp_path, capsys):
     assert analyze.main(["--send", str(send_csv), "--game", str(game_csv)]) == 0
     report = capsys.readouterr().out
     assert "Clock offset" in report and "Onset messages only" in report and "| Late |" in report
+
+
+# Identification for the game
+
+
+class Answers:
+    """A stand-in service: answers each request with the next canned result, at once."""
+
+    name = "fake"
+    timeout = 1.0
+
+    def __init__(self, *results) -> None:
+        self.results = list(results)
+
+    def identify(self, wav: bytes):
+        return self.results.pop(0)
+
+
+def test_identification_sends_and_resends_the_match() -> None:
+    from flightrec.identification import Identifier, Result
+    from flightrec.messages import IdentificationFailed, TrackIdentified
+
+    send = load("send")
+    service = Answers(
+        Result("fake", False),
+        Result("fake", True, artist="Kalax", title="Calling", duration_s=240.0, offset_s=60.0),
+    )
+    clip = (48_000, np.zeros((480_000, 1), dtype=np.float32))
+    identifier = Identifier(service, lambda s: clip, clip_s=10.0, retry_s=5.0)
+    ident = send.Identification(identifier, tracker=None, discogs=None)
+
+    def step(t: float) -> list:
+        ident.update(t)  # starts a request when due
+        identifier.wait(1.0)
+        return ident.update(t + 0.5)  # collects the answer
+
+    first = step(10.0)
+    assert [type(m) for m in first] == [IdentificationFailed]
+    second = step(15.5)
+    tracks = [m for m in second if isinstance(m, TrackIdentified)]
+    assert tracks and tracks[0].clip_end_t == 15.5 and tracks[0].offset_seconds == 60.0
+    assert ident.update(20.0) == []  # nothing new, and not yet time to resend
+    again = ident.update(26.5)
+    assert len(again) == 1 and again[0].t == 26.5 and again[0].clip_end_t == 15.5
+
+
+def test_a_new_track_forgets_the_release() -> None:
+    from flightrec.messages import ReleaseSelected, TrackIdentified
+
+    send = load("send")
+    ident = send.Identification(identifier=None, tracker=None, discogs=None)
+    ident.track = TrackIdentified(t=1.0, artist="A", title="One", recording_id="r1")
+    ident.release = ReleaseSelected(t=2.0, discogs_id=7, side="A")
+    assert send._track_key(ident.track) != send._track_key(
+        TrackIdentified(t=3.0, artist="A", title="One", recording_id="r2")
+    )
+    assert send._track_key(TrackIdentified(t=0, artist="A", title="One")) == send._track_key(
+        TrackIdentified(t=9, artist="a", title="one")
+    )
